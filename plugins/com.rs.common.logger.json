@@ -1,0 +1,4 @@
+{
+  "identifier": "com.rs.common.logger",
+  "pluginLocation": "../../zlux-shared/src/logging"
+}

@@ -35,11 +35,11 @@ Because all of our code is on github, yet ZSS must run on z/OS and the zLUX Prox
 If you'd like to go this route, you can find git for z/OS free of charge here: http://www.rocketsoftware.com/product-categories/mainframe/git-for-zos
 
 ### 1. Acquire the source code
-To get started, first clone or download the github capstone repository, https://github.com/gizafoundation/zlux
+To get started, first clone or download the github capstone repository, https://github.com/zowe/zlux
 As we'll be configuring ZSS on z/OS's USS, and the zLUX Proxy Server on a LUW host, you'll need to put the contents on both systems.
 If using git, the following commands should be used:
 ```
-git clone --recursive git@github.com:gizafoundation/zlux.git
+git clone --recursive git@github.com:zowe/zlux.git
 cd zlux
 git submodule foreach "git checkout master"
 cd zlux-build
@@ -49,11 +49,11 @@ At this point, you'll have the latest code from each repository on your system.
 Continue from within zlux-example-server.
 
 ### 2. Acquire external components
-Apps and external servers can require contents not found in the Zoe github repositories. In the case of the zlux-example-server, there are two components which cannot be found in the repositories: a ZSS binary and the TN3270 protocol code.
-For Zoe members, Rocket can provide these both.
+Apps and external servers can require contents not found in the Zowe github repositories. In the case of the zlux-example-server, there is a component which cannot be found in the repositories: a ZSS binary.
+If you contact the Zowe project, this will be provided.
 
-After contacting Rocket, you should receive *zssServer*, *terminal-3270.js*, *rocket-term-handler.js*, and *terminal-vt.js*.
-All files must be placed within *zlux-build/externals/Rocket*. zssServer must be placed here on the z/OS host, the others must be placed there wherever the zLUX server will run.
+Afterwards, you should receive *zssServer*.
+This must be placed within *zlux-build/externals/Rocket*, on the z/OS host.
 For example:
 ```
 mkdir externals
@@ -61,15 +61,10 @@ mkdir externals/Rocket
 
 //(on z/OS only)
 mv zssServer externals/Rocket
-
-//(on LUW host only)
-mv terminal-3270.js externals/Rocket
-mv terminal-vt.js externals/Rocket
-mv rocket-term-handler.js externals/Rocket
 ```
 
 ### 3. Set the server configuration
-Read the [Configuration](https://github.com/gizafoundation/zlux/wiki/Configuration-for-zLUX-Proxy-Server-&-ZSS) wiki page for a detailed explanation of the primary items that you'll want to configure for your first server.
+Read the [Configuration](https://github.com/zowe/zlux/wiki/Configuration-for-zLUX-Proxy-Server-&-ZSS) wiki page for a detailed explanation of the primary items that you'll want to configure for your first server.
 
 In short, ensure that within **config/zluxserver.json**, **node.http.port** OR **node.https.port + other HTTPS parameters** are set to your liking on the LUW host, and that **zssPort** is set on the z/OS host.
 
@@ -135,13 +130,13 @@ Valid parameters for nodeServer are as follows:
 - *-s*: Specifies the HTTPS port to be used by the zLUX Proxy Server. Use as *-s <port>*. This overrides *node.https.port* from the configuration file.
 - *--noChild*: If specified, tells the server to ignore and skip spawning of child processes defined as *node.childProcesses* in the configuration file.
 
-In the example where we're running ZSS on a host named mainframe.giza.com, running on zssPort = 19997, the Proxy server running on Windows could be started with the following:
+In the example where we're running ZSS on a host named mainframe.zowe.com, running on zssPort = 19997, the Proxy server running on Windows could be started with the following:
 
-`nodeServer.bat -h mainframe.giza.com -P 19997 -p 19998`
+`nodeServer.bat -h mainframe.zowe.com -P 19997 -p 19998`
 
 After which we'd be able to connect to the Proxy server at port 19998.
 
-**NOTE: the parameter parsing is provided by [argumentParser.js](https://github.com/gizafoundation/zlux-proxy-server/blob/master/js/argumentParser.js), which allows for a few variations of input, depending on preference. For example, the following are all valid ways to specify the ZSS host**
+**NOTE: the parameter parsing is provided by [argumentParser.js](https://github.com/zowe/zlux-proxy-server/blob/master/js/argumentParser.js), which allows for a few variations of input, depending on preference. For example, the following are all valid ways to specify the ZSS host**
 
 - **-h myhost.com**
 - **-h=myhost.com**

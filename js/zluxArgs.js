@@ -73,6 +73,10 @@ const DEFAULT_CONFIG = {
   "node": {
     "http": {
       "port": 8543
+    },
+    "eureka": {
+      "hostname": "localhost",
+      "port": 10011
     }
   },
   "dataserviceAuthentication": {
@@ -96,6 +100,8 @@ const MVD_ARGS = [
   new argParser.CLIArgument('noChild', null, argParser.constants.ARG_TYPE_FLAG),
   new argParser.CLIArgument('allowInvalidTLSProxy', null, 
       argParser.constants.ARG_TYPE_VALUE),
+  new argParser.CLIArgument('mlUser', 'mu', argParser.constants.ARG_TYPE_VALUE),
+  new argParser.CLIArgument('mlPass', 'mp', argParser.constants.ARG_TYPE_VALUE)
 ];
 
 var config;
@@ -104,6 +110,7 @@ var commandArgs = process.argv.slice(2);
 var argumentParser = argParser.createParser(MVD_ARGS);
 var userInput = argumentParser.parse(commandArgs);
 var noPrompt = false;
+
 if (userInput.noPrompt) {
   noPrompt = true;
 }
@@ -118,6 +125,13 @@ for (const attribute in userConfig) {
   configJSON[attribute] = userConfig[attribute]; 
 }
 let hostPort = userInput.hostPort;
+let eUser = userInput.mlUser;
+let ePass = userInput.mlPass;
+if(eUser && ePass){
+  configJSON.node.mediationLayer.enabled = true;
+  configJSON.node.mediationLayer.instance.instanceId = `${configJSON.node.mediationLayer.instance.app}:${Math.floor(Math.random() * 9999)}`;
+  configJSON.node.mediationLayer.eureka.serviceUrls.default = [`http://${eUser}:${ePass}@${configJSON.node.mediationLayer.server.hostname}:${configJSON.node.mediationLayer.server.port}/eureka/apps/`];
+}
 if (!hostPort) {
   hostPort = configJSON.zssPort;
 }

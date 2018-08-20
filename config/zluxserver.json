@@ -9,6 +9,14 @@
     "http": {
       "port": 8543
     },
+    "mediationLayer": {
+      "server": {
+        "hostname": "localhost",
+        "port": 10011,
+        "isHttps": false
+      },
+      "enabled": false
+    },
     "childProcesses": [
       {
         "path": "../bin/zssServer.sh",

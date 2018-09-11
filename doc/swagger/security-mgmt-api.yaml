@@ -1,0 +1,705 @@
+swagger: "2.0"
+info:
+  description: "Security Management API"
+  version: "1.0.0"
+  title: "Security Management API"
+host: "localhost"
+basePath: "/security-mgmt"
+schemes:
+  - "https"
+  - "http"
+paths:
+  /user-profiles:
+    get:
+      summary: "Retrieve a list of user profiles"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - name: "start"
+          in: "query"
+          description: "User ID of the first profile to retrieve"
+          required: false
+          type: "string"
+        - name: "count"
+          in: "query"
+          description: "Number of user profiles to return"
+          required: false
+          type: "integer"
+          minimum: 0
+          maximum: 1000
+          default: 1000
+        - name: "traceLevel"
+          in: "query"
+          description: "Trace level value passed to MXM"
+          required: false
+          type: "integer"
+          default: 0
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/UserProfileList"
+        400:
+          description: "Bad input parameters, see details in the message"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Internal MXM error"
+          schema:
+            $ref: "#/definitions/ZoweError"
+        501:
+          description: "Unsupported request"
+  '/classes/{className}/profiles':
+    get:
+      summary: "Retrieve a list of profiles in a class"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - name: "className"
+          in: "path"
+          description: "Class containing the profiles to return (use default-class to choose the MXM defined class)"
+          required: true
+          type: "string"
+        - name: "start"
+          in: "query"
+          description: "Profile name of the first profile to retrieve"
+          required: false
+          type: "string"
+        - name: "count"
+          in: "query"
+          description: "Number of profiles to retrieve"
+          required: false
+          type: "integer"
+          minimum: 0
+          maximum: 1000
+          default: 1000
+        - name: "traceLevel"
+          in: "query"
+          description: "Trace level value passed to MXM"
+          required: false
+          type: "integer"
+          default: 0
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/ProfileList"
+        400:
+          description: "Bad input parameters, see details in the message"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Internal MXM error"
+          schema:
+            $ref: "#/definitions/ZoweError"
+        501:
+          description: "Unsupported request"
+  /classes/{className}/profiles/{profileName}:
+    post:
+      summary: "Add a new profile to a class"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - name: "className"
+          in: "path"
+          description: "Class containing the profiles to return, only default-class is allowed"
+          required: true
+          type: "string"
+        - name: "profileName"
+          in: "path"
+          description: "Name of the new profile"
+          required: true
+          type: "string"
+        - name: "dryRun"
+          in: "query"
+          description: "If set to true the request will be executed, otherwise an equivalent TSO command will be returned"
+          required: false
+          type: "boolean"
+          default: true
+        - name: "traceLevel"
+          in: "query"
+          description: "Trace level value passed to MXM"
+          required: false
+          type: "integer"
+          default: 0
+      responses:
+        200:
+          description: "Successful operation (operator command)"
+          schema:
+            $ref: "#/definitions/DefineProfileOperatorCommand"
+        201:
+          description: "Successful operation (profile added)"
+        400:
+          description: "Bad input parameters, profile not provided"
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Non standard class is used, only default-class is allowed"
+        500:
+          description: "Internal MXM error"
+          schema:
+            $ref: "#/definitions/ZoweError"
+    delete:
+      summary: "Delete a profile from a class"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - name: "className"
+          in: "path"
+          description: "Class containing the profiles to return, only default-class is allowed"
+          required: true
+          type: "string"
+        - name: "profileName"
+          in: "path"
+          description: "Name of the new profile"
+          required: true
+          type: "string"
+        - name: "dryRun"
+          in: "query"
+          description: "If set to true the request will be executed, otherwise an equivalent TSO command will be returned"
+          required: false
+          type: "boolean"
+          default: true
+        - name: "traceLevel"
+          in: "query"
+          description: "Trace level value passed to MXM"
+          required: false
+          type: "integer"
+          default: 0
+      responses:
+        200:
+          description: "Successful operation (operator command)"
+          schema:
+            $ref: "#/definitions/DeleteProfileOperatorCommand"
+        204:
+          description: "Successful operation (profile removed)"
+        400:
+          description: "Bad input parameters, profile not provided"
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Non standard class is used, only default-class is allowed"
+        500:
+          description: "Internal MXM error"
+          schema:
+            $ref: "#/definitions/ZoweError"
+  /classes/{className}/profiles/{profileName}/access-list:
+    get:
+      summary: "Retrieve the access list of a profile in a specific class"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - name: "className"
+          in: "path"
+          description: "Class containing the profile (use default-class to choose the MXM defined class)"
+          required: true
+          type: "string"
+        - name: "profileName"
+          in: "path"
+          description: "Profile containing the access list"
+          required: true
+          type: "string"
+        - name: "traceLevel"
+          in: "query"
+          description: "Trace level value passed to MXM"
+          required: false
+          type: "integer"
+          default: 0
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/AccessList"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Internal MXM or service error"
+          schema:
+            $ref: "#/definitions/ZoweError"
+        501:
+          description: "Unsupported request"
+  /classes/{className}/profiles/{profileName}/access-list/{userId}:
+    put:
+      summary: "Add/update an access list entry (grant a user access to a profile)"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - name: "className"
+          in: "path"
+          description: "Class containing the specified profiles"
+          required: true
+          type: "string"
+        - name: "profileName"
+          in: "path"
+          description: "Profile whose access list is to be updated"
+          required: true
+          type: "string"
+        - name: "userId"
+          in: "path"
+          description: "User ID with which the access list entry is associated"
+          required: true
+          type: "string"
+        - name: "accessType"
+          in: "body"
+          description: "New access type value"
+          required: true
+          schema:
+            $ref: "#/definitions/AccessEntry"
+        - name: "dryRun"
+          in: "query"
+          description: "If set to true the request will be executed, otherwise an equivalent TSO command will be returned"
+          required: false
+          type: "boolean"
+          default: true
+        - name: "traceLevel"
+          in: "query"
+          description: "Trace level value passed to MXM"
+          required: false
+          type: "integer"
+          default: 0
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/GrantAccessOperatorCommand"
+        201:
+          description: "Successful operation (entry updated)"
+        400:
+          description: "Bad input parameters, see details in the message"
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Non standard class is used, only default-class is allowed"
+        500:
+          description: "Internal MXM error"
+          schema:
+            $ref: "#/definitions/ZoweError"
+    delete:
+      summary: "Remove an access list entry (revoke access to a profile)"
+      description: ""
+      parameters:
+        - name: "className"
+          in: "path"
+          description: "Class containing the specified profile"
+          required: true
+          type: "string"
+        - name: "profileName"
+          in: "path"
+          description: "Profile whose access list is to be updated"
+          required: true
+          type: "string"
+        - name: "userId"
+          in: "path"
+          description: "User ID with which the access list entry is associated"
+          required: true
+          type: "string"
+        - name: "dryRun"
+          in: "query"
+          description: "If set to true the request will be executed, otherwise an equivalent TSO command will be returned"
+          required: false
+          type: "boolean"
+          default: true
+        - name: "traceLevel"
+          in: "query"
+          description: "Trace level value passed to MXM"
+          required: false
+          type: "integer"
+          default: 0
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RevokeAccessOperatorCommand"
+        201:
+          description: "Successful operation (entry removed)"
+        400:
+          description: "Bad input parameters, see details in the message"
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Non standard class is used, only default-class is allowed"
+        500:
+          description: "Internal MXM error"
+          schema:
+            $ref: "#/definitions/ZoweError"
+definitions:
+  AccessEntry:
+    type: "object"
+    required:
+      - "accessType"
+    properties:
+      accesType:
+        type: "string"
+        enum:
+          - "READ"
+          - "UPDATE"
+          - "ALTER"
+        example: "UPDATE"
+  AccessList:
+    type: "object"
+    properties:
+      _objectType:
+        type: "string"
+      resultMetaDataSchemaVersion:
+        type: "string"
+      serviceVersion:
+        type: "string"
+      resultType:
+        type: "string"
+      metaData:
+        type: "object"
+        properties:
+          tableMetaData:
+            type: "object"
+            properties:
+              tableIdentifier:
+                type: "string"
+              shortTableLabel:
+                type: "string"
+              longTableLabel:
+                type: "string"
+              globalIdentifier:
+                type: "string"
+              minRows:
+                type: "integer"
+              maxRows:
+                type: "integer"
+          columnMetaData:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                columnIdentifier:
+                  type: "string"
+                shortColumnLabel:
+                  type: "string"
+                longColumnLabel:
+                  type: "string"
+                rawDataType:
+                  type: "string"
+                rawDataTypeLength:
+                  type: "integer"
+      count:
+        type: "integer"
+      rows:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            profile:
+              type: "string"
+            owner:
+              type: "string"
+    example:
+      _objectType: "org.zoweproject.doctype.tableResult"
+      resultMetaDataSchemaVersion: "1.0"
+      serviceVersion: "1.0"
+      resultType: "table"
+      metaData:
+        tableMetaData:
+          tableIdentifier: "access-list"
+          shortTableLabel: "access-list"
+          longTableLabel: "Access List"
+          globalIdentifier: "org.zoweproject.security-mgmt.access-list"
+        columnMetaData:
+          - columnIdentifier: "id"
+            shortColumnLabel: "id"
+            longColumnLabel: "ID"
+            rawDataType: "string"
+            rawDataTypeLength: 8
+          - columnIdentifier: "accessType"
+            shortColumnLabel: "accessType"
+            longColumnLabel: "Access Type"
+            rawDataType: "string"
+            rawDataTypeLength: 8
+      count: 2
+      rows:
+        - id: "USARH"
+          accessType: "READ"
+        - id: "USBWH"
+          accessType: "UPDATE"
+  UserProfileList:
+    type: "object"
+    properties:
+      _objectType:
+        type: "string"
+      resultMetaDataSchemaVersion:
+        type: "string"
+      serviceVersion:
+        type: "string"
+      resultType:
+        type: "string"
+      metaData:
+        type: "object"
+        properties:
+          tableMetaData:
+            type: "object"
+            properties:
+              tableIdentifier:
+                type: "string"
+              shortTableLabel:
+                type: "string"
+              longTableLabel:
+                type: "string"
+              globalIdentifier:
+                type: "string"
+              minRows:
+                type: "integer"
+              maxRows:
+                type: "integer"
+          columnMetaData:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                columnIdentifier:
+                  type: "string"
+                shortColumnLabel:
+                  type: "string"
+                longColumnLabel:
+                  type: "string"
+                rawDataType:
+                  type: "string"
+                rawDataTypeLength:
+                  type: "integer"
+      start:
+        type: "string"
+      count:
+        type: "integer"
+      countRequested:
+        type: "integer"
+      hasMore:
+        type: "boolean"
+      rows:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            profile:
+              type: "string"
+            owner:
+              type: "string"
+    example:
+      _objectType: "org.zoweproject.doctype.tableResult"
+      resultMetaDataSchemaVersion: "1.0"
+      serviceVersion: "1.0"
+      resultType: "table"
+      metaData:
+        tableMetaData:
+          tableIdentifier: "user-profiles"
+          shortTableLabel: "user-profiles"
+          longTableLabel: "User Profiles"
+          globalIdentifier: "org.zoweproject.security-mgmt.user-profiles"
+          minRows: 0
+          maxRows: 1000
+        columnMetaData:
+          - columnIdentifier: "userID"
+            shortColumnLabel: "userID"
+            longColumnLabel: "User ID"
+            rawDataType: "string"
+            rawDataTypeLength: 8
+          - columnIdentifier: "defaultGroup"
+            shortColumnLabel: "defaultGroup"
+            longColumnLabel: "Default Group"
+            rawDataType: "string"
+            rawDataTypeLength: 8
+          - columnIdentifier: "name"
+            shortColumnLabel: "name"
+            longColumnLabel: "User Name"
+            rawDataType: "string"
+            rawDataTypeLength: 20
+      start: "USAHR"
+      count: 10
+      countRequested: 3
+      hasMore: false
+      rows:
+        - userID: "USARH"
+          defaultGroup: "PDUSER"
+          name: "ALICE ROBERTSON"
+        - userID: "USBWH"
+          defaultGroup: "PDUSER"
+          name: "BOB WHITE"
+        - userID: "USXNB"
+          defaultGroup: "PDUSER"
+          name: "XENIA BERG"
+  ProfileList:
+    type: "object"
+    properties:
+      _objectType:
+        type: "string"
+      resultMetaDataSchemaVersion:
+        type: "string"
+      serviceVersion:
+        type: "string"
+      resultType:
+        type: "string"
+      metaData:
+        type: "object"
+        properties:
+          tableMetaData:
+            type: "object"
+            properties:
+              tableIdentifier:
+                type: "string"
+              shortTableLabel:
+                type: "string"
+              longTableLabel:
+                type: "string"
+              globalIdentifier:
+                type: "string"
+              minRows:
+                type: "integer"
+              maxRows:
+                type: "integer"
+          columnMetaData:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                columnIdentifier:
+                  type: "string"
+                shortColumnLabel:
+                  type: "string"
+                longColumnLabel:
+                  type: "string"
+                rawDataType:
+                  type: "string"
+                rawDataTypeLength:
+                  type: "integer"
+      start:
+        type: "string"
+      count:
+        type: "integer"
+      countRequested:
+        type: "integer"
+      hasMore:
+        type: "boolean"
+      rows:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            profile:
+              type: "string"
+            owner:
+              type: "string"
+    example:
+      _objectType: "org.zoweproject.doctype.tableResult"
+      resultMetaDataSchemaVersion: "1.0"
+      serviceVersion: "1.0"
+      resultType: "table"
+      metaData:
+        tableMetaData:
+          tableIdentifier: "profiles"
+          shortTableLabel: "profiles"
+          longTableLabel: "Profiles"
+          globalIdentifier: "org.zoweproject.security-mgmt.profiles"
+          minRows: 0
+          maxRows: 1000
+        columnMetaData:
+          - columnIdentifier: "profile"
+            shortColumnLabel: "profile"
+            longColumnLabel: "Profile Name"
+            rawDataType: "string"
+            rawDataTypeLength: 246
+          - columnIdentifier: "owner"
+            shortColumnLabel: "owner"
+            longColumnLabel: "Owner"
+            rawDataType: "string"
+            rawDataTypeLength: 8
+      start: "ZOWE"
+      count: 3
+      countRequested: 3
+      hasMore: true
+      rows:
+        - profile: "ZOWE.PLUGINA.RES01"
+          owner: "USR01"
+        - profile: "ZOWE.TEST.PROFILE"
+          owner: "USR01"
+        - profile: "ZOWE.TEST.PROFILE2"
+          owner: "USR01"
+  ZoweError:
+    type: "object"
+    properties:
+      _objectType:
+        type: "string"
+      _metaDataVersion:
+        type: "string"
+      message:
+        type: "string"
+    example:
+      _objectType: "org.zoweproject.error"
+      _metaDataVersion: "0.0.1"
+      message: "Cross-Memory server failure (RC = 30, RSN = 0) - Server is not running"
+  DefineProfileOperatorCommand:
+    type: "object"
+    properties:
+      _objectType:
+        type: "string"
+      _metaDataVersion:
+        type: "string"
+      serviceVersion:
+        type: "string"
+      message:
+        type: "string"
+    example:
+      _objectType: "org.zoweproject.security-mgmt.operator-command"
+      _metaDataVersion: "1.0"
+      serviceVersion: "1.0"
+      operatorCommand: "RDEFINE XFACILIT             (ZOWE.TEST.PROFILE)  UACC        (READ)"
+  DeleteProfileOperatorCommand:
+    type: "object"
+    properties:
+      _objectType:
+        type: "string"
+      _metaDataVersion:
+        type: "string"
+      serviceVersion:
+        type: "string"
+      message:
+        type: "string"
+    example:
+      _objectType: "org.zoweproject.security-mgmt.operator-command"
+      _metaDataVersion: "1.0"
+      serviceVersion: "1.0"
+      operatorCommand: "RDELETE XFACILIT             (ZOWE.TEST.PROFILE)"
+  GrantAccessOperatorCommand:
+    type: "object"
+    properties:
+      _objectType:
+        type: "string"
+      _metaDataVersion:
+        type: "string"
+      serviceVersion:
+        type: "string"
+      message:
+        type: "string"
+    example:
+      _objectType: "org.zoweproject.security-mgmt.operator-command"
+      _metaDataVersion: "1.0"
+      serviceVersion: "1.0"
+      operatorCommand: "PERMIT               ZOWE.TEST.PROFILE CLASS(XFACILIT)  ID          (USBWH) ACCESS      (READ)"
+  RevokeAccessOperatorCommand:
+    type: "object"
+    properties:
+      _objectType:
+        type: "string"
+      _metaDataVersion:
+        type: "string"
+      serviceVersion:
+        type: "string"
+      message:
+        type: "string"
+    example:
+      _objectType: "org.zoweproject.security-mgmt.operator-command"
+      _metaDataVersion: "1.0"
+      serviceVersion: "1.0"
+      operatorCommand: "PERMIT               ZOWE.TEST.PROFILE CLASS(XFACILIT)  ID          (USBWH) DELETE      "
+
+  

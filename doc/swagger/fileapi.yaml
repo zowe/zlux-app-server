@@ -394,6 +394,28 @@ paths:
           description: file could not be opened or does not exist
         '500':
           description: Failed to write a file
+    delete:
+      summary: Deletes a unix file or directory
+      tags:
+        - Unix File
+      parameters:
+        - name: directory
+          in: path
+          description: The directory where the desired file is located
+          required: true
+          type: string
+        - name: file
+          in: path
+          description: The file that should be deleted
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successfully deleted
+        '404':
+          description: file could not be opened or does not exist
+        '500':
+          description: Failed to delete
 definitions:
   Metadata:
     type: object

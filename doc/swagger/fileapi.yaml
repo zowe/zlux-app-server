@@ -1,0 +1,470 @@
+swagger: '2.0'
+info:
+  description: This service describes some of the operations involved with datasets and unix files
+  version: 1.0.0
+  title: Dataset and Unix File API
+host: localhost
+basePath: /
+schemes:
+  - http
+  - https
+tags:
+  - name: Dataset
+  - name: Unix File
+paths:
+  /datasetMetadata/hlq:
+    get:
+      summary: Returns JSON array of the system's high level qualifiers and metadata parameters
+      description: HLQ and metadata parameters
+      tags:
+        - Dataset
+      produces:
+        - application/json
+      parameters:
+        - name: updateCache
+          in: query
+          description: Cache results for future
+          required: false
+          type: boolean
+        - name: types
+          in: query
+          description: Overrides defaults for CSI types to be scanned for
+          required: false
+          type: string
+        - name: workAreaSize
+          in: query
+          description: Sets buffer size for CSI result
+          required: false
+          type: integer
+        - name: resumeName
+          in: query
+          description: Resume from when response.hasMore != 0
+          required: false
+          type: string
+        - name: resumeCatalogName
+          in: query
+          description: Resume from when hasMore != 0
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Metadata'
+        '400':
+          description: Invalid status value
+  '/datasetMetadata/name/{dataset}':
+    get:
+      summary: Retrieves info about datasets
+      tags:
+        - Dataset
+      produces:
+        - application/json
+      parameters:
+        - name: dataset
+          in: path
+          description: Cache results for future
+          required: true
+          type: string
+        - name: detail
+          in: query
+          description: 'Used to provide the details of each dataset rather than a summary of which were found. Defaults to retrieve name, type, volser'
+          required: false
+          type: boolean
+        - name: types
+          in: query
+          description: 'csi entry type to search, Overrides defaults for the CSI types to be scanned for'
+          required: false
+          type: string
+        - name: listMembers
+          in: query
+          description: Omits or includes PDS member scanning
+          required: false
+          type: boolean
+        - name: workAreaSize
+          in: query
+          description: Sets buffer size for CSI result
+          required: false
+          type: integer
+        - name: includeMigrated
+          in: query
+          description: Include migrated datasets
+          required: false
+          type: boolean
+        - name: includeUnprintable
+          in: query
+          description: Include PDS member listing for PDS members with exceptional names
+          required: false
+          type: boolean
+        - name: resumeName
+          in: query
+          description: Resume from when response.hasMore != 0
+          required: false
+          type: string
+        - name: resumeCatalogName
+          in: query
+          description: Resume from when hasMore != 0
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Metadata'
+        '400':
+          description: 'Have only one of resumename, resumecatalogname or if either longer than 44 or invalid dataset'
+  '/datasetContents/{dataset}':
+    get:
+      summary: Get contents of a dataset via QSAM as a series of records
+      tags:
+        - Dataset
+      parameters:
+        - name: dataset
+          in: path
+          description: Cache results for future
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              records:
+                type: array
+                items:
+                  type: string
+        '404':
+          description: File could not be opened or does not exist
+    post:
+      summary: Updates contents of dataset
+      tags:
+        - Dataset
+      parameters:
+        - name: dataset
+          in: path
+          description: Cache results for future
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              records:
+                type: array
+                items:
+                  type: string
+      consumes:
+        - application/json
+      produces:
+        - text/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+        '404':
+          description: File could not be opened or does not exist
+  '/VSAMdatasetContents/{dataset}':
+    get:
+      summary: Get a VSAM dataset
+      tags:
+       - Dataset
+      parameters:
+        - name: dataset
+          in: path
+          description: Cache results for future
+          required: true
+          type: string
+        - name: closeAfter
+          in: query
+          description: retain pointer for VSAM dataset
+          required: false
+          type: boolean
+      produces:
+        - application/plain
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              records:
+                type: array
+                items:
+                  type: string
+        '404':
+          description: File could not be opened or does not exist
+    post:
+      summary: Updates contents of dataset
+      tags:
+        - Dataset
+      parameters:
+        - name: dataset
+          in: path
+          description: Cache results for future
+          required: true
+          type: string
+        - name: closeAfter
+          in: query
+          description: retain pointer for VSAM dataset
+          required: false
+          type: boolean
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              records:
+                type: array
+                items:
+                  type: string
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+        '404':
+          description: File could not be opened or does not exist
+  '/unixFileContents/{path}':
+    get:
+      summary: returns directory listing if exists
+      tags:
+        - Unix File
+      parameters:
+        - name: path
+          in: path
+          description: Path for file or directory
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              entries:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    path:
+                      type: string
+                    directory:
+                      type: boolean
+                    size:
+                      type: integer
+                    ccsid:
+                      type: integer
+                    createdAt:
+                      type: integer
+                    mode:
+                      type: integer
+        '404':
+          description: file not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+  '/unixFileContents/{directory}/{file}':
+    get:
+      summary: returns file if exists
+      tags:
+        - Unix File
+      produces:
+        - application/json
+      parameters:
+        - name: directory
+          in: path
+          description: Directory where file is located
+          required: true
+          type: string
+        - name: file
+          in: path
+          description: file name
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+        '404':
+          description: file not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    post:
+      summary: Modifies a file or directory
+      description: Attach one of the query parameters below to perform an operation on a currently existing file or directory. 
+      tags:
+        - Unix File
+      parameters:
+        - name: directory
+          in: path
+          description: The directory where the desired file is located
+          required: true
+          type: string
+        - name: file
+          in: path
+          description: The file that should be modified
+          required: true
+          type: string
+        - name: rename
+          in: query
+          description: The new name of the file or directory
+          type: string
+        - name: copy
+          in: query
+          description: The name of the copy of the file or directory
+          type: string
+        - name: create
+          in: query
+          description: The name of the new directory to be created
+          type: string
+        - name: forceOverwrite
+          in: query
+          description: Whether or not to overwrite a currently existing file or directory
+          type: string
+      consumes:
+        - text/plain
+      responses:
+        '200':
+          description: Operation was completed successfully
+        '404':
+          description: file could not be opened or does not exist
+        '500':
+          description: Failed to complete operation
+    put:
+      summary: Updates contents of file
+      tags:
+        - Unix File
+      parameters:
+        - name: directory
+          in: path
+          description: The directory where the desired file is located
+          required: true
+          type: string
+        - name: file
+          in: path
+          description: The file that should be modified
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: The file contents encoded with BASE64
+          required: true
+          schema:
+            type: string
+            example: aW50IG1haW4oKSB7CiAgcmV0dXJuIDA7Cn0=
+        - name: sourceEncoding
+          in: query
+          description: The source encoding of the file (UTF-8 or ISO-8859-1 or IBM-1047)
+          type: string
+          required: true
+        - name: targetEncoding
+          in: query
+          description: The target encoding of the file (UTF-8 or ISO-8859-1 or IBM-1047)
+          type: string
+          required: true
+        - name: forceOverwrite
+          in: query
+          description: Whether or not to overwrite a currently existing file
+          type: string
+      consumes:
+        - text/plain
+      responses:
+        '200':
+          description: Successfully wrote a file
+        '404':
+          description: file could not be opened or does not exist
+        '500':
+          description: Failed to write a file
+    delete:
+      summary: Deletes a unix file or directory
+      tags:
+        - Unix File
+      parameters:
+        - name: directory
+          in: path
+          description: The directory where the desired file is located
+          required: true
+          type: string
+        - name: file
+          in: path
+          description: The file that should be deleted
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successfully deleted
+        '404':
+          description: file could not be opened or does not exist
+        '500':
+          description: Failed to delete
+definitions:
+  Metadata:
+    type: object
+    properties:
+      _objectType:
+        type: string
+      _metadataVersion:
+        type: string
+      hasMore:
+        type: integer
+      datasets:
+        type: array
+        items:
+          $ref: '#/definitions/Dataset'
+  Dataset:
+    type: object
+    properties:
+      name:
+        type: string
+      csiEntryType:
+        type: string
+      volser:
+        type: string
+      recfm:
+        type: object
+        properties:
+          recordLength:
+            type: string
+          isBlocked:
+            type: boolean
+          carriageControl:
+            type: string
+      dsorg:
+        type: object
+        properties:
+          organization:
+            type: string
+          isPDSDir:
+            type: boolean
+          maxRecordLen:
+            type: integer
+          totalBlockSize:
+            type: integer
+      members:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string

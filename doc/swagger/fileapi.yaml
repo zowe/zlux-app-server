@@ -375,12 +375,14 @@ paths:
             example: aW50IG1haW4oKSB7CiAgcmV0dXJuIDA7Cn0=
         - name: sourceEncoding
           in: query
-          description: The source encoding of the file (UTF-8)
+          description: The source encoding of the file (UTF-8 or ISO-8859-1 or IBM-1047)
           type: string
+          required: true
         - name: targetEncoding
           in: query
           description: The target encoding of the file (UTF-8 or ISO-8859-1 or IBM-1047)
           type: string
+          required: true
         - name: forceOverwrite
           in: query
           description: Whether or not to overwrite a currently existing file

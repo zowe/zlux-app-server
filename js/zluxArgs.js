@@ -57,6 +57,10 @@ const appConfig = {
       {
         method: '*',
         url: '/ras'
+      },
+      {
+        method: '*',
+        url: '/security-mgmt'
       }  
    ]
 };

@@ -115,7 +115,7 @@ paths:
           type: "string"
         - name: "dryRun"
           in: "query"
-          description: "If set to true the request will be executed, otherwise an equivalent TSO command will be returned"
+          description: "If set to false the request will be executed, otherwise an equivalent TSO command will be returned"
           required: false
           type: "boolean"
           default: true
@@ -160,7 +160,7 @@ paths:
           type: "string"
         - name: "dryRun"
           in: "query"
-          description: "If set to true the request will be executed, otherwise an equivalent TSO command will be returned"
+          description: "If set to false the request will be executed, otherwise an equivalent TSO command will be returned"
           required: false
           type: "boolean"
           default: true
@@ -253,7 +253,7 @@ paths:
             $ref: "#/definitions/AccessEntry"
         - name: "dryRun"
           in: "query"
-          description: "If set to true the request will be executed, otherwise an equivalent TSO command will be returned"
+          description: "If set to false the request will be executed, otherwise an equivalent TSO command will be returned"
           required: false
           type: "boolean"
           default: true
@@ -301,7 +301,7 @@ paths:
           type: "string"
         - name: "dryRun"
           in: "query"
-          description: "If set to true the request will be executed, otherwise an equivalent TSO command will be returned"
+          description: "If set to false the request will be executed, otherwise an equivalent TSO command will be returned"
           required: false
           type: "boolean"
           default: true

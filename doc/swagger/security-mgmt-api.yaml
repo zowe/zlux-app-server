@@ -150,12 +150,12 @@ paths:
       parameters:
         - name: "className"
           in: "path"
-          description: "Class containing the profiles to return, only default-class is allowed"
+          description: "Class containing the profile to delete, only default-class is allowed"
           required: true
           type: "string"
         - name: "profileName"
           in: "path"
-          description: "Name of the new profile"
+          description: "Name of the profile to delete"
           required: true
           type: "string"
         - name: "dryRun"
@@ -214,7 +214,7 @@ paths:
         200:
           description: "Successful operation"
           schema:
-            $ref: "#/definitions/AccessList"
+            $ref: "#/definitions/ProfileAccessList"
         401:
           description: "Unauthorized"
         500:
@@ -250,7 +250,7 @@ paths:
           description: "New access type value"
           required: true
           schema:
-            $ref: "#/definitions/AccessEntry"
+            $ref: "#/definitions/ProfileAccessEntry"
         - name: "dryRun"
           in: "query"
           description: "If set to true the request will be executed, otherwise an equivalent TSO command will be returned"
@@ -328,8 +328,254 @@ paths:
           description: "Internal MXM error"
           schema:
             $ref: "#/definitions/ZoweError"
+  '/groups':
+    get:
+      summary: "Retrieve a list of groups"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - name: "start"
+          in: "query"
+          description: "Group name of the first profile to retrieve"
+          required: false
+          type: "string"
+        - name: "count"
+          in: "query"
+          description: "Number of groups to retrieve"
+          required: false
+          type: "integer"
+          minimum: 0
+          maximum: 1000
+          default: 1000
+        - name: "traceLevel"
+          in: "query"
+          description: "Trace level value passed to MXM"
+          required: false
+          type: "integer"
+          default: 0
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/GroupList"
+        400:
+          description: "Bad input parameters, see details in the message"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Internal MXM error"
+          schema:
+            $ref: "#/definitions/ZoweError"
+        501:
+          description: "Unsupported request"
+  /groups/{groupName}:
+    post:
+      summary: "Add a new group"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupName"
+          in: "path"
+          description: "Name of the new group"
+          required: true
+          type: "string"
+        - name: "superiorGroup"
+          in: "body"
+          description: "Superior group of the new group"
+          required: true
+          schema:
+            $ref: "#/definitions/GroupEntry"
+        - name: "dryRun"
+          in: "query"
+          description: "If set to false the request will be executed, otherwise an equivalent TSO command will be returned"
+          required: false
+          type: "boolean"
+          default: true
+        - name: "traceLevel"
+          in: "query"
+          description: "Trace level value passed to MXM"
+          required: false
+          type: "integer"
+          default: 0
+      responses:
+        200:
+          description: "Successful operation (operator command)"
+          schema:
+            $ref: "#/definitions/AddGroupOperatorCommand"
+        201:
+          description: "Successful operation (group added)"
+        400:
+          description: "Bad input parameters, see details in the message"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Internal MXM error"
+          schema:
+            $ref: "#/definitions/ZoweError"
+    delete:
+      summary: "Delete a group"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupName"
+          in: "path"
+          description: "Name of the group to delete"
+          required: true
+          type: "string"
+        - name: "dryRun"
+          in: "query"
+          description: "If set to false the request will be executed, otherwise an equivalent TSO command will be returned"
+          required: false
+          type: "boolean"
+          default: true
+        - name: "traceLevel"
+          in: "query"
+          description: "Trace level value passed to MXM"
+          required: false
+          type: "integer"
+          default: 0
+      responses:
+        200:
+          description: "Successful operation (operator command)"
+          schema:
+            $ref: "#/definitions/DeleteGroupOperatorCommand"
+        204:
+          description: "Successful operation (group removed)"
+        400:
+          description: "Bad input parameters, see details in the message"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Internal MXM error"
+          schema:
+            $ref: "#/definitions/ZoweError"
+  /groups/{groupName}/access-list:
+    get:
+      summary: "Retrieve the access list of a group"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupName"
+          in: "path"
+          description: "Group containing the access list"
+          required: true
+          type: "string"
+        - name: "traceLevel"
+          in: "query"
+          description: "Trace level value passed to MXM"
+          required: false
+          type: "integer"
+          default: 0
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/GroupAccessList"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Internal MXM or service error"
+          schema:
+            $ref: "#/definitions/ZoweError"
+        501:
+          description: "Unsupported request"
+  /groups/{groupName}/access-list/{userId}:
+    put:
+      summary: "Add/update an access list entry (connect a user to a group)"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupName"
+          in: "path"
+          description: "Group whose access list is to be updated"
+          required: true
+          type: "string"
+        - name: "userId"
+          in: "path"
+          description: "User ID with which the access list entry is associated"
+          required: true
+          type: "string"
+        - name: "accessType"
+          in: "body"
+          description: "New access type value"
+          required: true
+          schema:
+            $ref: "#/definitions/GroupAccessEntry"
+        - name: "dryRun"
+          in: "query"
+          description: "If set to false the request will be executed, otherwise an equivalent TSO command will be returned"
+          required: false
+          type: "boolean"
+          default: true
+        - name: "traceLevel"
+          in: "query"
+          description: "Trace level value passed to MXM"
+          required: false
+          type: "integer"
+          default: 0
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/ConnectToGroupOperatorCommand"
+        201:
+          description: "Successful operation (entry updated)"
+        400:
+          description: "Bad input parameters, see details in the message"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Internal MXM error"
+          schema:
+            $ref: "#/definitions/ZoweError"
+    delete:
+      summary: "Remove an access list entry (remove a user from a group)"
+      description: ""
+      parameters:
+        - name: "groupName"
+          in: "path"
+          description: "Group whose access list is to be updated"
+          required: true
+          type: "string"
+        - name: "userId"
+          in: "path"
+          description: "User ID with which the access list entry is associated"
+          required: true
+          type: "string"
+        - name: "dryRun"
+          in: "query"
+          description: "If set to false the request will be executed, otherwise an equivalent TSO command will be returned"
+          required: false
+          type: "boolean"
+          default: true
+        - name: "traceLevel"
+          in: "query"
+          description: "Trace level value passed to MXM"
+          required: false
+          type: "integer"
+          default: 0
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RemoveFromGroupOperatorCommand"
+        201:
+          description: "Successful operation (entry removed)"
+        400:
+          description: "Bad input parameters, see details in the message"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Internal MXM error"
+          schema:
+            $ref: "#/definitions/ZoweError"
 definitions:
-  AccessEntry:
+  ProfileAccessEntry:
     type: "object"
     required:
       - "accessType"
@@ -341,7 +587,7 @@ definitions:
           - "UPDATE"
           - "ALTER"
         example: "UPDATE"
-  AccessList:
+  ProfileAccessList:
     type: "object"
     properties:
       _objectType:
@@ -397,7 +643,7 @@ definitions:
             owner:
               type: "string"
     example:
-      _objectType: "org.zoweproject.doctype.tableResult"
+      _objectType: "org.zowe.zss.doctype.tableResult"
       resultMetaDataSchemaVersion: "1.0"
       serviceVersion: "1.0"
       resultType: "table"
@@ -406,7 +652,7 @@ definitions:
           tableIdentifier: "access-list"
           shortTableLabel: "access-list"
           longTableLabel: "Access List"
-          globalIdentifier: "org.zoweproject.security-mgmt.access-list"
+          globalIdentifier: "org.zowe.zss.security-mgmt.profile-access-list"
         columnMetaData:
           - columnIdentifier: "id"
             shortColumnLabel: "id"
@@ -424,6 +670,102 @@ definitions:
           accessType: "READ"
         - id: "USBWH"
           accessType: "UPDATE"
+  GroupAccessEntry:
+    type: "object"
+    required:
+      - "accessType"
+    properties:
+      accesType:
+        type: "string"
+        enum:
+          - "USE"
+          - "CREATE"
+          - "CONNECT"
+          - "JOIN"
+        example: "JOIN"
+  GroupAccessList:
+    type: "object"
+    properties:
+      _objectType:
+        type: "string"
+      resultMetaDataSchemaVersion:
+        type: "string"
+      serviceVersion:
+        type: "string"
+      resultType:
+        type: "string"
+      metaData:
+        type: "object"
+        properties:
+          tableMetaData:
+            type: "object"
+            properties:
+              tableIdentifier:
+                type: "string"
+              shortTableLabel:
+                type: "string"
+              longTableLabel:
+                type: "string"
+              globalIdentifier:
+                type: "string"
+              minRows:
+                type: "integer"
+              maxRows:
+                type: "integer"
+          columnMetaData:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                columnIdentifier:
+                  type: "string"
+                shortColumnLabel:
+                  type: "string"
+                longColumnLabel:
+                  type: "string"
+                rawDataType:
+                  type: "string"
+                rawDataTypeLength:
+                  type: "integer"
+      count:
+        type: "integer"
+      rows:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            profile:
+              type: "string"
+            owner:
+              type: "string"
+    example:
+      _objectType: "org.zowe.zss.doctype.tableResult"
+      resultMetaDataSchemaVersion: "1.0"
+      serviceVersion: "1.0"
+      resultType: "table"
+      metaData:
+        tableMetaData:
+          tableIdentifier: "access-list"
+          shortTableLabel: "access-list"
+          longTableLabel: "Access List"
+          globalIdentifier: "org.zowe.zss.security-mgmt.group-access-list"
+        columnMetaData:
+          - columnIdentifier: "id"
+            shortColumnLabel: "id"
+            longColumnLabel: "ID"
+            rawDataType: "string"
+            rawDataTypeLength: 8
+          - columnIdentifier: "accessType"
+            shortColumnLabel: "accessType"
+            longColumnLabel: "Access Type"
+            rawDataType: "string"
+            rawDataTypeLength: 8
+      count: 2
+      rows:
+        - id: "USARH"
+          accessType: "USE"
+        - id: "USBWH"
+          accessType: "CONNECT"
   UserProfileList:
     type: "object"
     properties:
@@ -486,7 +828,7 @@ definitions:
             owner:
               type: "string"
     example:
-      _objectType: "org.zoweproject.doctype.tableResult"
+      _objectType: "org.zowe.zss.doctype.tableResult"
       resultMetaDataSchemaVersion: "1.0"
       serviceVersion: "1.0"
       resultType: "table"
@@ -495,7 +837,7 @@ definitions:
           tableIdentifier: "user-profiles"
           shortTableLabel: "user-profiles"
           longTableLabel: "User Profiles"
-          globalIdentifier: "org.zoweproject.security-mgmt.user-profiles"
+          globalIdentifier: "org.zowe.zss.security-mgmt.user-profiles"
           minRows: 0
           maxRows: 1000
         columnMetaData:
@@ -590,7 +932,7 @@ definitions:
             owner:
               type: "string"
     example:
-      _objectType: "org.zoweproject.doctype.tableResult"
+      _objectType: "org.zowe.zss.doctype.tableResult"
       resultMetaDataSchemaVersion: "1.0"
       serviceVersion: "1.0"
       resultType: "table"
@@ -599,7 +941,7 @@ definitions:
           tableIdentifier: "profiles"
           shortTableLabel: "profiles"
           longTableLabel: "Profiles"
-          globalIdentifier: "org.zoweproject.security-mgmt.profiles"
+          globalIdentifier: "org.zowe.zss.security-mgmt.profiles"
           minRows: 0
           maxRows: 1000
         columnMetaData:
@@ -624,6 +966,115 @@ definitions:
           owner: "USR01"
         - profile: "ZOWE.TEST.PROFILE2"
           owner: "USR01"
+  GroupEntry:
+    type: "object"
+    required:
+      - "superiorGroup"
+    properties:
+      superiorGroup:
+        type: "string"
+        example: "SYS1"
+  GroupList:
+    type: "object"
+    properties:
+      _objectType:
+        type: "string"
+      resultMetaDataSchemaVersion:
+        type: "string"
+      serviceVersion:
+        type: "string"
+      resultType:
+        type: "string"
+      metaData:
+        type: "object"
+        properties:
+          tableMetaData:
+            type: "object"
+            properties:
+              tableIdentifier:
+                type: "string"
+              shortTableLabel:
+                type: "string"
+              longTableLabel:
+                type: "string"
+              globalIdentifier:
+                type: "string"
+              minRows:
+                type: "integer"
+              maxRows:
+                type: "integer"
+          columnMetaData:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                columnIdentifier:
+                  type: "string"
+                shortColumnLabel:
+                  type: "string"
+                longColumnLabel:
+                  type: "string"
+                rawDataType:
+                  type: "string"
+                rawDataTypeLength:
+                  type: "integer"
+      start:
+        type: "string"
+      count:
+        type: "integer"
+      countRequested:
+        type: "integer"
+      hasMore:
+        type: "boolean"
+      rows:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            profile:
+              type: "string"
+            owner:
+              type: "string"
+    example:
+      _objectType: "org.zowe.zss.doctype.tableResult"
+      resultMetaDataSchemaVersion: "1.0"
+      serviceVersion: "1.0"
+      resultType: "table"
+      metaData:
+        tableMetaData:
+          tableIdentifier: "groups"
+          shortTableLabel: "groups"
+          longTableLabel: "Groups"
+          globalIdentifier: "org.zowe.zss.security-mgmt.groups"
+          minRows: 0
+          maxRows: 1000
+        columnMetaData:
+          - columnIdentifier: "group"
+            shortColumnLabel: "group"
+            longColumnLabel: "Group Name"
+            rawDataType: "string"
+            rawDataTypeLength: 8
+          - columnIdentifier: "owner"
+            shortColumnLabel: "owner"
+            longColumnLabel: "Owner"
+            rawDataType: "string"
+            rawDataTypeLength: 8
+          - columnIdentifier: "superiorGroup"
+            shortColumnLabel: "superiorGroup"
+            longColumnLabel: "Superior Group"
+            rawDataType: "string"
+            rawDataTypeLength: 8
+      start: "ZOWE"
+      count: 2
+      countRequested: 2
+      hasMore: true
+      rows:
+        - profile: "ZOWEUSER"
+          owner: "SYS1"
+          superiorGroup: "SYS1"
+        - profile: "XGROUP"
+          owner: "XUSER"
+          superiorGroup: "SYS1"
   ZoweError:
     type: "object"
     properties:
@@ -634,7 +1085,7 @@ definitions:
       message:
         type: "string"
     example:
-      _objectType: "org.zoweproject.error"
+      _objectType: "org.zowe.zss.error"
       _metaDataVersion: "0.0.1"
       message: "Cross-Memory server failure (RC = 30, RSN = 0) - Server is not running"
   DefineProfileOperatorCommand:
@@ -649,7 +1100,7 @@ definitions:
       message:
         type: "string"
     example:
-      _objectType: "org.zoweproject.security-mgmt.operator-command"
+      _objectType: "org.zowe.zss.security-mgmt.operator-command"
       _metaDataVersion: "1.0"
       serviceVersion: "1.0"
       operatorCommand: "RDEFINE XFACILIT             (ZOWE.TEST.PROFILE)  UACC        (READ)"
@@ -665,7 +1116,7 @@ definitions:
       message:
         type: "string"
     example:
-      _objectType: "org.zoweproject.security-mgmt.operator-command"
+      _objectType: "org.zowe.zss.security-mgmt.operator-command"
       _metaDataVersion: "1.0"
       serviceVersion: "1.0"
       operatorCommand: "RDELETE XFACILIT             (ZOWE.TEST.PROFILE)"
@@ -681,7 +1132,7 @@ definitions:
       message:
         type: "string"
     example:
-      _objectType: "org.zoweproject.security-mgmt.operator-command"
+      _objectType: "org.zowe.zss.security-mgmt.operator-command"
       _metaDataVersion: "1.0"
       serviceVersion: "1.0"
       operatorCommand: "PERMIT               ZOWE.TEST.PROFILE CLASS(XFACILIT)  ID          (USBWH) ACCESS      (READ)"
@@ -697,9 +1148,72 @@ definitions:
       message:
         type: "string"
     example:
-      _objectType: "org.zoweproject.security-mgmt.operator-command"
+      _objectType: "org.zowe.zss.security-mgmt.operator-command"
       _metaDataVersion: "1.0"
       serviceVersion: "1.0"
       operatorCommand: "PERMIT               ZOWE.TEST.PROFILE CLASS(XFACILIT)  ID          (USBWH) DELETE      "
+  AddGroupOperatorCommand:
+    type: "object"
+    properties:
+      _objectType:
+        type: "string"
+      _metaDataVersion:
+        type: "string"
+      serviceVersion:
+        type: "string"
+      message:
+        type: "string"
+    example:
+      _objectType: "org.zowe.zss.security-mgmt.operator-command"
+      _metaDataVersion: "1.0"
+      serviceVersion: "1.0"
+      operatorCommand: "ADDGROUP ZOWEUSER  SUPGROUP    (SYS1) UNIVERSAL"
+  DeleteGroupOperatorCommand:
+    type: "object"
+    properties:
+      _objectType:
+        type: "string"
+      _metaDataVersion:
+        type: "string"
+      serviceVersion:
+        type: "string"
+      message:
+        type: "string"
+    example:
+      _objectType: "org.zowe.zss.security-mgmt.operator-command"
+      _metaDataVersion: "1.0"
+      serviceVersion: "1.0"
+      operatorCommand: "DELGROUP ZOWETEST"
+  ConnectToGroupOperatorCommand:
+    type: "object"
+    properties:
+      _objectType:
+        type: "string"
+      _metaDataVersion:
+        type: "string"
+      serviceVersion:
+        type: "string"
+      message:
+        type: "string"
+    example:
+      _objectType: "org.zowe.zss.security-mgmt.operator-command"
+      _metaDataVersion: "1.0"
+      serviceVersion: "1.0"
+      operatorCommand: "CONNECT USR1  GROUP       (ZOWETEST) AUTHORITY   (JOIN)"
+  RemoveFromGroupOperatorCommand:
+    type: "object"
+    properties:
+      _objectType:
+        type: "string"
+      _metaDataVersion:
+        type: "string"
+      serviceVersion:
+        type: "string"
+      message:
+        type: "string"
+    example:
+      _objectType: "org.zowe.zss.security-mgmt.operator-command"
+      _metaDataVersion: "1.0"
+      serviceVersion: "1.0"
+      operatorCommand: "REMOVE  USR1  GROUP       (ZOWETEST)"
 
-  

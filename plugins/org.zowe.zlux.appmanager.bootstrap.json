@@ -1,4 +1,4 @@
 {
-  "identifier": "com.rs.mvd",
+  "identifier": "org.zowe.zlux.appmanager.bootstrap",
   "pluginLocation": "../../zlux-app-manager/bootstrap"
 }

@@ -1,4 +1,4 @@
 {
-  "identifier": "com.rs.mvd.ng2desktop",
+  "identifier": "org.zowe.zlux.appmanager.virtualdesktop",
   "pluginLocation": "../../zlux-app-manager/virtual-desktop"
 }

@@ -1,4 +1,4 @@
 {
-  "identifier": "org.zowe.zlux.appmanager.bootstrap",
+  "identifier": "org.zowe.zlux.bootstrap",
   "pluginLocation": "../../zlux-app-manager/bootstrap"
 }

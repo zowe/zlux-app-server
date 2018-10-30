@@ -32,11 +32,7 @@ const appConfig = {
       },
       {
         method: '*',
-        url: '/unixFileContents'
-      },
-      {
-        method: '*',
-        url: '/unixFileMetadata'
+        url: '/unixfile'
       },
       {
         method: '*',

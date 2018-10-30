@@ -457,7 +457,7 @@ paths:
           type: string
         - name: newName
           in: query
-          description: the name of the new file
+          description: the name of the new file (absolute path)
           type: string
           required: true
         - name: forceOverwrite
@@ -501,7 +501,7 @@ paths:
           type: string
         - name: newName
           in: query
-          description: the name of the new file
+          description: the name of the new directory (absolute path)
           type: string
           required: true
         - name: forceOverwrite
@@ -550,7 +550,7 @@ paths:
           type: string
         - name: newName
           in: query
-          description: the name of the new file
+          description: the name of the new file (absolute path)
           type: string
           required: true
         - name: forceOverwrite
@@ -594,7 +594,7 @@ paths:
           type: string
         - name: newName
           in: query
-          description: the name of the new file
+          description: the name of the new directory (absolute path)
           type: string
           required: true
         - name: forceOverwrite

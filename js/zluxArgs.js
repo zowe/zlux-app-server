@@ -19,7 +19,7 @@ const PRODUCT_CODE = 'ZLUX';
 
 const appConfig = {
     productCode: PRODUCT_CODE,
-    rootRedirectURL: '/' + PRODUCT_CODE + '/plugins/com.rs.mvd/web/',
+    rootRedirectURL: '/' + PRODUCT_CODE + '/plugins/org.zowe.zlux.bootstrap/web/',
     rootServices: [
       {
         method: '*',

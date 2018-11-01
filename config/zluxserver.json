@@ -6,9 +6,6 @@
       "keys": ["../deploy/product/ZLUX/serverConfig/server.key"],
       "certificates": ["../deploy/product/ZLUX/serverConfig/server.cert"]
     },
-    "http": {
-      "port": 8543
-    },
     "mediationLayer": {
       "server": {
         "hostname": "localhost",

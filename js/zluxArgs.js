@@ -141,7 +141,7 @@ if (userInput.hostServer) {
 if (userInput.port) {
   configJSON.node.http.port = userInput.port;
 }
-if (userInput.securePort && configJSON.https) {
+if (userInput.securePort && configJSON.node.https) {
   configJSON.node.https.port = userInput.securePort;
 }
 if (userInput.noChild) {

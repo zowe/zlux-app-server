@@ -45,14 +45,14 @@
       //be used to state that you want a particular plugin.
       "zosmf": {
       // zosmf plugin needs to be configured to target a zosmf instance. configure before using.
-      // "plugins": ["com.rs.auth.zosmfAuth"]
+      // "plugins": ["org.zowe.zlux.auth.zosmf"]
       },
 
       "explorerServer": {
       //  "plugins": ["com.zowe.explorer.server.auth"]
       },
       "zss": {
-        "plugins": ["com.rs.auth.zssAuth"]
+        "plugins": ["org.zowe.zlux.auth.zss"]
       } 
       
     }

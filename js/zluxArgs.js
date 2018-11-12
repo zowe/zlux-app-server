@@ -83,7 +83,7 @@ const DEFAULT_CONFIG = {
     "defaultAuthentication": "fallback",
     "implementationDefaults": {
       "fallback": {
-        "plugins": ["com.rs.auth.trivialAuth"]
+        "plugins": ["org.zowe.zlux.auth.trivial"]
       }
     }
   },

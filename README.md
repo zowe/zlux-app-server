@@ -150,7 +150,7 @@ Now that ZSS & the zLUX Proxy Server are both started, you can access this insta
 In this example, the address you will want to go to first is the location of the window management App - Mainframe Virtual Desktop (MVD).
 The URL for this is:
 
-http(s)://\<zLUX Proxy Server\>:\<node.http(s).port\>/ZLUX/plugins/com.rs.mvd/web/index.html
+http(s)://\<zLUX Proxy Server\>:\<node.http(s).port\>/ZLUX/plugins/org.zowe.zlux.bootstrap/web/index.html
 
 Once here, you should be greeted with a Login screen and a few example Apps in the taskbar at the bottom of the screen. You can login with your mainframe credentials, and try out a few Apps to see how they interact with the framework:
 - tn3270-ng2: This App communicates with the zLUX Proxy Server to enable a TN3270 connection in the browser

@@ -15,6 +15,7 @@
 # If you don't have these in your tree, removing these from the
 # .gitattributes file will speed up git's processing a bit.
 /build/env.sh git-encoding=iso8859-1 working-tree-encoding=iso8859-1
+sonar-project.properties git-encoding=iso8859-1 working-tree-encoding=iso8859-1
 *.jpg   git-encoding=BINARY    working-tree-encoding=BINARY
 *.crx   git-encoding=BINARY    working-tree-encoding=BINARY
 *.eot   git-encoding=BINARY    working-tree-encoding=BINARY

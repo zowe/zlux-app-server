@@ -3,8 +3,9 @@
     "https": {
       "port": 8544,
       //pfx (string), keys, certificates, certificateAuthorities, and certificateRevocationLists are all valid here.
-      "keys": ["../deploy/product/ZLUX/serverConfig/server.key"],
-      "certificates": ["../deploy/product/ZLUX/serverConfig/server.cert"]
+      "keys": ["../deploy/product/ZLUX/serverConfig/zlux.keystore.key"],
+      "certificates": ["../deploy/product/ZLUX/serverConfig/zlux.keystore.cer"],
+      "certificateAuthorities": ["../deploy/product/ZLUX/serverConfig/apiml-localca.cer"]
     },
     "http": {
       "port": 8543

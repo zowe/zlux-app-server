@@ -1,4 +1,4 @@
 {
-  "identifier": "com.rs.configjs",
+  "identifier": "org.zowe.configjs",
   "pluginLocation": "../../zlux-proxy-server/plugins/config"
 }

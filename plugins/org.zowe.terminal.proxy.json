@@ -1,4 +1,4 @@
 {
-  "identifier": "com.rs.terminalproxy",
+  "identifier": "org.zowe.terminal.proxy",
   "pluginLocation": "../../zlux-proxy-server/plugins/terminal-proxy"
 }

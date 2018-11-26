@@ -1,7 +1,7 @@
 {
   "plugins": [
-    "com.rs.mvd.tn3270",
-    "com.rs.mvd.vt",
+    "org.zowe.terminal.tn3270",
+    "org.zowe.terminal.vt",
     "org.zowe.zlux.sample.angular",
     "org.zowe.zlux.sample.react",
     "org.zowe.zlux.sample.iframe"

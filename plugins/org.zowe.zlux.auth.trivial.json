@@ -1,4 +1,4 @@
 {
-  "identifier": "com.rs.auth.trivialAuth",
+  "identifier": "org.zowe.zlux.auth.trivial",
   "pluginLocation": "../../zlux-proxy-server/plugins/trivial-auth"
 }

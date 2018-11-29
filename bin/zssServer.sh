@@ -46,7 +46,7 @@ else
     fi
   fi
   
-  ZSS_ROTATE_LOGS=0
+  ZLUX_ROTATE_LOGS=0
   if [ -d "$ZSS_LOG_DIR" ] && [ -z "$ZSS_LOG_FILE" ]
   then
     ZSS_LOG_FILE="$ZSS_LOG_DIR/zssServer-`date +%Y-%m-%d-%H-%M`.log"
@@ -62,12 +62,12 @@ else
     fi
     if [ $ZSS_LOGS_TO_KEEP -ge 0 ]
     then
-      ZSS_ROTATE_LOGS=1
+      ZLUX_ROTATE_LOGS=1
     fi 
   fi
   
   #Clean up excess logs, if appropriate.
-  if [ $ZSS_ROTATE_LOGS -ne 0 ]
+  if [ $ZLUX_ROTATE_LOGS -ne 0 ]
   then
     for f in `ls -r -1 $ZSS_LOG_DIR/zssServer-*.log 2>/dev/null | tail +$ZSS_LOGS_TO_KEEP`
     do

@@ -8,8 +8,19 @@
 # Copyright Contributors to the Zowe Project.
 ## launch the ZLUX secure services server
 
+ZSS_SCRIPT_DIR=$(cd `dirname $0` && pwd)                                      
+echo "pwd = `pwd`"                                                            
+echo "Script dir = $(cd `dirname $0` && pwd)"
+
 if [ -n "$ZSS_LOG_FILE" ]
 then
+  if [[ $ZSS_LOG_FILE == /* ]]                                                
+  then                                                                        
+    echo "Absolute log location given."                                                           
+  else                                                                        
+    ZSS_LOG_FILE="${ZSS_SCRIPT_DIR}/${ZSS_LOG_FILE}"                          
+    echo "Relative log location given, set to absolute path=$ZSS_LOG_FILE"                          
+  fi  
   if [ -n "$ZSS_LOG_DIR" ]
   then
     echo "ZSS_LOG_FILE set (value $ZSS_LOG_FILE).  Ignoring ZSS_LOG_DIR."
@@ -69,7 +80,7 @@ fi
 ZSS_CHECK_DIR="$(dirname "$ZSS_LOG_FILE")"
 if [ ! -d "$ZSS_CHECK_DIR" ]
 then
-  echo "ZSS_LOG_FILE contains nonexistant directories.  Creating $ZSS_CHECK_DIR"
+  echo "ZSS_LOG_FILE contains nonexistent directories.  Creating $ZSS_CHECK_DIR"
   mkdir -p $ZSS_CHECK_DIR
   if [ $? -ne 0 ]
   then

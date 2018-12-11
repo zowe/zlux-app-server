@@ -389,6 +389,10 @@ paths:
           in: query
           description: whether or not to overwrite a currently existing file
           type: boolean
+        - name: noBackup
+          in: query
+          description: whether or not to backup an existing file prior to upload session
+          type: boolean
 
       consumes:
         - text/plain
@@ -452,10 +456,8 @@ paths:
               {error: Could not assign session id. Please try again later.}
             Failed To Write Chunk:
               {error: Failed to write chunk to file. Aborting upload.}
-            Failed To Set Lock:
-              {error: Could not set lock on file.}
-            Failed To Get Lock:
-              {error: Could not test for lock on specified resource.}
+            Backup Exists:
+              {error: Backup file already exists.}
             Failed To Create Backup:
               {error: Could not create backup file.}
             Failed To Open File:

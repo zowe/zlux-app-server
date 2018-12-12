@@ -1,5 +1,6 @@
 {
   "node": {
+    "ipAddresses": ["0.0.0.0"],
     "https": {
       "port": 8544,
       //pfx (string), keys, certificates, certificateAuthorities, and certificateRevocationLists are all valid here.
@@ -24,6 +25,9 @@
         "once": true
       }
     ]
+  },
+  "agent": {
+    "ipAddresses": ["0.0.0.0"]
   },
 // All paths relative to ZLUX/node or ZLUX/bin
 // In real installations, these values will be configured during the install.

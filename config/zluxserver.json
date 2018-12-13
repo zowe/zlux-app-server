@@ -1,7 +1,7 @@
 {
   "node": {
-    "ipAddresses": ["0.0.0.0"],
     "https": {
+      "ipAddresses": ["0.0.0.0"],
       "port": 8544,
       //pfx (string), keys, certificates, certificateAuthorities, and certificateRevocationLists are all valid here.
       "keys": ["../deploy/product/ZLUX/serverConfig/zlux.keystore.key"],
@@ -9,6 +9,7 @@
       "certificateAuthorities": ["../deploy/product/ZLUX/serverConfig/apiml-localca.cer"]
     },
     "http": {
+      "ipAddresses": ["0.0.0.0"],
       "port": 8543
     },
     "mediationLayer": {
@@ -27,7 +28,13 @@
     ]
   },
   "agent": {
-    "ipAddresses": ["0.0.0.0"]
+    //host is for zlux to know, not zss
+    "host": "localhost",
+    "http": {
+      "ipAddresses": ["0.0.0.0"],
+      //to be a replacement for zssPort
+      "port": 8542
+    }
   },
 // All paths relative to ZLUX/node or ZLUX/bin
 // In real installations, these values will be configured during the install.

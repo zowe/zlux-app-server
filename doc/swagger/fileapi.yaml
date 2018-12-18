@@ -389,10 +389,6 @@ paths:
           in: query
           description: whether or not to overwrite a currently existing file
           type: boolean
-        - name: noBackup
-          in: query
-          description: whether or not to backup an existing file prior to upload session
-          type: boolean
 
       consumes:
         - text/plain
@@ -432,6 +428,8 @@ paths:
               {error: Invalid encoding arguments. Cannot convert between ASCII and BINARY.}
             Invalid Session ID:
               {error: Session identifier is invalid.}
+            Last Chunk Missing:
+              {error: Last chunk is missing.}
               
         '403':
           description: Forbidden
@@ -441,8 +439,10 @@ paths:
               error:
                 type: string
           examples:
-            Resource Busy:
-              {error: Requested resource is busy. Please try again later.}
+            Resource Busy (Duplicate):
+              {error: Duplicate in table. Requested resource is busy. Please try again later.}
+            Resource Busy (Could not open file):
+              {error: Could not open file. Requested resource is busy. Please try again later.}
               
         '500':
           description: Internal Server Error
@@ -456,16 +456,18 @@ paths:
               {error: Could not assign session id. Please try again later.}
             Failed To Write Chunk:
               {error: Failed to write chunk to file. Aborting upload.}
-            Backup Exists:
-              {error: Backup file already exists.}
-            Failed To Create Backup:
-              {error: Could not create backup file.}
             Failed To Open File:
               {error: Could not open file.}
             Failed To Close File:
               {error: Could not close file.}
+            Failed to Create File:
+              {error: Could not create file.}
             Failed to Get Metadata:
               {error: Could not get metadata for file.}
+            Failed to get iNode:
+              {error: Could not get iNode of file.}
+            Failed to get deviceID:
+              {error: Could not get deviceID of file.}
             
     delete:
       summary: deletes a file

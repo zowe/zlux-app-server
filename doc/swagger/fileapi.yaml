@@ -411,8 +411,6 @@ paths:
               {msg: Successfully wrote chunk to file.}
             Wrote File:
               {msg: Successfully wrote file.}
-            Wrote File Without Tag:
-              {msg: Successfully wrote file but could not tag.}
               
         '400':
           description: Bad Request
@@ -425,7 +423,7 @@ paths:
             Encoding Missing:
               {error: Source encoding or target encoding are missing.}
             Invalid Encoding:
-              {error: Invalid encoding arguments. Cannot convert between ASCII and BINARY.}
+              {error: Unsupported encodings requested. Please review the swagger documentation.}
             Invalid Session ID:
               {error: Session identifier is invalid.}
             Last Chunk Missing:
@@ -464,10 +462,12 @@ paths:
               {error: Could not create file.}
             Failed to Get Metadata:
               {error: Could not get metadata for file.}
-            Failed to get iNode:
+            Failed to Get iNode:
               {error: Could not get iNode of file.}
-            Failed to get deviceID:
+            Failed to Get deviceID:
               {error: Could not get deviceID of file.}
+            Failed to Tag:
+              {error: Could not tag file.}
             
     delete:
       summary: deletes a file

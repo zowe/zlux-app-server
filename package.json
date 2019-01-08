@@ -1,0 +1,14 @@
+{
+  "name": "zlux-example-server",
+  "version": "1.0.0",
+  "description": "This program and the accompanying materials are\r made available under the terms of the Eclipse Public License v2.0 which accompanies\r this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html",
+  "main": "lib/zluxServer.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

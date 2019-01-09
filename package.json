@@ -9,6 +9,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {
+    "zlux-proxy-server": "file:../zlux-proxy-server"
+  },
   "author": "",
   "license": "ISC"
 }

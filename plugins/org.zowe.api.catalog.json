@@ -1,0 +1,4 @@
+{
+  "identifier": "org.zowe.api.catalog",
+  "pluginLocation": "../../../api-layer/zlux-api-catalog"
+}

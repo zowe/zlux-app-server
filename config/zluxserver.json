@@ -14,7 +14,8 @@
       "server": {
         "hostname": "localhost",
         "port": 10011,
-        "isHttps": false
+        "isHttps": false,
+        "gatewayPort": 10010
       },
       "enabled": false
     },
@@ -54,8 +55,10 @@
       },
       "zss": {
         "plugins": ["org.zowe.zlux.auth.zss"]
-      } 
-      
+      },
+      "apiml": {
+        "plugins": ["org.zowe.zlux.auth.apiml"]
+      }       
     }
   },
   // internal port, do not connect browser to this port

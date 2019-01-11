@@ -9,8 +9,8 @@ REM Copyright Contributors to the Zowe Project.
 @echo off
 setlocal
 set app_path="%~f1"
-cd "%~dp0..\..\zlux-proxy-server\utils"
-node package-app.js -i "%app_path%" -o "%~dp0..\..\zlux-example-server\bin"
+cd "%~dp0..\..\zlux-server-framework\utils"
+node package-app.js -i "%app_path%" -o "%~dp0..\..\zlux-app-server\bin"
 endlocal
 
 REM This program and the accompanying materials are

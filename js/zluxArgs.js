@@ -11,9 +11,9 @@
 */
 
 'use strict';
-const ProxyServer = require('../../zlux-proxy-server/js/index');
-const argParser = require('../../zlux-proxy-server/js/argumentParser.js');
-const jsonUtils = require('../../zlux-proxy-server/js/jsonUtils.js');
+const ProxyServer = require('../../zlux-server-framework/js/index');
+const argParser = require('../../zlux-server-framework/js/argumentParser.js');
+const jsonUtils = require('../../zlux-server-framework/js/jsonUtils.js');
 
 const PRODUCT_CODE = 'ZLUX';
 

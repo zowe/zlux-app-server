@@ -68,7 +68,7 @@ fi
 ZLUX_NODE_CHECK_DIR="$(dirname "$ZLUX_NODE_LOG_FILE")"
 if [ ! -d "$ZLUX_NODE_CHECK_DIR" ]
 then
-  echo "ZLUX_NODE_LOG_FILE contains nonexistant directories.  Creating $ZLUX_NODE_CHECK_DIR"
+  echo "ZLUX_NODE_LOG_FILE contains nonexistent directories.  Creating $ZLUX_NODE_CHECK_DIR"
   mkdir -p $ZLUX_NODE_CHECK_DIR
   if [ $? -ne 0 ]
   then

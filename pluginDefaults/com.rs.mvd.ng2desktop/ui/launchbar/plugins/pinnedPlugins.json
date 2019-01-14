@@ -1,8 +1,0 @@
-{
-  "plugins": [
-    "com.rs.mvd.tn3270",
-    "com.rs.mvd.vt",
-    "com.rs.mvd.myplugin",
-    "com.rs.sample-iframe-app"
-  ]
-}

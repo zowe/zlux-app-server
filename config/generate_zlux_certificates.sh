@@ -1,0 +1,29 @@
+#!/bin/sh
+
+#
+# Generates certificate for zLUX that is signed by APIML Certificate Management local CA
+#
+# You can execute it from any directory and it will update regenerate certificates for zLUX
+# in the same directory where the script is.
+#
+# It assumes that the `api-layer` repository is cloned at the same directory as `zlux`.
+# If it is different you need to set the `APIML_HOME` variable.
+#
+
+BASE_DIR=$(dirname "$0")
+if [ -z ${APIML_HOME+x} ]; then
+    APIML_HOME="${BASE_DIR}/../../../api-layer"
+fi
+
+SERVICE_KEYSTORE="${BASE_DIR}/zlux.keystore"
+SERVICE_TRUSTSTORE="${BASE_DIR}/zlux.truststore"
+SERVICE_DNAME="EMAILADDRESS=zowe-zlc@lists.openmainframeproject.org,CN=Zowe zLUX,O=Zowe,ST=California,C=US"
+LOCAL_CA_FILENAME="${APIML_HOME}/keystore/local_ca/localca"
+
+${APIML_HOME}/scripts/apiml_cm.sh --action new-service \
+  --local-ca-filename ${LOCAL_CA_FILENAME} --service-dname "${SERVICE_DNAME}" \
+  --service-keystore ${SERVICE_KEYSTORE} --service-truststore ${SERVICE_TRUSTSTORE}
+
+rm -f ${SERVICE_KEYSTORE}_signed.cer ${SERVICE_KEYSTORE}.csr    
+
+cp -v ${LOCAL_CA_FILENAME}.cer ${BASE_DIR}/apiml-localca.cer

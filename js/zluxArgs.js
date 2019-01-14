@@ -71,12 +71,20 @@ const DEFAULT_CONFIG = {
   "pluginsDir":"../deploy/instance/"+PRODUCT_CODE+"/plugins",
 
   "node": {
-    "http": {
-      "port": 8543
+    "https": {
+      "port": 8544,
+      //pfx (string), keys, certificates, certificateAuthorities, and certificateRevocationLists are all valid here.
+      "keys": ["../deploy/product/ZLUX/serverConfig/zlux.keystore.key"],
+      "certificates": ["../deploy/product/ZLUX/serverConfig/zlux.keystore.cer"],
+      "certificateAuthorities": ["../deploy/product/ZLUX/serverConfig/apiml-localca.cer"]
     },
-    "eureka": {
-      "hostname": "localhost",
-      "port": 10011
+    "mediationLayer": {
+      "server": {
+        "hostname": "localhost",
+        "port": 10011,
+        "isHttps": false
+      },
+      "enabled": false
     }
   },
   "dataserviceAuthentication": {
@@ -139,6 +147,7 @@ if (userInput.hostServer) {
   zssHost = userInput.hostServer;
 }
 if (userInput.port) {
+  if (!configJSON.node.http) { configJSON.node.http = {}; }
   configJSON.node.http.port = userInput.port;
 }
 if (userInput.securePort && configJSON.node.https) {

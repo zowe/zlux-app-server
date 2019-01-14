@@ -344,6 +344,7 @@ paths:
                 type: string
     put:
       summary: writes contents to file or creates non-empty file
+      description: When writing to a Unix File, the process must be done in chunks of 3MB or less. Please note that your first request will fail because you haven't been assigned a sessionID. If you don't have a sessionID in your request, then the server will assign you one and send it as a response. Please attach this sessionID to every subsequent request as a query parameter. This sessionID is linked to a particular file, so you must use it for the duration of the upload. If you lose it, then the file will be inaccessible via this API until your session timesout in five minutes. When you have specified lastChunk as true, then that signals the end of the upload session; thus, you have sent all the contents of the file.
       tags:
         - Unix File
       parameters:
@@ -364,6 +365,11 @@ paths:
           schema:
             type: string
             example: aW50IG1haW4oKSB7CiAgcmV0dXJuIDA7Cn0=
+        - name: sessionID
+          in: query
+          description: the id for current upload session
+          type: string
+          required: true
         - name: sourceEncoding
           in: query
           description: the source encoding of the file (UTF-8 or ISO-8859-1 or IBM-1047)
@@ -374,34 +380,95 @@ paths:
           description: the target encoding of the file (UTF-8 or ISO-8859-1 or IBM-1047)
           type: string
           required: true
+        - name: lastChunk
+          in: query
+          description: whether or not this is the last chunk of the file
+          type: boolean
+          required: true
         - name: forceOverwrite
           in: query
           description: whether or not to overwrite a currently existing file
           type: boolean
+
       consumes:
         - text/plain
       responses:
         '200':
-          description: successfully wrote a file
+          description: OK
           schema:
             type: object
             properties:
               msg: 
                 type: string
-        '404':
-          description: file could not be opened or does not exist
+              sessionID:
+                type: number
+          examples:
+            SessionID:
+              {msg: Please attach the sessionID to subsequent requests, sessionID: int}
+            File Already Exists: 
+              {msg: File already exists. Please choose a different file name or attach the forceOverwrite query parameter to your next request.}
+            Wrote Chunk:
+              {msg: Successfully wrote chunk to file.}
+            Wrote File:
+              {msg: Successfully wrote file.}
+              
+        '400':
+          description: Bad Request
           schema:
             type: object
             properties:
-              error: 
+              msg:
                 type: string
+          examples:
+            Encoding Missing:
+              {error: Source encoding or target encoding are missing.}
+            Invalid Encoding:
+              {error: Unsupported encodings requested. Please review the swagger documentation.}
+            Invalid Session ID:
+              {error: Session identifier is invalid.}
+            Last Chunk Missing:
+              {error: Last chunk is missing.}
+              
+        '403':
+          description: Forbidden
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+          examples:
+            Resource Busy (Duplicate):
+              {error: Duplicate in table. Requested resource is busy. Please try again later.}
+            Resource Busy (Could not open file):
+              {error: Could not open file. Requested resource is busy. Please try again later.}
+              
         '500':
-          description: failed to write a file
+          description: Internal Server Error
           schema:
             type: object
             properties:
               error: 
                 type: string
+          examples:
+            Failure To Assign Session ID:
+              {error: Could not assign session id. Please try again later.}
+            Failed To Write Chunk:
+              {error: Failed to write chunk to file. Aborting upload.}
+            Failed To Open File:
+              {error: Could not open file.}
+            Failed To Close File:
+              {error: Could not close file.}
+            Failed to Create File:
+              {error: Could not create file.}
+            Failed to Get Metadata:
+              {error: Could not get metadata for file.}
+            Failed to Get iNode:
+              {error: Could not get iNode of file.}
+            Failed to Get deviceID:
+              {error: Could not get deviceID of file.}
+            Failed to Tag:
+              {error: Could not tag file.}
+            
     delete:
       summary: deletes a file
       tags:
@@ -830,4 +897,4 @@ definitions:
           type: object
           properties:
             name:
-type: string
+              type: string

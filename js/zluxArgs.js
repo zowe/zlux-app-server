@@ -72,6 +72,7 @@ const DEFAULT_CONFIG = {
 
   "node": {
     "https": {
+      "ipAddresses": ["0.0.0.0"],
       "port": 8544,
       //pfx (string), keys, certificates, certificateAuthorities, and certificateRevocationLists are all valid here.
       "keys": ["../deploy/product/ZLUX/serverConfig/zlux.keystore.key"],
@@ -95,7 +96,15 @@ const DEFAULT_CONFIG = {
       }
     }
   },
-  "zssPort":8542
+  "agent": {
+    //host is for zlux to know, not zss
+    "host": "localhost",
+    "http": {
+      "ipAddresses": ["0.0.0.0"],
+      //to be a replacement for zssPort
+      "port": 8542
+    }
+  }  
 };
 
 const MVD_ARGS = [
@@ -141,7 +150,17 @@ if(eUser && ePass){
   configJSON.node.mediationLayer.eureka.serviceUrls.default = [`http://${eUser}:${ePass}@${configJSON.node.mediationLayer.server.hostname}:${configJSON.node.mediationLayer.server.port}/eureka/apps/`];
 }
 if (!hostPort) {
-  hostPort = configJSON.zssPort;
+  if (configJSON.agent) {
+    if (configJSON.agent.https) {
+      hostPort = configJSON.agent.https.port;
+    } else if (configJSON.agent.http) {
+      hostPort = configJSON.agent.http.port;
+    } else {
+      console.warn(`Invalid server configuration. Agent specified without http or https port`);
+    }
+  } else if (configJSON.zssPort) {
+    hostPort = configJSON.zssPort;
+  }
 }
 if (userInput.hostServer) {
   zssHost = userInput.hostServer;

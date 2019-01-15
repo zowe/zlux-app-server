@@ -10,7 +10,7 @@
 */
 'use strict';
 
-const clusterManager = require('../../zlux-proxy-server/js/clusterManager').clusterManager;
+const clusterManager = require('../../zlux-server-framework/js/clusterManager').clusterManager;
 const {appConfig, configJSON, startUpConfig} = require('./zluxArgs')();
 
 clusterManager.start(appConfig, configJSON, startUpConfig);

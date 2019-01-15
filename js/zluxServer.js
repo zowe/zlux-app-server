@@ -11,7 +11,7 @@
 */
 
 'use strict';
-const ProxyServer = require('../../zlux-proxy-server/js/index');
+const ProxyServer = require('../../zlux-server-framework/js/index');
 
 const {appConfig, configJSON, startUpConfig} = require('./zluxArgs')();
 const proxyServer = new ProxyServer(appConfig, configJSON, startUpConfig);

@@ -57,7 +57,8 @@
         "plugins": ["org.zowe.zlux.auth.zss"]
       },
       "apiml": {
-        "plugins": ["org.zowe.zlux.auth.apiml"]
+        // apiml plugin requires APIML instance available at the ports in the "mediationLayer" section
+        // "plugins": ["org.zowe.zlux.auth.apiml"]
       }       
     }
   },

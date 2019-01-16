@@ -110,8 +110,9 @@ fi
 
 #Determined log file.  Run node appropriately.
 export dir=`dirname "$0"`
+cd $dir
 export NODE_PATH=../../zlux-server-framework/node_modules:$NODE_PATH
-cd $dir/../lib
+cd ../lib
 
 if [ -n "$NODE_HOME" ]
 then

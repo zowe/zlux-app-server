@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "zlux-proxy-server": "file:../zlux-server-framework",
+    "zlux-server-framework": "file:../zlux-server-framework",
     "zss-auth": "file:../zss-auth"
   }
 }

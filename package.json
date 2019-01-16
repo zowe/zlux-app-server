@@ -1,5 +1,5 @@
 {
-  "name": "zlux-example-server",
+  "name": "zlux-app-server",
   "version": "1.0.0",
   "main": "lib/zluxServer.js",
   "directories": {
@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "zlux-proxy-server": "file:../zlux-proxy-server",
+    "zlux-proxy-server": "file:../zlux-server-framework",
     "zss-auth": "file:../zss-auth"
   }
 }

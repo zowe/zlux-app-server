@@ -11,8 +11,7 @@ if "%ZLUX_NODE_LOG_DIR%" == "" (
   set ZLUX_NODE_LOG_DIR="../log"
 )
 call :makedir %ZLUX_NODE_LOG_DIR%
-set NODE_PATH=../../zlux-server-framework/js/node_modules;%NODE_PATH%
-cd ../js
+cd ../lib
 set minWorkers=2
 set NODE_CLUSTER_SCHED_POLICY=rr
 node --harmony zluxCluster.js --config=../deploy/instance/ZLUX/serverConfig/zluxserver.json %* > %ZLUX_NODE_LOG_DIR%\nodeServer.log 2>&1

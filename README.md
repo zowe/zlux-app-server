@@ -90,6 +90,8 @@ build.sh
 ```
 This will take some time to complete.
 
+**Note:** It has been reported that building can hang on Windows if you have put the code in a directory that has a symbolic link. Build time can depend on hardware speed, but should take minutes not hours.
+
 ### 5. Deploy server configuration files
 If you are running the zLUX App Server seperate from ZSS, you must ensure the ZSS installation has its configuration deployed. You can accomplish this via:
 

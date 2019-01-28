@@ -56,9 +56,6 @@
       // "plugins": ["org.zowe.zlux.auth.zosmf"]
       },
 
-      "explorerServer": {
-      //  "plugins": ["com.zowe.explorer.server.auth"]
-      },
       "zss": {
         "plugins": ["org.zowe.zlux.auth.zss"]
       } 

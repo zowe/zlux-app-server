@@ -132,7 +132,7 @@ In the example where we're running ZSS on a host named mainframe.zowe.com, runni
 
 After which we'd be able to connect to the App server at port 19998.
 
-**NOTE: the parameter parsing is provided by [argumentParser.js](https://github.com/zowe/zlux-server-framework/blob/master/js/argumentParser.js), which allows for a few variations of input, depending on preference. For example, the following are all valid ways to specify the ZSS host**
+**NOTE: the parameter parsing is provided by [argumentParser.js](https://github.com/zowe/zlux-server-framework/blob/master/lib/argumentParser.js), which allows for a few variations of input, depending on preference. For example, the following are all valid ways to specify the ZSS host**
 
 - **-h myhost.com**
 - **-h=myhost.com**

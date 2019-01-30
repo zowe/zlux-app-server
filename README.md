@@ -150,7 +150,6 @@ http(s)://\<zLUX App Server\>:\<node.http(s).port\>/ZLUX/plugins/org.zowe.zlux.b
 
 Once here, you should be greeted with a Login screen and a few Apps in the taskbar at the bottom of the screen. You can login with your mainframe credentials, and try out a few Apps to see how they interact with the framework:
 - tn3270-ng2: This App communicates with the zLUX App Server to enable a TN3270 connection in the browser
-- subsystems: This App shows various z/OS subsystems installed on the host the ZSS runs on. This is accomplished via discovery of these services by the App's portion running in the ZSS context.
 - sample-angular-app: A simple app showing how a zLUX App frontend (here, Angular) component can communicate with an App backend (REST) component.
 - sample-react-app: Similar to the Angular App, but using React instead to show how you have the flexibility to use a framework of your choice.
 - sample-iframe-app: Similar in functionality to the Angular & React Apps, but presented via inclusion of an iframe, to show that even pre-existing pages can be included

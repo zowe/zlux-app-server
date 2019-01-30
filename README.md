@@ -21,10 +21,10 @@ Getting started with this server requires just a few steps:
 
 0. [(Optional) Install git for z/OS](#0-optional-install-git-for-zos)
 1. [Acquire the source code](#1-acquire-the-source-code)
-2. [Acquire external components](#2-acquire-external-components)
-3. [Set the server configuration](#3-set-the-server-configuration)
-4. [Build zLUX Apps](#4-build-zlux-apps)
-5. [Deploy server configuration files](#5-deploy-server-configuration-files)
+2. [Set the server configuration](#2-set-the-server-configuration)
+3. [Build zLUX Apps](#3-build-zlux-apps)
+4. [Deploy server configuration files](#4-deploy-server-configuration-files)
+5. [Build ZSS](#5-build-zss)
 6. [Run the server](#6-run-the-server)
 7. [Connect in a browser!](#7-connect-in-a-browser)
 
@@ -35,45 +35,36 @@ Because all of our code is on github, yet ZSS must run on z/OS and the zLUX App 
 If you'd like to go this route, you can find git for z/OS free of charge here: http://www.rocketsoftware.com/product-categories/mainframe/git-for-zos
 
 ### 1. Acquire the source code
-To get started, first clone or download the github capstone repository, https://github.com/zowe/zlux
+To get started, first clone (or download) the code necessary to build zss and the zss cross memory server.
+If using git, the following commands should be used on z/OS:
+```
+git clone git@github.com:zowe/zss.git
+git clone git@github.com:zowe/zowe-common-c.git
+```
+
+Afterwards, clone (or download) the github capstone repository, https://github.com/zowe/zlux
 As we'll be configuring ZSS on z/OS's USS, and the zLUX App Server on a LUW host, you'll need to put the contents on both systems.
 If using git, the following commands should be used:
 ```
 git clone --recursive git@github.com:zowe/zlux.git
 cd zlux
 git submodule foreach "git checkout master"
-cd zlux-build
 ```
 
 At this point, you'll have the latest code from each repository on your system.
 Continue from within zlux-app-server.
 
-### 2. Acquire external components
-Apps and external servers can require contents not found in the Zowe github repositories. In the case of the zlux-app-server, there is a component which cannot be found in the repositories: a ZSS binary.
-If you contact the Zowe project, this will be provided.
-
-Afterwards, you should receive *zssServer*.
-This must be placed within *zlux-build/externals/Rocket*, on the z/OS host.
-For example:
-```
-mkdir externals
-mkdir externals/Rocket
-
-//(on z/OS only)
-mv zssServer externals/Rocket
-```
-
-### 3. Set the server configuration
+### 2. Set the server configuration
 Read the [Configuration](https://github.com/zowe/zlux/wiki/Configuration-for-zLUX-App-Server-&-ZSS) wiki page for a detailed explanation of the primary items that you'll want to configure for your first server.
 
-In short, ensure that within **config/zluxserver.json**, **node.http.port** OR **node.https.port + other HTTPS parameters** are set to your liking on the LUW host, and that **zssPort** is set on the z/OS host.
+In short, ensure that within **config/zluxserver.json**, **node.https.port + other HTTPS parameters** are set to your liking on the LUW host, and that **agent.http.port** is set on the z/OS host.
 
 Before continuing, if you intend to use the terminal, at this time (temporarily) it must be pre-configured to know the destination host.
 Edit *../tn3270-ng2/_defaultTN3270.json* to set *host* and *port* to a valid TN3270 server telnet host and port and then save the file.
 Edit *../vt-ng2/_defaultVT.json* to set *host* and *port* to a valid ssh host and port and then save the file.
 
-### 4. Build zLUX Apps
-**Note when building, NPM is used. The version of NPM needed for the build to succeed should be at least 5.4. You can update NPM by executing `npm install -g npm`**
+### 3. Build zLUX Apps
+**Note when building, NPM is used. The version of NPM needed for the build to succeed should be at least 6.4. You can update NPM by executing `npm install -g npm`**
 
 zLUX Apps can contain server and/or web components. The web components must be built, as webpack is involved in optimized packaging, and server components are also likely to need building if they require external dependencies from NPM, use native code, or are written in typescript.
 
@@ -92,7 +83,7 @@ This will take some time to complete.
 
 **Note:** It has been reported that building can hang on Windows if you have put the code in a directory that has a symbolic link. Build time can depend on hardware speed, but should take minutes not hours.
 
-### 5. Deploy server configuration files
+### 4. Deploy server configuration files
 If you are running the zLUX App Server seperate from ZSS, you must ensure the ZSS installation has its configuration deployed. You can accomplish this via:
 
 ```
@@ -102,6 +93,9 @@ ant deploy
 On the other hand, if you are running ZSS and the zLUX App Server on the same host, *build.sh* and *build.bat* execute *deploy* and therefore this task was accomplished in step #4.
 
 However, if you need to change the server configuration files or want to add more Apps to be included at startup, you'll need to update the deploy content to reflect this. Simply running deploy.bat or deploy.sh will accomplish this, but files such as zluxserver.json are only read at startup, so a reload of the zLUX App Server & ZSS would be required.
+
+### 5. Build ZSS
+TODO: Link to a README or document from https://github.com/zowe/zss
 
 ### 6. Run the server
 At this point, all server files have been configured and Apps built, so ZSS and the App server are ready to run.
@@ -192,9 +186,9 @@ To include Apps, be sure to define the location of the Plugins directory in the 
 ```
 
 ### ZSS Configuration
-When running ZSS, it will require a JSON configuration file similar or the same as the one used for the zLUX server. The attributes that are needed for ZSS, at minimum, are:*rootDir*, *productDir*, *siteDir*, *instanceDir*, *groupsDir*, *usersDir*, *pluginsDir* and **zssPort**. All of these attributes have the same meaning as described above for the zLUX server, but if the zLUX server and ZSS are not run from the same location, then these directories may be different if desired.
+When running ZSS, it will require a JSON configuration file similar or the same as the one used for the zLUX server. The attributes that are needed for ZSS, at minimum, are:*rootDir*, *productDir*, *siteDir*, *instanceDir*, *groupsDir*, *usersDir*, *pluginsDir* and **agent.http.port**. All of these attributes have the same meaning as described above for the zLUX server, but if the zLUX server and ZSS are not run from the same location, then these directories may be different if desired.
 
-The one attribute that is specific to ZSS however is **zssPort**. This is the TCP port which ZSS will listen on to be contacted by the zLUX server. Define this in the configuration file as a value between 1024-65535.
+The one attribute that is specific to ZSS however is **agent.http.port**. This is the TCP port which ZSS will listen on to be contacted by the zLUX server. Define this in the configuration file as a value between 1024-65535. See [zss configuration](https://github.com/zowe/zlux/wiki/Configuration-for-ZLUX-App-Server-&-ZSS#zss-configuration) for more information and an example.
 
 #### Connecting zLUX server to ZSS
 When running the zLUX server, simply specify a few flags to declare which ZSS instance zLUX will proxy ZSS requests to:

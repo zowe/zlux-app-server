@@ -27,7 +27,7 @@
     //host is for zlux to know, not zss
     "host": "localhost",
     "http": {
-      "ipAddresses": ["0.0.0.0"],
+      "ipAddresses": ["127.0.0.1"],
       //to be a replacement for zssPort
       "port": 8542
     }

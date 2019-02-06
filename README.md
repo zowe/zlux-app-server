@@ -57,11 +57,11 @@ Continue from within zlux-app-server.
 ### 2. Set the server configuration
 Read the [Configuration](https://github.com/zowe/zlux/wiki/Configuration-for-zLUX-App-Server-&-ZSS) wiki page for a detailed explanation of the primary items that you'll want to configure for your first server.
 
-In short, ensure that within **config/zluxserver.json**, **node.https.port + other HTTPS parameters** are set to your liking on the LUW host, and that **agent.http.port** is set on the z/OS host.
+In short, ensure that within **zlux-app-server/config/zluxserver.json**, **node.https.port + other HTTPS parameters** are set to your liking on the LUW host, and that **agent.http.port** is set on the z/OS host.
 
 Before continuing, if you intend to use the terminal, at this time (temporarily) it must be pre-configured to know the destination host.
-Edit *../tn3270-ng2/_defaultTN3270.json* to set *host* and *port* to a valid TN3270 server telnet host and port and then save the file.
-Edit *../vt-ng2/_defaultVT.json* to set *host* and *port* to a valid ssh host and port and then save the file.
+Edit *tn3270-ng2/_defaultTN3270.json* to set *host* and *port* to a valid TN3270 server telnet host and port and then save the file.
+Edit *vt-ng2/_defaultVT.json* to set *host* and *port* to a valid ssh host and port and then save the file.
 
 ### 3. Build zLUX Apps
 **Note when building, NPM is used. The version of NPM needed for the build to succeed should be at least 6.4. You can update NPM by executing `npm install -g npm`**
@@ -73,11 +73,13 @@ This server only needs transpilation and packaging of web components, and theref
 Instead, on the host running the zLUX App Server, run the script that will automatically build all included Apps.
 Simply,
 ```
+cd zlux-build
+
 //Windows
 build.bat
 
 //Otherwise
-build.sh
+./build.sh
 ```
 This will take some time to complete.
 
@@ -87,6 +89,7 @@ This will take some time to complete.
 If you are running the zLUX App Server seperate from ZSS, you must ensure the ZSS installation has its configuration deployed. You can accomplish this via:
 
 ```
+// in zlux-build directory
 ant deploy
 ```
 
@@ -117,7 +120,7 @@ cd ../zlux-app-server/bin
 nodeServer.bat <parameters>
 
 // Others:
-nodeServer.sh <parameters>
+./nodeServer.sh <parameters>
 ```
 Valid parameters for nodeServer are as follows:
 - *-h*: Specifies the hostname where ZSS can be found. Use as *-h \<hostname\>*

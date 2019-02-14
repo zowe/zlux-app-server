@@ -49,5 +49,6 @@
 *.zip   git-encoding=BINARY    zos-working-tree-encoding=BINARY binary
 # Always use LF for npm package files because npm cli likes to change line endings.
 package*.json text eol=lf
+*.sh text eol=lf
 # sonar scanning
 sonar-project.properties git-encoding=iso8859-1 zos-working-tree-encoding=iso8859-1

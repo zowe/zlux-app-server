@@ -98,7 +98,27 @@ On the other hand, if you are running ZSS and the zLUX App Server on the same ho
 However, if you need to change the server configuration files or want to add more Apps to be included at startup, you'll need to update the deploy content to reflect this. Simply running deploy.bat or deploy.sh will accomplish this, but files such as zluxserver.json are only read at startup, so a reload of the zLUX App Server & ZSS would be required.
 
 ### 5. Build ZSS
-TODO: Link to a README or document from https://github.com/zowe/zss
+ZSS is a dependency of zLUX, but exists in a seperate repository and must be run on z/OS. To get the code, first do the following on z/OS:
+```
+git clone git@github.com:zowe/zowe-common-c.git
+git clone git@github.com:zowe/zss.git
+cd zss/build
+```
+Ant is used to build ZSS, and ZSS is built in two parts: the ZSS Server and the ZSS Cross-memory Server. ZSS Server communicates through HTTP(S) to zLUX, while the cross memory server is communicated with by ZSS through in-system calls.
+To build both, run:
+```
+ant zss
+ant zis
+```
+Afterwards, you need to copy `zssServer` to the `zlux-app-server/bin` directory, so that `nodeServer.sh` and `zssServer.sh` can invoke it.
+You should also set the p attribute on it.
+Do:
+```
+cp zssServer ../../zlux-app-server/bin
+extattr +p ../../zlux-app-server/bin/zssServer
+```
+Finally, the ZSS Cross memory server must be installed and configured according to [This Install Guide](https://github.com/zowe/docs-site/blob/master/docs/user-guide/install-zos.md#manually-installing-the-zowe-cross-memory-server)
+
 
 ### 6. Run the server
 At this point, all server files have been configured and Apps built, so ZSS and the App server are ready to run.

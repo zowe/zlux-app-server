@@ -11,7 +11,7 @@ if [%1]==[] goto :fail
 setlocal
 set app_path="%~f1"
 cd "%~dp0..\..\zlux-server-framework\utils"
-node unpackage-app.js -i "%app_path%"  -o "%~dp0..\..\\" -p "%~dp0..\..\zlux-app-server\deploy\instance\ZLUX\plugins" %2
+node install-app.js -i "%app_path%"  -o "%~dp0..\..\\" -c "%~dp0..\..\zlux-app-server\deploy\instance\ZLUX\serverConfig\zluxserver.json" %2
 endlocal
 goto :finished
 

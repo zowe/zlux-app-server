@@ -11,11 +11,11 @@ if [ $# -eq 0 ]
     echo "Usage: $0 AppDir"
     exit 1
 fi
-
+start_path=$(pwd)
 utils_path=$(pwd)/../../zlux-server-framework/utils
 cd $1
 app_path=$(pwd)
-cd $utils_path
+cd $start_path
 shift
 
 if [ -z "$ZLUX_PKG_LOG_DIR" ]
@@ -31,7 +31,7 @@ fi
 
 LOG_FILE="$ZLUX_PKG_LOG_DIR/package.log"
 echo "Running packager. Log location=$LOG_FILE"
-node package-app.js -i "$app_path" -o "../../zlux-app-server/bin" $@ 2>&1 | tee $LOG_FILE
+node $utils_path/package-app.js -i "$app_path" -o "../../zlux-app-server/bin" $@ 2>&1 | tee $LOG_FILE
 echo "Ended with rc=$?"
 # This program and the accompanying materials are
 # made available under the terms of the Eclipse Public License v2.0 which accompanies

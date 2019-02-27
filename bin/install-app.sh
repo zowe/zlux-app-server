@@ -27,6 +27,7 @@ if [ -z "$ZLUX_INSTALL_LOG_DIR" ]
 fi
 
 if [ ! -d "$ZLUX_INSTALL_LOG_DIR" ]
+   then
    echo "Will make log directory $ZLUX_INSTALL_LOG_DIR"
    mkdir -p $ZLUX_INSTALL_LOG_DIR
 fi

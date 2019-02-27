@@ -24,6 +24,7 @@ if [ -z "$ZLUX_PKG_LOG_DIR" ]
 fi
 
 if [ ! -d "$ZLUX_PKG_LOG_DIR" ]
+   then
    echo "Will make log directory $ZLUX_PKG_LOG_DIR"
    mkdir -p $ZLUX_PKG_LOG_DIR
 fi

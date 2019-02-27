@@ -17,7 +17,20 @@ cd $1
 app_path=$(pwd)
 cd $utils_path
 shift
-node package-app.js -i "$app_path" -o "../../zlux-app-server/bin" $@
+
+if [ -z "$ZLUX_PKG_LOG_DIR" ]
+    then
+    ZLUX_PKG_LOG_DIR="../log"
+fi
+
+if [ ! -d "$ZLUX_PKG_LOG_DIR" ]
+   echo "Will make log directory $ZLUX_PKG_LOG_DIR"
+   mkdir -p $ZLUX_PKG_LOG_DIR
+fi
+
+LOG_FILE="$ZLUX_PKG_LOG_DIR/install.log"
+echo "Running installer. Log location=$LOG_FILE"
+node package-app.js -i "$app_path" -o "../../zlux-app-server/bin" $@ 2>&1 | tee $LOG_FILE
 echo "Ended with rc=$?"
 # This program and the accompanying materials are
 # made available under the terms of the Eclipse Public License v2.0 which accompanies

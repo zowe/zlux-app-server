@@ -9,14 +9,30 @@ REM Copyright Contributors to the Zowe Project.
 if [%1]==[] goto :fail
 setlocal
 set app_path="%~f1"
+if "%ZLUX_PKG_LOG_DIR%" == "" (
+  set ZLUX_PKG_LOG_DIR=..\log
+)
+call :makedir %ZLUX_PKG_LOG_DIR%
+call :abspath %ZLUX_PKG_LOG_DIR%\package.log
+set LOG_PATH=%RETVAL%
+echo Running packager. Log location=%LOG_PATH%
 cd "%~dp0..\..\zlux-server-framework\utils"
-node package-app.js -i "%app_path%" -o "%~dp0..\..\zlux-app-server\bin"
+node package-app.js -i "%app_path%" -o "%~dp0..\..\zlux-app-server\bin" > %LOG_PATH% 2>&1
 endlocal
 goto :finished
 
 :fail
 echo Usage: package-app.bat AppDir
 goto :eof
+
+rem Create a directory if it does not exist yet
+:makedir
+if not exist %1 mkdir %1
+goto :eof
+
+:abspath
+set RETVAL=%~dpfn1
+exit /B
 
 :finished
 echo Ended with rc=%ERRORLEVEL%

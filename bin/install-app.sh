@@ -19,8 +19,7 @@ else
    app_path=$(pwd)/$1
 fi
 shift
-cd $utils_path
-node install-app.js -i "$app_path" -o "../../" -c "../../zlux-app-server/deploy/instance/ZLUX/serverConfig/zluxserver.json" $@
+node $utils_path/install-app.js -i "$app_path" -o "../../" -c "../../zlux-app-server/deploy/instance/ZLUX/serverConfig/zluxserver.json" $@
 echo "Ended with rc=$?"
 # This program and the accompanying materials are
 # made available under the terms of the Eclipse Public License v2.0 which accompanies

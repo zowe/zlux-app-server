@@ -28,8 +28,8 @@ if [ ! -d "$ZLUX_PKG_LOG_DIR" ]
    mkdir -p $ZLUX_PKG_LOG_DIR
 fi
 
-LOG_FILE="$ZLUX_PKG_LOG_DIR/install.log"
-echo "Running installer. Log location=$LOG_FILE"
+LOG_FILE="$ZLUX_PKG_LOG_DIR/package.log"
+echo "Running packager. Log location=$LOG_FILE"
 node package-app.js -i "$app_path" -o "../../zlux-app-server/bin" $@ 2>&1 | tee $LOG_FILE
 echo "Ended with rc=$?"
 # This program and the accompanying materials are

@@ -18,8 +18,22 @@ if [ "$1" = "/*" ]
 else
    app_path=$(pwd)/$1
 fi
+
 shift
-node $utils_path/install-app.js -i "$app_path" -o "../../" -c "../../zlux-app-server/deploy/instance/ZLUX/serverConfig/zluxserver.json" $@
+
+if [ -z "$ZLUX_INSTALL_LOG_DIR" ]
+    then
+    ZLUX_INSTALL_LOG_DIR="../log"
+fi
+
+if [ ! -d "$ZLUX_INSTALL_LOG_DIR" ]
+   echo "Will make log directory $ZLUX_INSTALL_LOG_DIR"
+   mkdir -p $ZLUX_INSTALL_LOG_DIR
+fi
+
+LOG_FILE="$ZLUX_INSTALL_LOG_DIR/install.log"
+echo "Running installer. Log location=$LOG_FILE"
+node $utils_path/install-app.js -i "$app_path" -o "../../" -c "../../zlux-app-server/deploy/instance/ZLUX/serverConfig/zluxserver.json" $@ 2>&1 | tee $LOG_FILE
 echo "Ended with rc=$?"
 # This program and the accompanying materials are
 # made available under the terms of the Eclipse Public License v2.0 which accompanies

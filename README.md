@@ -9,7 +9,7 @@ Copyright Contributors to the Zowe Project.
 This is the default setup of the Zowe App Server, built upon the zLUX framework. Within, you will find a collection of build, deploy, and run scripts as well as configuration files that will help you to configure a simple zLUX server with a few Apps included.
 
 ## Server layout
-At the core of the zLUX App infrastructure backend is an extensible server, written for nodeJS and utilizing expressJS for routing. It handles the backend components of Apps, and also can server as a proxy for requests from Apps to additional servers as needed. One such proxy destination is the ZSS - a Zowe backend component called **Zowe System Services**. It's a so-called agent for the App server.
+At the core of the zLUX App infrastructure backend is an extensible server, written for nodeJS and utilizing expressJS for routing. It handles the backend components of Apps, and also can serve as a proxy for requests from Apps to additional servers as needed. One such proxy destination is the ZSS - a Zowe backend component called **Zowe System Services**. It's a so-called agent for the App server.
 
 ### ZSS & zLUX Server overlap
 The zLUX App Server and ZSS utilize the same deployment & App/Plugin structure, and share some configuration parameters as well. It is possible to run ZSS and zLUX App Server from the same system, in which case you would be running under z/OS USS. This configuration requires that IBM's version of nodeJS is installed prior.
@@ -51,6 +51,23 @@ cd zlux
 git submodule foreach "git checkout master"
 ```
 
+By default the trivial authentication backend is enabled which always returns successful unless authentication 
+information provided is in an incorrect format. To use ZSS as an authentication backend, clone (or download) the 
+`zss-auth` plugin code into the `zlux` directory:
+
+```
+git clone git@github.com:zowe/zss-auth.git
+```
+
+To bring Apps to zLUX App server, you need to clone (or download) corresponding repositories into `zlux`. For 
+example, clone (or download) the following to get sample apps source code:
+
+```
+git clone git@github.com:zowe/sample-angular-app.git
+git clone git@github.com:zowe/sample-react-app.git
+git clone git@github.com:zowe/sample-iframe-app.git
+```
+
 At this point, you'll have the latest code from each repository on your system.
 Continue from within zlux-app-server.
 
@@ -58,6 +75,19 @@ Continue from within zlux-app-server.
 Read the [Configuration](https://github.com/zowe/zlux/wiki/Configuration-for-zLUX-App-Server-&-ZSS) wiki page for a detailed explanation of the primary items that you'll want to configure for your first server.
 
 In short, ensure that within **zlux-app-server/config/zluxserver.json**, **node.https.port + other HTTPS parameters** are set to your liking on the LUW host, and that **agent.http.port** is set on the z/OS host.
+If you will be using ZSS as an authentication backend, set `dataserviceAuthentication.defaultAuthentication = "zss"` and
+ `dataserviceAuthentication.implementationDefaults.zss.plugins = ["org.zowe.zlux.auth.zss"]`.
+
+For each App that is supposed to be loaded by zLUX App server, a plugin locator should be defined. Read the 
+[Plugin Definition & Structure](https://github.com/zowe/zlux/wiki/Zlux-Plugin-Definition-&-Structure) wiki page for 
+details. For example, to enable Angular Sample App, create 
+`zlux-app-server/plugins/org.zowe.zlux.sample.angular.json` with the following contents:
+```
+{
+  "identifier": "org.zowe.zlux.sample.angular",
+  "pluginLocation": "../../sample-angular-app"
+}
+```
 
 Before continuing, if you intend to use the terminal, at this time (temporarily) it must be pre-configured to know the destination host.
 Edit *tn3270-ng2/_defaultTN3270.json* to set *host* and *port* to a valid TN3270 server telnet host and port and then save the file.
@@ -171,11 +201,15 @@ The URL for this is:
 
 http(s)://\<zLUX App Server\>:\<node.http(s).port\>/ZLUX/plugins/org.zowe.zlux.bootstrap/web/index.html
 
-Once here, you should be greeted with a Login screen and a few Apps in the taskbar at the bottom of the screen. You can login with your mainframe credentials, and try out a few Apps to see how they interact with the framework:
-- tn3270-ng2: This App communicates with the zLUX App Server to enable a TN3270 connection in the browser
-- sample-angular-app: A simple app showing how a zLUX App frontend (here, Angular) component can communicate with an App backend (REST) component.
-- sample-react-app: Similar to the Angular App, but using React instead to show how you have the flexibility to use a framework of your choice.
-- sample-iframe-app: Similar in functionality to the Angular & React Apps, but presented via inclusion of an iframe, to show that even pre-existing pages can be included
+Once here, you should be greeted with a Login screen and Apps in the main menu if there were 
+included some. If you set up ZSS as an authentication backend, you can login with your mainframe 
+credentials. By default trivial authentication is used which allows to login with arbitrary credentials.
+
+There're a few Apps that you can try out to see how they interact with the framework:
+- [tn3270-ng2](https://github.com/zowe/tn3270-ng2): This App communicates with the zLUX App Server to enable a TN3270 connection in the browser
+- [sample-angular-app](https://github.com/zowe/sample-angular-app): A simple app showing how a zLUX App frontend (here, Angular) component can communicate with an App backend (REST) component.
+- [sample-react-app](https://github.com/zowe/sample-react-app): Similar to the Angular App, but using React instead to show how you have the flexibility to use a framework of your choice.
+- [sample-iframe-app](https://github.com/zowe/sample-iframe-app): Similar in functionality to the Angular & React Apps, but presented via inclusion of an iframe, to show that even pre-existing pages can be included
 
 
 #### Deploy example

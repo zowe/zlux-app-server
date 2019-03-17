@@ -19,7 +19,7 @@ Another way to set up zLUX is to have the zLUX App Server running under LUW, whi
 ## First-time Installation & Use
 Getting started with this server requires just a few steps:
 
-0. [(Optional) Install git for z/OS](#0-optional-install-git-for-zos)
+0. [Install Prerequisites](#0-install-prerequisites)
 1. [Acquire the source code](#1-acquire-the-source-code)
 2. [Set the server configuration](#2-set-the-server-configuration)
 3. [Build zLUX Apps](#3-build-zlux-apps)
@@ -30,9 +30,29 @@ Getting started with this server requires just a few steps:
 
 So, with that in mind, follow each step and you'll be on your way to your first zLUX App Server instance!
 
-### 0. (Optional) Install git for z/OS
+### 0. Install Prerequisites
+Wherever the App Server is installed, the following is required for running:
+**NodeJS** - v6.14.4 minimum for z/OS,  elsewhere 6, 8, and 10 work well.
+**npm** - v6.4 minimum
+
+For building zLUX framework and apps:
+**jdk** - v8 minimum
+**ant** - v1.10 minimum
+**ant-contrib** - v1 minimum
+
+For building zss:
+**IBM z/OS XLC compiler for Metal C Compilation**
+
+For developent:
+**git** - 2.18 or higher is recommended off z/os
+**ssh agent** - Our repositories are structured to expect that you have ssh keys setup for github. This assists with rapid development and automation. 
+Git bash or putty's pageant are some of various tools that can help you setup & work with ssh keys over git.
+
+#### (Optional) Install git for z/OS
 Because all of our code is on github, yet ZSS must run on z/OS and the zLUX App Server may optionally run on z/OS as well, having git on z/OS is the most convenient way to work with the source code. The alternative would be to utilize FTP or another method to transfer contents to z/OS.
 If you'd like to go this route, you can find git for z/OS free of charge here: http://www.rocketsoftware.com/product-categories/mainframe/git-for-zos
+On z/OS, git 2.14.4 is the minimum needed.
+
 
 ### 1. Acquire the source code
 To get started, first clone (or download) the code necessary to build zss and the zss cross memory server.
@@ -74,9 +94,15 @@ Continue from within zlux-app-server.
 ### 2. Set the server configuration
 Read the [Configuration](https://github.com/zowe/zlux/wiki/Configuration-for-zLUX-App-Server-&-ZSS) wiki page for a detailed explanation of the primary items that you'll want to configure for your first server.
 
-In short, ensure that within **zlux-app-server/config/zluxserver.json**, **node.https.port + other HTTPS parameters** are set to your liking on the LUW host, and that **agent.http.port** is set on the z/OS host.
+In short, ensure that within **zlux-app-server/config/zluxserver.json**, **node.https.port + other HTTPS parameters** are set to your liking on the LUW host.
+
+#### Setup for ZSS
 If you will be using ZSS as an authentication backend, set `dataserviceAuthentication.defaultAuthentication = "zss"` and
  `dataserviceAuthentication.implementationDefaults.zss.plugins = ["org.zowe.zlux.auth.zss"]`.
+ 
+Next, set **agent.http.port** to the port where you want ZSS to listen on. This must be done at minimum on the z/OS host, but can also be done in the zluxserver.json where the App server is running, if it is not the same.
+Finally, if the App server is running off of z/OS, then you will need to change **agent.http.ipAddresses** to a hostname or ip address that is externally visible.
+**Note: It is highly recommended to turn on HTTPS for ZSS via [configuring AT-TLS](https://zowe.github.io/docs-site/latest/user-guide/mvd-configuration.html#configuring-zss-for-https) when using ZSS externally, as the session security is essential for all but trivial development environments**
 
 For each App that is supposed to be loaded by zLUX App server, a plugin locator should be defined. Read the 
 [Plugin Definition & Structure](https://github.com/zowe/zlux/wiki/Zlux-Plugin-Definition-&-Structure) wiki page for 

@@ -32,20 +32,28 @@ So, with that in mind, follow each step and you'll be on your way to your first 
 
 ### 0. Install Prerequisites
 Wherever the App Server is installed, the following is required for running:
-**NodeJS** - v6.14.4 minimum for z/OS,  elsewhere 6, 8, and 10 work well.
-**npm** - v6.4 minimum
+
+* **NodeJS** - v6.14.4 minimum for z/OS,  elsewhere 6, 8, and 10 work well.
+
+* **npm** - v6.4 minimum
 
 For building zLUX framework and apps:
-**jdk** - v8 minimum
-**ant** - v1.10 minimum
-**ant-contrib** - v1 minimum
+
+* **jdk** - v8 minimum
+ 
+* **ant** - v1.10 minimum
+
+* **ant-contrib** - v1 minimum
 
 For building zss:
-**IBM z/OS XLC compiler for Metal C Compilation**
+
+* **IBM z/OS XLC compiler for Metal C Compilation**
 
 For developent:
-**git** - 2.18 or higher is recommended off z/os
-**ssh agent** - Our repositories are structured to expect that you have ssh keys setup for github. This assists with rapid development and automation. 
+
+* **git** - 2.18 or higher is recommended off z/os
+
+* **ssh agent** - Our repositories are structured to expect that you have ssh keys setup for github. This assists with rapid development and automation. 
 Git bash or putty's pageant are some of various tools that can help you setup & work with ssh keys over git.
 
 #### (Optional) Install git for z/OS

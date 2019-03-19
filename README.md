@@ -66,8 +66,7 @@ On z/OS, git 2.14.4 is the minimum needed.
 To get started, first clone (or download) the code necessary to build zss and the zss cross memory server.
 If using git, the following commands should be used on z/OS:
 ```
-git clone git@github.com:zowe/zss.git
-git clone git@github.com:zowe/zowe-common-c.git
+git clone --recursive git@github.com:zowe/zss.git
 ```
 
 Afterwards, clone (or download) the github capstone repository, https://github.com/zowe/zlux
@@ -164,8 +163,7 @@ However, if you need to change the server configuration files or want to add mor
 ### 5. Build ZSS
 ZSS is a dependency of zLUX, but exists in a seperate repository and must be run on z/OS. To get the code, first do the following on z/OS:
 ```
-git clone git@github.com:zowe/zowe-common-c.git
-git clone git@github.com:zowe/zss.git
+git clone --recursive git@github.com:zowe/zss.git
 cd zss/build
 ```
 Ant is used to build ZSS, and ZSS is built in two parts: the ZSS Server and the ZSS Cross-memory Server. ZSS Server communicates through HTTP(S) to zLUX, while the cross memory server is communicated with by ZSS through in-system calls.

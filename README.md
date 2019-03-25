@@ -151,9 +151,9 @@ Valid parameters for nodeServer are as follows:
 
 In the example where we're running ZSS on a host named mainframe.zowe.com, running on zssPort = 19997, the App server running on Windows could be started with the following:
 
-`nodeServer.bat -h mainframe.zowe.com -P 19997 -p 19998`
+`nodeServer.bat -h mainframe.zowe.com -P 19997 -s 19998`
 
-After which we'd be able to connect to the App server at port 19998.
+After which we'd be able to connect to the App server at HTTPS port 19998.
 
 **NOTE: the parameter parsing is provided by [argumentParser.js](https://github.com/zowe/zlux-server-framework/blob/master/lib/argumentParser.js), which allows for a few variations of input, depending on preference. For example, the following are all valid ways to specify the ZSS host**
 

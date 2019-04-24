@@ -54,7 +54,7 @@
           }
         }
       },
-      "portRange": [8550,8600],
+      "portRange": [8550,8600]
     }
   },
   "dataserviceAuthentication": {

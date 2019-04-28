@@ -8,7 +8,7 @@
 # Copyright Contributors to the Zowe Project.
 if [ $# -eq 0 ]
     then
-    echo "Usage: $0 AppPackagePath"
+    echo "Usage: $0 AppPath"
     exit 1
 fi
 utils_path=$(pwd)/../../zlux-server-framework/utils

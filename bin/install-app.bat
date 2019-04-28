@@ -22,7 +22,7 @@ endlocal
 goto :finished
 
 :fail
-echo Usage: install-app.bat AppPackagePath
+echo Usage: install-app.bat AppPath
 goto :eof
 
 rem Create a directory if it does not exist yet

@@ -330,7 +330,7 @@ paths:
           description: the file that should be returned
           required: true
           type: string
-        - name: mode
+        - name: responseType
           in: query
           description: the file should be returned in "base64" or "raw"
           required: true

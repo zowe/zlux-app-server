@@ -122,6 +122,25 @@ details. For example, to enable Angular Sample App, create
 }
 ```
 
+#### Setup for ZSS
+If you will be using ZSS as an authentication backend, set `dataserviceAuthentication.defaultAuthentication = "zss"` and
+ `dataserviceAuthentication.implementationDefaults.zss.plugins = ["org.zowe.zlux.auth.zss"]`.
+ 
+Next, set **agent.http.port** to the port where you want ZSS to listen on. This must be done at minimum on the z/OS host, but can also be done in the zluxserver.json where the App server is running, if it is not the same.
+Finally, if the App server is running off of z/OS, then you will need to change **agent.http.ipAddresses** to a hostname or ip address that is externally visible.
+**Note: It is highly recommended to turn on HTTPS for ZSS via [configuring AT-TLS](https://zowe.github.io/docs-site/latest/user-guide/mvd-configuration.html#configuring-zss-for-https) when using ZSS externally, as the session security is essential for all but trivial development environments**
+
+For each App that is supposed to be loaded by zLUX App server, a plugin locator should be defined. Read the 
+[Plugin Definition & Structure](https://github.com/zowe/zlux/wiki/Zlux-Plugin-Definition-&-Structure) wiki page for 
+details. For example, to enable Angular Sample App, create 
+`zlux-app-server/plugins/org.zowe.zlux.sample.angular.json` with the following contents:
+```
+{
+  "identifier": "org.zowe.zlux.sample.angular",
+  "pluginLocation": "../../sample-angular-app"
+}
+```
+
 Before continuing, if you intend to use the terminal, at this time (temporarily) it must be pre-configured to know the destination host.
 Edit *tn3270-ng2/_defaultTN3270.json* to set *host* and *port* to a valid TN3270 server telnet host and port and then save the file.
 Edit *vt-ng2/_defaultVT.json* to set *host* and *port* to a valid ssh host and port and then save the file.

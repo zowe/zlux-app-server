@@ -1,0 +1,30 @@
+I, 1000TurquoisePogs hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: 30730276+1000TurquoisePogs@users.noreply.github.com
+
+a80ccd24731c69943f6ccfb3edd71368b583d886 Update README.md
+
+HTTP->HTTPS
+543007b5fdc07fda6d8c5331a938f12b41221042 Update package.json
+
+Switched lack of test to warning for pipeline until we get tests in here
+7aaf1c261cfb9ee375dafcef01b39ee0f98a973e Update README.md
+1bde7ff513787f5b9969941b898fef469f9ed9b5 Update README.md
+dad4b4ce0faeff675e2dc301695fdd6fe3f6c5f4 Update README.md
+
+Some path clarifications
+e5ec6ec6738b464f6cc7a33fdf6cc6c09ebd9dab Update zluxserver.json
+5b3de4b69b37a2a7414adf26e68d4933478489a2 Update README.md
+92a4676aadea7450bc372fcb2f9db4cdf123fbe8 Update README.md
+c8baa9a78b42324fa1e674414f18d292205cd37c Update README.md
+8b100d348433c5e4db0711f3aaf4980a37241b2c Update README.md
+
+Note about possible hang on windows
+d9fde95b7aa553bdcdc17cc88c8db034eaa4cbd7 Update README.md
+
+ZSS = Zowe System Services
+2f1408b64d19d7375f22afc169c2b617beab230d Update README.md
+
+Update README for App server naming & repository renamnig, and sample App additions.
+652af43e21965d51965d536b34a5c8b1701ada9f Update README.md
+
+New home page address
+8604c43fa898359a2f74d579a5993bb157c0b587 initial commit

@@ -101,7 +101,26 @@ Continue from within zlux-app-server.
 ### 2. Set the server configuration
 Read the [Configuration](https://github.com/zowe/zlux/wiki/Configuration-for-zLUX-App-Server-&-ZSS) wiki page for a detailed explanation of the primary items that you'll want to configure for your first server.
 
-In short, ensure that within **zlux-app-server/config/zluxserver.json**, **node.https.port + other HTTPS parameters** are set to your liking on the LUW host, and that **agent.http.port** is set on the z/OS host.
+In short, ensure that within **zlux-app-server/config/zluxserver.json**, **node.https.port + other HTTPS parameters** are set to your liking on the LUW host.
+
+#### Setup for ZSS
+If you will be using ZSS as an authentication backend, set `dataserviceAuthentication.defaultAuthentication = "zss"` and
+ `dataserviceAuthentication.implementationDefaults.zss.plugins = ["org.zowe.zlux.auth.zss"]`.
+ 
+Next, set **agent.http.port** to the port where you want ZSS to listen on. This must be done at minimum on the z/OS host, but can also be done in the zluxserver.json where the App server is running, if it is not the same.
+Finally, if the App server is running off of z/OS, then you will need to change **agent.http.ipAddresses** to a hostname or ip address that is externally visible.
+**Note: It is highly recommended to turn on HTTPS for ZSS via [configuring AT-TLS](https://zowe.github.io/docs-site/latest/user-guide/mvd-configuration.html#configuring-zss-for-https) when using ZSS externally, as the session security is essential for all but trivial development environments**
+
+For each App that is supposed to be loaded by zLUX App server, a plugin locator should be defined. Read the 
+[Plugin Definition & Structure](https://github.com/zowe/zlux/wiki/Zlux-Plugin-Definition-&-Structure) wiki page for 
+details. For example, to enable Angular Sample App, create 
+`zlux-app-server/plugins/org.zowe.zlux.sample.angular.json` with the following contents:
+```
+{
+  "identifier": "org.zowe.zlux.sample.angular",
+  "pluginLocation": "../../sample-angular-app"
+}
+```
 
 #### Setup for ZSS
 If you will be using ZSS as an authentication backend, set `dataserviceAuthentication.defaultAuthentication = "zss"` and

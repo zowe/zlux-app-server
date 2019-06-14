@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 # This program and the accompanying materials are
 # made available under the terms of the Eclipse Public License v2.0 which accompanies
 # this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html
@@ -133,8 +133,8 @@ export minWorkers=2
 
 echo Show Environment
 env
-echo Show which node
-which node
+echo Show location of node
+type node
 
 
 echo Starting node

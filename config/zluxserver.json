@@ -41,22 +41,7 @@
   "groupsDir":"../deploy/instance/groups",
   "usersDir":"../deploy/instance/users",
   "pluginsDir":"../deploy/instance/ZLUX/plugins",
-  "languages": {
-    "java": {
-      "war": {
-        "javaAppServer": {
-          "type": "tomcat",
-          "path": "../../zlux-server-framework/lib/java/apache-tomcat-9.0.16",
-          "config": "../deploy/instance/ZLUX/serverConfig/tomcat.xml",
-          "https": {
-            "key": "../deploy/product/ZLUX/serverConfig/zlux.keystore.key",
-            "certificate": "../deploy/product/ZLUX/serverConfig/zlux.keystore.cer"
-          }
-        }
-      },
-      "portRange": [8550,8600]
-    }
-  },
+
   "dataserviceAuthentication": {
     //this specifies the default authentication type for dataservices that didn't specify which type to use. These dataservices therefore should not expect a particular type of authentication to be used.
     "defaultAuthentication": "zss",

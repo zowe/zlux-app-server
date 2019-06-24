@@ -12,12 +12,10 @@ if [ $# -eq 0 ]
     exit 1
 fi
 utils_path=$(pwd)/../../zlux-server-framework/utils
-if [ "$1" = "/*" ]
-   then
-   app_path=$1
-else
-   app_path=$(pwd)/$1
-fi
+start_dir=$(pwd)
+cd $1
+app_path=$(pwd)
+cd $start_dir
 
 shift
 

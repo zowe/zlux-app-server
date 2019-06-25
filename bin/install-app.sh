@@ -19,6 +19,8 @@ app_path=$(cd "$1"; pwd)
 
 shift
 
+cd $zlux_path/zlux-app-server/bin
+
 if [ -z "$ZLUX_INSTALL_LOG_DIR" ]
     then
     ZLUX_INSTALL_LOG_DIR="$zlux_path/zlux-app-server/log"

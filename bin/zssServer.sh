@@ -124,7 +124,7 @@ fi
 export dir=`dirname "$0"`
 cd $dir
 
-./zssServer "../deploy/instance/ZLUX/serverConfig/zluxserver.json"  2>&1 | tee $ZSS_LOG_FILE
+_BPX_JOBNAME=${ZOWE_PREFIX}SZ1 ./zssServer "../deploy/instance/ZLUX/serverConfig/zluxserver.json"  2>&1 | tee $ZSS_LOG_FILE
 
 
 # This program and the accompanying materials are

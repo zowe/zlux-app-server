@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 # This program and the accompanying materials are
 # made available under the terms of the Eclipse Public License v2.0 which accompanies
 # this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html
@@ -138,7 +138,7 @@ type node
 echo Starting node
 
 node --harmony zluxServer.js --config=../deploy/instance/ZLUX/serverConfig/zluxserver.json "$@" 2>&1 | tee $ZLUX_NODE_LOG_FILE
-
+echo "Ended with rc=$?"
 
 
 # This program and the accompanying materials are

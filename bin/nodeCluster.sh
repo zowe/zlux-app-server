@@ -85,6 +85,7 @@ fi
 
 
 echo ZLUX_NODE_LOG_FILE=${ZLUX_NODE_LOG_FILE}
+export ZLUX_LOG_PATH=$ZLUX_NODE_LOG_FILE
 
 if [ ! -e $ZLUX_NODE_LOG_FILE ]
 then

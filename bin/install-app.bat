@@ -23,16 +23,16 @@ echo Running installer. Log location=%LOG_PATH%
 node "%~dp0..\..\zlux-server-framework\utils\install-app.js" -i "%app_path%"  -o "%~dp0..\..\\" -c "%~dp0..\..\zlux-app-server\deploy\instance\ZLUX\serverConfig\zluxserver.json" %2 > %LOG_PATH% 2>&1
 echo Ended with rc=%ERRORLEVEL%
 endlocal
-goto :eof
+exit /B %ERRORLEVEL%
 
 :nonode
 echo Node required for installation. Add to PATH and try again
 echo Ended with rc=%ERRORLEVEL%
-goto :eof
+exit /B %ERRORLEVEL%
 
 :fail
 echo Usage: install-app.bat AppPath
-goto :eof
+exit /B 1
 
 rem Create a directory if it does not exist yet
 :makedir

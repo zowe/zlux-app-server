@@ -97,6 +97,7 @@ fi
 
 
 echo ZSS_LOG_FILE=${ZSS_LOG_FILE}
+export ZSS_LOG_FILE=$ZSS_LOG_FILE
 
 if [ ! -e $ZSS_LOG_FILE ]
 then

@@ -16,7 +16,7 @@ cd ../lib
 call :abspath %ZLUX_NODE_LOG_DIR%\nodeServer.log
 set ZLUX_LOG_PATH=%RETVAL%
 echo Server startup. Log location=%ZLUX_LOG_PATH%
-node --harmony --inspect zluxServer.js --config=../deploy/instance/ZLUX/serverConfig/zluxserver.json %* > %ZLUX_LOG_PATH% 2>&1
+node --harmony zluxServer.js --config=../deploy/instance/ZLUX/serverConfig/zluxserver.json %* > %ZLUX_LOG_PATH% 2>&1
 echo Ended with rc=%ERRORLEVEL%
 endlocal
 goto :eof

@@ -41,6 +41,8 @@ paths:
           description: "Success"
         401:
           description: "Unauthorized"
+          
+   # add server
 
   /server/config:
     get:
@@ -64,22 +66,25 @@ paths:
       # - petstore_auth:
       #   - "write:pets"
       #   - "read:pets"
-  /server/config/httpsPort/:port:
+  
+
+  /server/config/:
     post:
       tags:
       - "server"
-      summary: "Set the https 'port' of the server (via its config)"
-      description: "Set the https 'port' of the server (via its config)"
+      summary: "Update the config of the server (with certain attributes)"
+      description: "Update the config of the server (with certain attributes)"
       consumes:
-      - "integer"
+      - "application/json"
       # - "application/xml"
       produces:
       - "application/json"
       parameters:
-      - in: "query"
-        name: "port"
-        type: "number"
-        description: "Set the new https port"
+      - in: "body"
+        name: "config"
+        schema:
+            $ref: "#/definitions/mutatableConfigDefinition"
+        description: "Update allowed attributes of server config via JSON post body"
         required: true
       responses:
         200:
@@ -236,21 +241,6 @@ paths:
           description: "Unauthorized"
         500:
           description: "Could not complete new plugin scan."
-  /plugins/scan:
-    get:
-      tags:
-      - "plugins"
-      summary: "(Cluster only) Scans for new plugins and reloads the server"
-      description: "(Cluster only) Scans for new plugins and reloads the server"
-      produces:
-      - "application/json"
-      responses:
-        200:
-          description: "Cluster scanning for new plugins, please wait a moment.\n\nOR\n\nScan complete."
-        401:
-          description: "Unauthorized"
-        500:
-          description: "Could not complete new plugin scan."
       
   /plugins/:id:
     delete:
@@ -352,29 +342,19 @@ definitions:
         type: "array"
         items:
           type: "object"
-      totalMemory:
-        type: "number"
       freeMemory:
-        type: "number"
-      uptime:
         type: "number"
       hostname:
         type: "string"
-      networkInterfaces:
-        type: "array"
-        items:
-          type: "object"
-      memoryUsage:
-        type: "object"
       userEnvironment:
         type: "object"
       PID:
         type: "number"
+      PPID:
+        type: "number"
       nodeVersion:
         type: "string"
       nodeRelease:
-        type: "object"
-      nodeConfig:
         type: "object"
         
   logLevelDefinition:
@@ -473,6 +453,78 @@ definitions:
             type: "number"
           logLanguage:
             type: "string"
+          logLevels:
+            type: "object"
+            
+  mutatableConfigDefinition:
+    type: "object"
+    properties:
+      options:
+        type: "object"
+        properties:
+          node:
+            type: "object"
+            properties:
+              allowInvalidTLSProxy: 
+                type: "object"
+              noPrompt:
+                type: "object"
+              noChild:
+                type: "object"
+              https:
+                type: "object"
+                properties:
+                  ipAddresses:
+                    type: "array"
+                    items:
+                      type: "string"
+                  port:
+                    type: "number"
+              mediationLayer:
+                type: "object"
+                properties:
+                  server:
+                    type: "object"
+                    properties:
+                      hostname:
+                        type: "string"
+                      port:
+                        type: "number"
+                      isHttps:
+                        type: boolean
+                  enabled:
+                    type: boolean
+              childProcesses:
+                type: "object"
+          dataserviceAuthentication:
+            type: "object"
+            properties:
+              defaultAthentication:
+                type: "string"
+              rbac:
+                type: boolean
+              implementationDefaults:
+                type: "object"
+          agent:
+            type: "object"
+            properties:
+              host:
+                type: "string"
+              http:
+                type: "object"
+                properties:
+                  ipAddresses:
+                    type: "array"
+                    items:
+                      type: "string"
+                  port:
+                    type: "number"
+          zssPort:
+            type: "number"
+          logLanguage:
+            type: "string"
+          logLevels:
+            type: "object"
             
             
 externalDocs:

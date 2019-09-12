@@ -1,0 +1,480 @@
+#  This program and the accompanying materials are
+#  made available under the terms of the Eclipse Public License v2.0 which accompanies
+#  this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html
+#  
+#  SPDX-License-Identifier: EPL-2.0
+#  
+#  Copyright Contributors to the Zowe Project.
+
+swagger: "2.0"
+info:
+  description: "These are the Swagger documents on dynamic app server configuration for the Zowe desktop, used to control the plugin and services lifecycle. You can find more documentation about Zowe at [https://docs.zowe.org/stable/]."
+  version: "1.0.0"
+  title: "Zowe plugin and services lifecycle"
+  license:
+    name: "EPL-2.0"
+host: "localhost"
+basePath: /
+tags:
+- name: "server"
+  description: "Server essentials"
+  externalDocs:
+    description: "Find out more"
+    url: "https://github.com/zowe/zlux-app-server"
+- name: "plugins"
+  description: "Plugin lifecycle changes"
+
+schemes:
+- "https"
+- "http"
+paths:
+  /server/agent:
+    get:
+      tags:
+      - "server"
+      summary: "Get the agent server (often ZSS server)"
+      description: "Get the agent server (often ZSS server)"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Success"
+        401:
+          description: "Unauthorized"
+
+  /server/config:
+    get:
+      tags:
+      - "server"
+      summary: "Get the config of the server"
+      description: "Get the config of the server"
+      # consumes:
+      # - "application/json"
+      # - "application/xml"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/configDefinition"
+        401:
+          description: "Unauthorized"
+      # security:
+      # - petstore_auth:
+      #   - "write:pets"
+      #   - "read:pets"
+  /server/config/httpsPort/:port:
+    post:
+      tags:
+      - "server"
+      summary: "Set the https 'port' of the server (via its config)"
+      description: "Set the https 'port' of the server (via its config)"
+      consumes:
+      - "integer"
+      # - "application/xml"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "port"
+        type: "number"
+        description: "Set the new https port"
+        required: true
+      responses:
+        200:
+          description: "Port remapped to ${req.params.port}"
+        401:
+          description: "Unauthorized"
+        400:
+          description: "Port query expected positive integer, received ${req.params.port}\n\nOR\n\nPort query expected positive integer, received ${req.params.port}\n\nOR\n\nServer must be running in cluster mode to remap http(s) port"
+        500:
+          description: "Unable to update server configuration file"
+
+  /server/environment:
+    get:
+      tags:
+      - "server"
+      summary: "Get environment variables of the server"
+      description: "Get environment variables of the server"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/serverEnvDefinition"
+        401:
+          description: "Unauthorized"
+
+  /server/log:
+    get:
+      tags:
+      - "server"
+      summary: "Retrieve the server log"
+      description: "Retrieve the server log"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Success"
+        401:
+          description: "Unauthorized"
+        501:
+          description: "Log not found"
+          
+  /server/logLevels:
+    get:
+      tags:
+      - "server"
+      summary: "Get the log levels of the server and plugins"
+      description: "Get the log levels of the server and plugins"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/logLevelDefinition"
+        401:
+          description: "Unauthorized"
+          
+  /server/logLevels/name/:componentName/level/:level:
+    post:
+      tags:
+      - "server"
+      summary: "Set the log levels of a logger using a 'name'"
+      description: "Set the log levels of a logger using a 'name'"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "name"
+        description: "Logger component name"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Log level must be a number"
+        401:
+          description: "Unauthorized"
+          
+  /server/logLevels/pattern/:componentPattern/level/:level:
+    post:
+      tags:
+      - "server"
+      summary: "Set the log levels of a logger using 'pattern'"
+      description: "Set the log levels of a logger using 'pattern'"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "pattern"
+        description: "Logger component pattern"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Log level must be a number"
+        401:
+          description: "Unauthorized"
+          
+  /server/reload:
+    get:
+      tags:
+      - "server"
+      summary: "(Cluster only) Reloads the server"
+      description: "(Cluster only) Reloads the server"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Reloading server, please wait a moment."
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Cannot reload server unless cluster mode is in use."
+          
+  /plugins/:
+    get:
+      tags:
+      - "plugins"
+      summary: "Gets list of plugins and their dataservices"
+      description: "Gets list of plugins and their dataservices"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Success"
+          schema:
+              $ref: "#/definitions/pluginsDefinition"
+        401:
+          description: "Unauthorized"
+    put:
+      tags:
+      - "plugins"
+      summary: "(Cluster only) Add a plugin (or upgrade an existing one) to the server via 'location'"
+      description: "(Cluster only) Add a plugin (or upgrade an existing one) to the server via 'location'"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "plugin location"
+        description: "Location in the local file system"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Successfully installed '${installResponse.message}'. Reloading server, please wait a moment."
+        400:
+          description: "Failed to install plugin.  Error: ${installResponse.message}\n\nOR\n\nPath query must be a directory.\n\nOR\n\nName queries not yet supported.\n\nOR\n\n"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Could not complete new plugin scan."
+  /plugins/scan:
+    get:
+      tags:
+      - "plugins"
+      summary: "(Cluster only) Scans for new plugins and reloads the server"
+      description: "(Cluster only) Scans for new plugins and reloads the server"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Cluster scanning for new plugins, please wait a moment.\n\nOR\n\nScan complete."
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Could not complete new plugin scan."
+      
+  /plugins/:id:
+    delete:
+      tags:
+      - "plugins"
+      summary: "(Cluster only) Deletes a plugin 'identifier' and reloads the server"
+      description: "(Cluster only) Deletes a plugin 'identifier' and reloads the server"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "Plugin identifier"
+        in: "query"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Deleting plugin 'identifier'. Reloading server, please wait a moment."
+        400:
+          description: "${fullPath} does not exist.\n\nOR\n\nImproper access permissions for path '${fullPath}'\n\nOR\n\n${err}"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Cannot reload server unless cluster mode is in use."
+          
+      
+
+# securityDefinitions:
+  # petstore_auth:
+  #   type: "oauth2"
+  #   authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+  #   flow: "implicit"
+  #   scopes:
+  #     write:pets: "modify pets in your account"
+  #     read:pets: "read your pets"
+  # api_key:
+  #   type: "apiKey"
+  #   name: "api_key"
+  #   in: "header"
+definitions:
+  pluginsDefinition:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        identifier:
+          type: "string"
+        pluginVersion:
+          type: "string"
+        apiVersion:
+          type: "string"
+        pluginType:
+          type: "string"
+        copyright:
+          type: "string"
+        webContent:
+          type: "object"
+        configurationData:
+          type: "object"
+          properties:
+            resources:
+              type: "object"
+        dataServices:
+          type: "object"
+          properties:
+            configuration:
+              type: "object"
+              properties:
+                contents:
+                  type: "object"
+            type:
+              type: "string"
+            sourceName:
+              type: "string"
+            localName:
+              type: "string"
+            sourcePlugin:
+              type: "string"
+            versionRange:
+              type: "string"
+            version:
+              type: "string"
+  
+  serverEnvDefinition:
+    type: "object"
+    properties:
+      timestamp:
+        type: "string"
+      args:
+        type: "string"
+      nodeArgs:
+        type: "string"
+      platform:
+        type: "string"
+      arch:
+        type: "string"
+      osRelease:
+        type: "object"
+      cpus:
+        type: "array"
+        items:
+          type: "object"
+      totalMemory:
+        type: "number"
+      freeMemory:
+        type: "number"
+      uptime:
+        type: "number"
+      hostname:
+        type: "string"
+      networkInterfaces:
+        type: "array"
+        items:
+          type: "object"
+      memoryUsage:
+        type: "object"
+      userEnvironment:
+        type: "object"
+      PID:
+        type: "number"
+      nodeVersion:
+        type: "string"
+      nodeRelease:
+        type: "object"
+      nodeConfig:
+        type: "object"
+        
+  logLevelDefinition:
+    type: "object"
+    properties:
+      logComponentName:
+        type: "number"
+      
+            
+  configDefinition:
+    type: "object"
+    properties:
+      options:
+        type: "object"
+        properties:
+          rootDir:
+            type: "string"
+          productDir:
+            type: "string"
+          siteDir: 
+            type: "string"
+          instanceDir:
+            type: "string"
+          groupsDir:
+            type: "string"
+          usersDir:
+            type: "string"
+          pluginsDir:
+            type: "string"
+          node:
+            type: "object"
+            properties:
+              https:
+                type: "object"
+                properties:
+                  ipAddresses:
+                    type: "array"
+                    items:
+                      type: "string"
+                  port:
+                    type: "number"
+                  keys:
+                    type: "array"
+                    items:
+                      type: "string"
+                  certificates:
+                    type: "array"
+                    items:
+                      type: "string"
+                  certificateAuthorities:
+                    type: "array"
+                    items:
+                      type: "string"
+                  enabled:
+                    type: "boolean"
+              mediationLayer:
+                type: "object"
+                properties:
+                  server:
+                    type: "object"
+                    properties:
+                      hostname:
+                        type: "string"
+                      port:
+                        type: "number"
+                      isHttps:
+                        type: boolean
+                  enabled:
+                    type: boolean
+              childProcesses:
+                type: "object"
+          dataserviceAuthentication:
+            type: "object"
+            properties:
+              defaultAthentication:
+                type: "string"
+              rbac:
+                type: boolean
+              implementationDefaults:
+                type: "object"
+          agent:
+            type: "object"
+            properties:
+              host:
+                type: "string"
+              http:
+                type: "object"
+                properties:
+                  ipAddresses:
+                    type: "array"
+                    items:
+                      type: "string"
+                  port:
+                    type: "number"
+          zssPort:
+            type: "number"
+          logLanguage:
+            type: "string"
+            
+            
+externalDocs:
+  description: "Find out more about Zowe"
+  url: "https://www.zowe.org/"

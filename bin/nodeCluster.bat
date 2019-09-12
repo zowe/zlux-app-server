@@ -14,11 +14,11 @@ call :makedir %ZLUX_NODE_LOG_DIR%
 set NODE_PATH=../..;../../zlux-server-framework/node_modules;%NODE_PATH%
 cd ../lib
 call :abspath %ZLUX_NODE_LOG_DIR%\nodeServer.log
-set LOG_PATH=%RETVAL%
+set ZLUX_LOG_PATH=%RETVAL%
 set minWorkers=2
 set NODE_CLUSTER_SCHED_POLICY=rr
-echo Server startup. Log location=%LOG_PATH%
-node --harmony zluxCluster.js --config=../deploy/instance/ZLUX/serverConfig/zluxserver.json %* > %LOG_PATH% 2>&1
+echo Server startup. Log location=%ZLUX_LOG_PATH%
+node --harmony zluxCluster.js --config=../deploy/instance/ZLUX/serverConfig/zluxserver.json %* > %ZLUX_LOG_PATH% 2>&1
 echo Ended with rc=%ERRORLEVEL%
 endlocal
 goto :eof

@@ -28,6 +28,23 @@ schemes:
 - "https"
 - "http"
 paths:
+
+  /server/:
+    get:
+      tags:
+      - "server"
+      summary: "Retrieves list of accessible server endpoints"
+      description: "Retrieves list of accessible server endpoints"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/serverLinksDefinition"
+        401:
+          description: "Unauthorized"
+          
   /server/agent:
     get:
       tags:
@@ -42,7 +59,6 @@ paths:
         401:
           description: "Unauthorized"
           
-   # add server
 
   /server/config:
     get:
@@ -50,9 +66,7 @@ paths:
       - "server"
       summary: "Get the config of the server"
       description: "Get the config of the server"
-      # consumes:
-      # - "application/json"
-      # - "application/xml"
+
       produces:
       - "application/json"
       responses:
@@ -62,10 +76,7 @@ paths:
             $ref: "#/definitions/configDefinition"
         401:
           description: "Unauthorized"
-      # security:
-      # - petstore_auth:
-      #   - "write:pets"
-      #   - "read:pets"
+
   
 
   /server/config/:
@@ -362,6 +373,21 @@ definitions:
     properties:
       logComponentName:
         type: "number"
+        
+  serverLinksDefinition:
+    type: "object"
+    properties:
+      links:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            href:
+              type: "string"
+            rel:
+              type: "string"
+            type:
+              type: "string"
       
             
   configDefinition:

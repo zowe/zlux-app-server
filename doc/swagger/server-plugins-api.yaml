@@ -315,6 +315,12 @@ paths:
       description: "Gets list of plugins and their dataservices"
       produces:
       - "application/json"
+      parameters:
+      - in: "query"
+        name: "plugin type"
+        description: "Type of plugins to query. Default is 'all'"
+        type: "string"
+        required: true
       responses:
         200:
           description: "Success"

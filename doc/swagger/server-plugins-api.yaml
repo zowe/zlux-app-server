@@ -269,8 +269,8 @@ paths:
     post:
       tags:
       - "server"
-      summary: "Set the log levels of a logger using 'pattern'"
-      description: "Set the log levels of a logger using 'pattern'"
+      summary: "Set the log levels of a logger using a RegEx 'pattern'"
+      description: "Set the log levels of a logger using a RegEx 'pattern'"
       produces:
       - "application/json"
       parameters:

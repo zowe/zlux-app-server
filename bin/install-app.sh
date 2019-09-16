@@ -44,7 +44,7 @@ if [ $rc -ne 0 ]
 fi
 echo "Running installer. Log location=$LOG_FILE"
 node ${utils_path}/install-app.js -i "$app_path" -c "$json_path" $@ 2>&1 | tee $LOG_FILE
-rc=?
+rc=$?
 echo "Ended with rc=${rc}"
 exit $rc
 # This program and the accompanying materials are

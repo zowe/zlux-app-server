@@ -21,14 +21,16 @@ where node
 if %ERRORLEVEL% neq 0 goto :nonode
 echo Running installer. Log location=%LOG_PATH%
 node "%~dp0..\..\zlux-server-framework\utils\install-app.js" -i "%app_path%"  -o "%~dp0..\..\\" -c "%~dp0..\..\zlux-app-server\deploy\instance\ZLUX\serverConfig\zluxserver.json" %2 > %LOG_PATH% 2>&1
-echo Ended with rc=%ERRORLEVEL%
+set rc=%ERRORLEVEL%
+echo Ended with rc=%rc%
 endlocal
-exit /B %ERRORLEVEL%
+exit /B %rc%
 
 :nonode
+set rc=%ERRORLEVEL%
 echo Node required for installation. Add to PATH and try again
-echo Ended with rc=%ERRORLEVEL%
-exit /B %ERRORLEVEL%
+echo Ended with rc=%rc%
+exit /B %rc%
 
 :fail
 echo Usage: install-app.bat AppPath

@@ -36,15 +36,17 @@ LOG_FILE="$ZLUX_INSTALL_LOG_DIR/install.log"
 echo "utils_path=${utils_path}\napp_path=${app_path}"
 echo "Checking for node"
 type node
-if [ $? -ne 0 ]
+rc=$?
+if [ $rc -ne 0 ]
     then
     echo "Node required for installation. Add to PATH and try again"
-    exit $?
+    exit $rc
 fi
 echo "Running installer. Log location=$LOG_FILE"
 node ${utils_path}/install-app.js -i "$app_path" -c "$json_path" $@ 2>&1 | tee $LOG_FILE
-echo "Ended with rc=$?"
-exit $?
+rc=?
+echo "Ended with rc=${rc}"
+exit $rc
 # This program and the accompanying materials are
 # made available under the terms of the Eclipse Public License v2.0 which accompanies
 # this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html

@@ -265,29 +265,29 @@ paths:
         506:
           description: "Set dataserviceAuthentication.rbac to true in server configuration"
           
-  /server/logLevels/pattern/:componentPattern/level/:level:
-    post:
-      tags:
-      - "server"
-      summary: "Set the log levels of a logger using a RegEx 'pattern'"
-      description: "Set the log levels of a logger using a RegEx 'pattern'"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "query"
-        name: "pattern"
-        description: "Logger component pattern"
-        type: "string"
-        required: true
-      responses:
-        200:
-          description: "Success"
-        400:
-          description: "Log level must be a number\n\nOR\n\nLog level must be within the accepted levels of 'MIN' and 'MAX'"
-        401:
-          description: "Unauthorized"
-        506:
-          description: "Set dataserviceAuthentication.rbac to true in server configuration"
+  # /server/logLevels/pattern/:componentPattern/level/:level:
+  #   post:
+  #     tags:
+  #     - "server"
+  #     summary: "Set the log levels of a logger using a RegEx 'pattern'"
+  #     description: "Set the log levels of a logger using a RegEx 'pattern'"
+  #     produces:
+  #     - "application/json"
+  #     parameters:
+  #     - in: "query"
+  #       name: "pattern"
+  #       description: "Logger component pattern"
+  #       type: "string"
+  #       required: true
+  #     responses:
+  #       200:
+  #         description: "Success"
+  #       400:
+  #         description: "Log level must be a number\n\nOR\n\nLog level must be within the accepted levels of 'MIN' and 'MAX'"
+  #       401:
+  #         description: "Unauthorized"
+  #       506:
+  #         description: "Set dataserviceAuthentication.rbac to true in server configuration"
           
   /server/reload:
     get:

@@ -20,7 +20,7 @@ set ZLUX_LOG_PATH=%RETVAL%
 REM Check if print to terminal argument exists
 echo.%* | findstr /C:"--logToTerminal" 1>nul
 if errorlevel 1 (
-  echo Server startup. Log location=%LOG_PATH%
+  echo Server startup. Log location=%ZLUX_LOG_PATH%
   node --harmony zluxServer.js --config=../deploy/instance/ZLUX/serverConfig/zluxserver.json %* > %ZLUX_LOG_PATH% 2>&1
 ) ELSE (
   echo Server startup. Logging to terminal...

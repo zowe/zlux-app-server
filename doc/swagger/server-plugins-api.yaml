@@ -245,8 +245,8 @@ paths:
     post:
       tags:
       - "server"
-      summary: "Set the log 'level' using a component 'name' of a logger"
-      description: "Set the log 'level' using a component 'name' of a logger"
+      summary: "Set the log 'level' using the component 'name' of a logger"
+      description: "Set the log 'level' using the component 'name' of a logger"
       produces:
       - "application/json"
       parameters:

@@ -85,6 +85,7 @@ fi
 
 
 echo ZLUX_NODE_LOG_FILE=${ZLUX_NODE_LOG_FILE}
+export ZLUX_LOG_PATH=$ZLUX_NODE_LOG_FILE
 
 if [ ! -e $ZLUX_NODE_LOG_FILE ]
 then
@@ -137,7 +138,7 @@ type node
 
 echo Starting node
 
-node --harmony zluxServer.js --config=../deploy/instance/ZLUX/serverConfig/zluxserver.json "$@" 2>&1 | tee $ZLUX_NODE_LOG_FILE
+_BPX_JOBNAME=${ZOWE_PREFIX}DS1 node --harmony zluxServer.js --config=../deploy/instance/ZLUX/serverConfig/zluxserver.json "$@" 2>&1 | tee $ZLUX_NODE_LOG_FILE
 echo "Ended with rc=$?"
 
 

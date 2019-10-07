@@ -2,25 +2,25 @@
 # This program and the accompanying materials are
 # made available under the terms of the Eclipse Public License v2.0 which accompanies
 # this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
-# 
+#
 # Copyright Contributors to the Zowe Project.
 ## launch the ZLUX secure services server
 
-ZSS_SCRIPT_DIR=$(cd `dirname $0` && pwd)                                      
-echo "pwd = `pwd`"                                                            
+ZSS_SCRIPT_DIR=$(cd `dirname $0` && pwd)
+echo "pwd = `pwd`"
 echo "Script dir = $(cd `dirname $0` && pwd)"
 
 if [ -n "$ZSS_LOG_FILE" ]
 then
-  if [[ $ZSS_LOG_FILE == /* ]]                                                
-  then                                                                        
-    echo "Absolute log location given."                                                           
-  else                                                                        
-    ZSS_LOG_FILE="${ZSS_SCRIPT_DIR}/${ZSS_LOG_FILE}"                          
-    echo "Relative log location given, set to absolute path=$ZSS_LOG_FILE"                          
-  fi  
+  if [[ $ZSS_LOG_FILE == /* ]]
+  then
+    echo "Absolute log location given."
+  else
+    ZSS_LOG_FILE="${ZSS_SCRIPT_DIR}/${ZSS_LOG_FILE}"
+    echo "Relative log location given, set to absolute path=$ZSS_LOG_FILE"
+  fi
   if [ -n "$ZSS_LOG_DIR" ]
   then
     echo "ZSS_LOG_FILE set (value $ZSS_LOG_FILE).  Ignoring ZSS_LOG_DIR."
@@ -31,7 +31,7 @@ else
   then
     ZSS_LOG_DIR="../log"
   fi
-  
+
   if [ -f "$ZSS_LOG_DIR" ]
   then
     ZSS_LOG_FILE=$ZSS_LOG_DIR
@@ -45,7 +45,7 @@ else
       ZSS_LOG_FILE=/dev/null
     fi
   fi
-  
+
   ZLUX_ROTATE_LOGS=0
   if [ -d "$ZSS_LOG_DIR" ] && [ -z "$ZSS_LOG_FILE" ]
   then
@@ -63,9 +63,9 @@ else
     if [ $ZSS_LOGS_TO_KEEP -ge 0 ]
     then
       ZLUX_ROTATE_LOGS=1
-    fi 
+    fi
   fi
-  
+
   #Clean up excess logs, if appropriate.
   if [ $ZLUX_ROTATE_LOGS -ne 0 ]
   then
@@ -97,6 +97,7 @@ fi
 
 
 echo ZSS_LOG_FILE=${ZSS_LOG_FILE}
+export ZSS_LOG_FILE=$ZSS_LOG_FILE
 
 if [ ! -e $ZSS_LOG_FILE ]
 then
@@ -124,13 +125,13 @@ fi
 export dir=`dirname "$0"`
 cd $dir
 
-./zssServer "../deploy/instance/ZLUX/serverConfig/zluxserver.json"  2>&1 | tee $ZSS_LOG_FILE
+_BPX_SHAREAS=NO _BPX_JOBNAME=${ZOWE_PREFIX}SZ1 ./zssServer "../deploy/instance/ZLUX/serverConfig/zluxserver.json"  2>&1 | tee $ZSS_LOG_FILE
 
 
 # This program and the accompanying materials are
 # made available under the terms of the Eclipse Public License v2.0 which accompanies
 # this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
-# 
+#
 # Copyright Contributors to the Zowe Project.

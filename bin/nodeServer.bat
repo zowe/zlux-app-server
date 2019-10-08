@@ -14,17 +14,17 @@ if defined ZLUX_NODE_LOG_FILE (
   if not defined ZLUX_NODE_LOG_DIR (
     call :makedir "..\log" 
     cd ..\log
-    for %%I in (.) do set ZLUX_LOG_PATH="%%~dpfI\nodeServer.log"
+    for %%I in (.) do set ZLUX_LOG_PATH="%%~dpfI\appServer.log"
 
   ) else (
     call :makedir "%ZLUX_NODE_LOG_DIR%"
     cd "%ZLUX_NODE_LOG_DIR%"
-    for %%I in (.) do set ZLUX_LOG_PATH="%%~dpfI\nodeServer.log"
+    for %%I in (.) do set ZLUX_LOG_PATH="%%~dpfI\appServer.log"
   )
 )
 cd %temp_cd%
 if not defined ZLUX_CONFIG_FILE (
-  set ZLUX_CONFIG_FILE="../deploy/instance/ZLUX/serverConfig/zluxserver.json"
+  set ZLUX_CONFIG_FILE="../defaults/config/server.json"
 )
 set NODE_PATH=../..;../../zlux-server-framework/node_modules;%NODE_PATH%
 cd ../lib

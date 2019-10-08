@@ -13,8 +13,9 @@ then
     CONFIG_FILE=$ZLUX_CONFIG_FILE
 else
     echo "No config file specified, using default"
-    CONFIG_FILE="${dir}/../deploy/instance/ZLUX/serverConfig/zluxserver.json"
+    CONFIG_FILE="${dir}/../defaults/serverConfig/server.json"
 fi
+
 
 if [ -n "$ZLUX_NODE_LOG_FILE" ]
 then
@@ -46,7 +47,7 @@ else
   ZLUX_ROTATE_LOGS=0
   if [ -d "$ZLUX_NODE_LOG_DIR" ] && [ -z "$ZLUX_NODE_LOG_FILE" ]
   then
-    ZLUX_NODE_LOG_FILE="$ZLUX_NODE_LOG_DIR/nodeServer-`date +%Y-%m-%d-%H-%M`.log"
+    ZLUX_NODE_LOG_FILE="$ZLUX_NODE_LOG_DIR/appServer-`date +%Y-%m-%d-%H-%M`.log"
     if [ -z "$ZLUX_NODE_LOGS_TO_KEEP" ]
     then
       ZLUX_NODE_LOGS_TO_KEEP=5
@@ -66,7 +67,7 @@ else
   #Clean up excess logs, if appropriate.
   if [ $ZLUX_ROTATE_LOGS -ne 0 ]
   then
-    for f in `ls -r -1 $ZLUX_NODE_LOG_DIR/nodeServer-*.log 2>/dev/null | tail +$ZLUX_NODE_LOGS_TO_KEEP`
+    for f in `ls -r -1 $ZLUX_NODE_LOG_DIR/appServer-*.log 2>/dev/null | tail +$ZLUX_NODE_LOGS_TO_KEEP`
     do
       echo nodeServer.sh removing $f
       rm -f $f

@@ -18,7 +18,7 @@ set ZLUX_LOG_PATH=%RETVAL%
 set minWorkers=2
 set NODE_CLUSTER_SCHED_POLICY=rr
 echo Server startup. Log location=%ZLUX_LOG_PATH%
-node --harmony zluxCluster.js --config=../deploy/instance/ZLUX/serverConfig/zluxserver.json %* > %ZLUX_LOG_PATH% 2>&1
+node --harmony zluxCluster.js --config=../defaults/serverConfig/server.json %* > %ZLUX_LOG_PATH% 2>&1
 echo Ended with rc=%ERRORLEVEL%
 endlocal
 goto :eof

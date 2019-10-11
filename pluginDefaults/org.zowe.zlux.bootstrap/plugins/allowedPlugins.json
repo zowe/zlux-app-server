@@ -96,7 +96,7 @@
         "*"
       ]
     },
-	{
+    {
       "identifier": "org.zowe.zlux.sample.iframe",
       "versions": [
         "*"

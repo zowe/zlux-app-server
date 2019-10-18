@@ -13,6 +13,10 @@ set app_path="%~f1"
 if "%ZLUX_INSTALL_LOG_DIR%" == "" (
   set ZLUX_INSTALL_LOG_DIR=..\log
 )
+if "%ZLUX_CONFIG_FILE%" == "" (
+  set ZLUX_CONFIG_FILE=%~dp0\..\..\zlux-app-server\deploy\instance\ZLUX\serverConfig\zluxserver.json
+)
+
 call :makedir %ZLUX_INSTALL_LOG_DIR%
 call :abspath %ZLUX_INSTALL_LOG_DIR%\install.log
 set LOG_PATH=%RETVAL%
@@ -20,7 +24,7 @@ echo Checking for node
 where node
 if %ERRORLEVEL% neq 0 goto :nonode
 echo Running installer. Log location=%LOG_PATH%
-node "%~dp0..\..\zlux-server-framework\utils\install-app.js" -i "%app_path%"  -o "%~dp0..\..\\" -c "%~dp0..\..\zlux-app-server\deploy\instance\ZLUX\serverConfig\zluxserver.json" %2 > %LOG_PATH% 2>&1
+node "%~dp0..\..\zlux-server-framework\utils\install-app.js" -i "%app_path%"  -o "%~dp0..\..\\" -c "%ZLUX_CONFIG_FILE%" %2 > %LOG_PATH% 2>&1
 set rc=%ERRORLEVEL%
 echo Ended with rc=%rc%
 endlocal

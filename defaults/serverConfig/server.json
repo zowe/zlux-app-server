@@ -12,7 +12,8 @@
       "server": {
         "hostname": "localhost",
         "port": 10011,
-        "isHttps": false
+        "gatewayPort": 10012,
+        "isHttps": true
       },
       "enabled": false
     },
@@ -22,14 +23,6 @@
         "once": true
       }
     ]
-  },
-  "agent": {
-    //host is for zlux to know, not zss
-    "host": "localhost",
-    "http": {
-      "ipAddresses": ["127.0.0.1"],
-      "port": 8542
-    }
   },
 // All paths relative to zlux-app-server/bin
 // In real installations, these values will be configured during the install.
@@ -43,6 +36,7 @@
   "dataserviceAuthentication": {
     //this specifies the default authentication type for dataservices that didn't specify which type to use. These dataservices therefore should not expect a particular type of authentication to be used.
     "defaultAuthentication": "fallback",
+    "rbac": false,
 
     //each authentication type may have more than one implementing plugin. define defaults and fallbacks below as well
     //any types that have no implementers are ignored, and any implementations specified here that are not known to the server are also ignored.

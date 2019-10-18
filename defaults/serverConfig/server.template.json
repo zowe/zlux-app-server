@@ -1,0 +1,42 @@
+{
+  "node": {
+    "allowInvalidTLSProxy": $ZOWE_UI_NODE_ALLOW_INVALID_TLS_PROXY,
+    "https": {
+      "ipAddresses": $ZOWE_UI_NODE_HTTPS_IPADDRESSES
+      ,"port": $ZOWE_UI_NODE_HTTPS_PORT
+      ,"keys": $ZOWE_UI_NODE_HTTPS_KEYS
+      ,"certificates": $ZOWE_UI_NODE_HTTPS_CERTIFICATES
+      ,"certificateAuthorities": $ZOWE_UI_NODE_HTTPS_CERTIFICATE_AUTHORITIES
+    },
+    "mediationLayer": {
+      "enabled": $ZOWE_UI_MEDIATIONLAYER_ENABLED,
+      "server": {
+        "hostname": "$ZOWE_UI_MEDIATIONLAYER_SERVER_HOSTNAME"
+        ,"port": $ZOWE_UI_MEDIATIONLAYER_SERVER_DISCOVERY_PORT
+        ,"gatewayPort": $ZOWE_UI_MEDIATIONLAYER_SERVER_GATEWAY_PORT
+        ,"isHttps": $ZOWE_UI_MEDIATIONLAYER_SERVER_ISHTTPS
+      }
+    },
+    "agent": {
+      "http": {
+        "ipAddresses": $ZOWE_UI_AGENT_HTTP_IPADDRESSES
+        ,"port": $ZOWE_UI_AGENT_HTTP_PORT
+        ,"attls": $ZOWE_UI_AGENT_HTTP_ATTLS
+      }
+    }
+    ,"childProcesses": $ZOWE_UI_CHILDPROCESSES
+  }
+
+  ,"siteDir": "$ZOWE_UI_DIR_SITE"
+  ,"instanceDir": "$ZOWE_UI_DIR_INSTANCE"
+  ,"groupsDir": "$ZOWE_UI_DIR_GROUP"
+  ,"usersDir": "$ZOWE_UI_DIR_USERS"
+  ,"pluginsDir":"$ZOWE_UI_DIR_PLUGINS"
+  ,"logLanguage": "$ZOWE_UI_LOG_LANGUAGE"
+  
+  ,"dataserviceAuthentication": {
+    "defaultAuthentication": "$ZOWE_UI_SERVICE_AUTH_DEFAULT"
+    ,"rbac": $ZOWE_UI_SERVICE_AUTH_USE_RBAC,
+    ,"implementationDefaults": $ZOWE_UI_SERVICE_AUTH_IMPLEMENTATION_DEFAULTS
+  }
+}

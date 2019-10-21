@@ -16,7 +16,6 @@ else
     CONFIG_FILE="${dir}/../defaults/serverConfig/server.json"
 fi
 
-
 if [ -n "$ZLUX_NODE_LOG_FILE" ]
 then
   if [ -n "$ZLUX_NODE_LOG_DIR" ]

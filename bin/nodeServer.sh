@@ -6,6 +6,15 @@
 # SPDX-License-Identifier: EPL-2.0
 # 
 # Copyright Contributors to the Zowe Project.
+dir="$(dirname $(readlink -f $0))"
+
+if [ -n "$ZLUX_CONFIG_FILE" ]
+then
+    CONFIG_FILE=$ZLUX_CONFIG_FILE
+else
+    echo "No config file specified, using default"
+    CONFIG_FILE="${dir}/../deploy/instance/ZLUX/serverConfig/zluxserver.json"
+fi
 
 if [ -n "$ZLUX_NODE_LOG_FILE" ]
 then
@@ -138,7 +147,7 @@ type node
 
 echo Starting node
 
-_BPX_JOBNAME=${ZOWE_PREFIX}DS1 node --harmony zluxServer.js --config=../deploy/instance/ZLUX/serverConfig/zluxserver.json "$@" 2>&1 | tee $ZLUX_NODE_LOG_FILE
+_BPX_JOBNAME=${ZOWE_PREFIX}DS1 node --harmony zluxServer.js --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZLUX_NODE_LOG_FILE
 echo "Ended with rc=$?"
 
 

@@ -21,7 +21,7 @@ then
     CONFIG_FILE=$ZLUX_CONFIG_FILE
 else
     echo "No config file specified, using default"
-    CONFIG_FILE="${ZSS_SCRIPT_DIR}/../deploy/instance/ZLUX/serverConfig/zluxserver.json"
+    CONFIG_FILE="${ZSS_SCRIPT_DIR}/../defaults/serverConfig/server.json"
 fi
 
 

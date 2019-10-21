@@ -10,10 +10,10 @@ REM Copyright Contributors to the Zowe Project.
 if [%1]==[] goto :fail
 setlocal
 set app_path="%~f1"
-if "%ZLUX_INSTALL_LOG_DIR%" == "" (
+if not defined ZLUX_INSTALL_LOG_DIR (
   set ZLUX_INSTALL_LOG_DIR=..\log
 )
-if "%ZLUX_CONFIG_FILE%" == "" (
+if not defined ZLUX_CONFIG_FILE (
   set ZLUX_CONFIG_FILE=%~dp0\..\..\zlux-app-server\deploy\instance\ZLUX\serverConfig\zluxserver.json
 )
 

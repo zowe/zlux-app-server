@@ -12,7 +12,7 @@
       "server": {
         "hostname": "localhost",
         "port": 10011,
-		"gatewayPort": 10012,
+        "gatewayPort": 10012,
         "isHttps": true
       },
       "enabled": false
@@ -24,6 +24,19 @@
       }
     ]
   },
+
+
+// section used to define a connection to a server that can handle native or high privilege commands that the app server cannot  
+//  "agent": {
+// for the app server to know, not the agent
+//    "host": "localhost",
+// used by the agent 
+//    "http": {
+//      "ipAddresses": ["127.0.0.1"],
+//      "port": 8542
+//    }
+//  },
+  
 // All paths relative to zlux-app-server/bin
 // In real installations, these values will be configured during the install.
   "productDir":"../deploy/product",

@@ -6,7 +6,7 @@
 # SPDX-License-Identifier: EPL-2.0
 # 
 # Copyright Contributors to the Zowe Project.
-dir="$(dirname $(readlink -f $0))"
+dir=$(cd `dirname $0` && pwd)
 
 if [ -n "$ZLUX_CONFIG_FILE" ]
 then

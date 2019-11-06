@@ -11,13 +11,17 @@ if defined ZLUX_NODE_LOG_FILE (
   FOR /F %%i IN ("%ZLUX_NODE_LOG_FILE%") DO set ZLUX_LOG_PATH=%%~fi  
 ) else (
   if not defined ZLUX_NODE_LOG_DIR (
-    set ZLUX_NODE_LOG_DIR = "../log"
+    call :makedir "..\log" 
+    set ZLUX_NODE_LOG_DIR="..\log"
+  ) else (
+    call :makedir "%ZLUX_NODE_LOG_DIR%"
   )
-  call :makedir
-  FOR /F %%i IN ("%ZLUX_NODE_LOG_DIR%\nodeServer.log") DO set ZLUX_LOG_PATH=%%~fi  
+  pushd %ZLUX_NODE_LOG_DIR%
+  set ZLUX_LOG_PATH="%CD%\nodeServer.log"
+  popd
 )
 if not defined ZLUX_CONFIG_FILE  (
-  set ZLUX_CONFIG_FILE = "../deploy/instance/ZLUX/serverConfig/zluxserver.json"
+  set ZLUX_CONFIG_FILE="../deploy/instance/ZLUX/serverConfig/zluxserver.json"
 )
 set NODE_PATH=../..;../../zlux-server-framework/node_modules;%NODE_PATH%
 cd ../lib
@@ -40,7 +44,7 @@ exit %rc%
 
 rem Create a directory if it does not exist yet
 :makedir
-if not exist "%ZLUX_NODE_LOG_DIR%" mkdir "%ZLUX_NODE_LOG_DIR%"
+if not exist %1 mkdir %1
 goto :eof
 REM This program and the accompanying materials are
 REM made available under the terms of the Eclipse Public License v2.0 which accompanies

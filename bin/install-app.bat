@@ -11,15 +11,18 @@ if [%1]==[] goto :fail
 setlocal
 set app_path="%~f1"
 if not defined ZLUX_INSTALL_LOG_DIR (
-  set ZLUX_INSTALL_LOG_DIR=..\log
+  set ZLUX_INSTALL_LOG_DIR="..\log"
+  call :makedir "..\log"
+) else (
+  call :makedir "%ZLUX_INSTALL_LOG_DIR%"
 )
 if not defined ZLUX_CONFIG_FILE (
-  set ZLUX_CONFIG_FILE=%~dp0\..\..\zlux-app-server\deploy\instance\ZLUX\serverConfig\zluxserver.json
+  set ZLUX_CONFIG_FILE="%~dp0\..\..\zlux-app-server\deploy\instance\ZLUX\serverConfig\zluxserver.json"
 )
 
-call :makedir %ZLUX_INSTALL_LOG_DIR%
-call :abspath %ZLUX_INSTALL_LOG_DIR%\install.log
-set LOG_PATH=%RETVAL%
+pushd %ZLUX_INSTALL_LOG_DIR%
+set LOG_PATH="%CD%\install.log"
+popd
 echo Checking for node
 where node
 if %ERRORLEVEL% neq 0 goto :nonode
@@ -44,10 +47,6 @@ rem Create a directory if it does not exist yet
 :makedir
 if not exist %1 mkdir %1
 goto :eof
-
-:abspath
-set RETVAL=%~dpfn1
-exit /B
 REM This program and the accompanying materials are
 REM made available under the terms of the Eclipse Public License v2.0 which accompanies
 REM this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html

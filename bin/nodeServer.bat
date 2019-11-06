@@ -11,13 +11,13 @@ if defined ZLUX_NODE_LOG_FILE (
   FOR /F %%i IN ("%ZLUX_NODE_LOG_FILE%") DO set ZLUX_LOG_PATH=%%~fi  
 ) else (
   if not defined ZLUX_NODE_LOG_DIR (
-    set ZLUX_NODE_LOG_DIR="../log"
+    set ZLUX_NODE_LOG_DIR = "../log"
   )
   call :makedir "%ZLUX_NODE_LOG_DIR%"
   FOR /F %%i IN ("%ZLUX_NODE_LOG_DIR%\nodeServer.log") DO set ZLUX_LOG_PATH=%%~fi  
 )
 if not defined ZLUX_CONFIG_FILE (
-  set ZLUX_CONFIG_FILE=../deploy/instance/ZLUX/serverConfig/zluxserver.json
+  set ZLUX_CONFIG_FILE = "../deploy/instance/ZLUX/serverConfig/zluxserver.json"
 )
 set NODE_PATH=../..;../../zlux-server-framework/node_modules;%NODE_PATH%
 cd ../lib

@@ -10,15 +10,18 @@ setlocal
 if defined ZLUX_NODE_LOG_FILE (
   FOR /F %%i IN ("%ZLUX_NODE_LOG_FILE%") DO set ZLUX_LOG_PATH=%%~fi  
 ) else (
+  set temp_cd=%CD%
   if not defined ZLUX_NODE_LOG_DIR (
     call :makedir "..\log" 
-    set ZLUX_NODE_LOG_DIR="..\log"
+    cd ..\log
+    for %%I in (.) do set ZLUX_LOG_PATH="%%~dpfI\nodeServer.log"
+    cd %temp_cd%
   ) else (
     call :makedir "%ZLUX_NODE_LOG_DIR%"
+    cd "%ZLUX_NODE_LOG_DIR%"
+    for %%I in (.) do set ZLUX_LOG_PATH="%%~dpfI\nodeServer.log"
+    cd %temp_cd%
   )
-  pushd %ZLUX_NODE_LOG_DIR%
-  set ZLUX_LOG_PATH="%CD%\nodeServer.log"
-  popd
 )
 if not defined ZLUX_CONFIG_FILE  (
   set ZLUX_CONFIG_FILE="../deploy/instance/ZLUX/serverConfig/zluxserver.json"

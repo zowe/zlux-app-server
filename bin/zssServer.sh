@@ -6,11 +6,24 @@
 # SPDX-License-Identifier: EPL-2.0
 #
 # Copyright Contributors to the Zowe Project.
-## launch the ZLUX secure services server
+
+## launch the Zowe Secure Services Server
 
 ZSS_SCRIPT_DIR=$(cd `dirname $0` && pwd)
 echo "pwd = `pwd`"
 echo "Script dir = $(cd `dirname $0` && pwd)"
+
+if [ -n "$ZSS_CONFIG_FILE" ]
+then
+    CONFIG_FILE=$ZSS_CONFIG_FILE
+elif [ -n "$ZLUX_CONFIG_FILE" ]
+then
+    CONFIG_FILE=$ZLUX_CONFIG_FILE
+else
+    echo "No config file specified, using default"
+    CONFIG_FILE="${dir}/../deploy/instance/ZLUX/serverConfig/zluxserver.json"
+fi
+
 
 if [ -n "$ZSS_LOG_FILE" ]
 then
@@ -125,7 +138,7 @@ fi
 export dir=`dirname "$0"`
 cd $dir
 
-_BPX_SHAREAS=NO _BPX_JOBNAME=${ZOWE_PREFIX}SZ1 ./zssServer "../deploy/instance/ZLUX/serverConfig/zluxserver.json"  2>&1 | tee $ZSS_LOG_FILE
+_BPX_SHAREAS=NO _BPX_JOBNAME=${ZOWE_PREFIX}SZ1 ./zssServer "${CONFIG_FILE}" 2>&1 | tee $ZSS_LOG_FILE
 
 
 # This program and the accompanying materials are

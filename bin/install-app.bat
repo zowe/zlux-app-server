@@ -16,13 +16,12 @@ if not defined ZLUX_INSTALL_LOG_DIR (
   call :makedir "..\log"
   cd ..\log
   for %%I in (.) do set ZLUX_LOG_PATH="%%~dpfI\install.log"
-  cd %temp_cd%
 ) else (
   call :makedir "%ZLUX_INSTALL_LOG_DIR%"
   cd "%ZLUX_INSTALL_LOG_DIR%"
   for %%I in (.) do set ZLUX_LOG_PATH="%%~dpfI\install.log"
-  cd %temp_cd%
 )
+cd %temp_cd%
 if not defined ZLUX_CONFIG_FILE (
   set ZLUX_CONFIG_FILE="%~dp0\..\..\zlux-app-server\deploy\instance\ZLUX\serverConfig\zluxserver.json"
 )

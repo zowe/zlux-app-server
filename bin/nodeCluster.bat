@@ -7,22 +7,22 @@ REM SPDX-License-Identifier: EPL-2.0
 REM 
 REM Copyright Contributors to the Zowe Project.
 setlocal
+set temp_cd=%CD%
 if defined ZLUX_NODE_LOG_FILE (
   FOR /F %%i IN ("%ZLUX_NODE_LOG_FILE%") DO set ZLUX_LOG_PATH=%%~fi  
 ) else (
-  set temp_cd=%CD%
+
   if not defined ZLUX_NODE_LOG_DIR (
     call :makedir "..\log" 
     cd ..\log
     for %%I in (.) do set ZLUX_LOG_PATH="%%~dpfI\nodeServer.log"
-    cd %temp_cd%
   ) else (
     call :makedir "%ZLUX_NODE_LOG_DIR%"
     cd "%ZLUX_NODE_LOG_DIR%"
     for %%I in (.) do set ZLUX_LOG_PATH="%%~dpfI\nodeServer.log"
-    cd %temp_cd%
   )
 )
+cd %temp_cd%
 if not defined ZLUX_CONFIG_FILE  (
   set ZLUX_CONFIG_FILE="../deploy/instance/ZLUX/serverConfig/zluxserver.json"
 )

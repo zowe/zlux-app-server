@@ -245,15 +245,20 @@ paths:
     post:
       tags:
       - "server"
-      summary: "Set the log levels of a logger using a 'name'"
-      description: "Set the log levels of a logger using a 'name'"
+      summary: "Set the log 'level' using the component 'name' of a logger"
+      description: "Set the log 'level' using the component 'name' of a logger"
       produces:
       - "application/json"
       parameters:
       - in: "query"
-        name: "name"
+        name: "componentName"
         description: "Logger component name"
         type: "string"
+        required: true
+      - in: "query"
+        name: "level"
+        description: "Logger level (default 0 - 5)"
+        type: "number"
         required: true
       responses:
         200:

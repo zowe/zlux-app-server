@@ -21,7 +21,7 @@ then
     CONFIG_FILE=$ZLUX_CONFIG_FILE
 else
     echo "No config file specified, using default"
-    CONFIG_FILE="${dir}/../deploy/instance/ZLUX/serverConfig/zluxserver.json"
+    CONFIG_FILE="${ZSS_SCRIPT_DIR}/../deploy/instance/ZLUX/serverConfig/zluxserver.json"
 fi
 
 
@@ -136,7 +136,7 @@ fi
 
 #Determined log file.  Run zssServer.
 export dir=`dirname "$0"`
-cd $dir
+cd $ZSS_SCRIPT_DIR
 
 _BPX_SHAREAS=NO _BPX_JOBNAME=${ZOWE_PREFIX}SZ1 ./zssServer "${CONFIG_FILE}" 2>&1 | tee $ZSS_LOG_FILE
 

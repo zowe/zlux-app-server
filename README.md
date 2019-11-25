@@ -5,16 +5,23 @@ this distribution, and is available at https://www.eclipse.org/legal/epl-v20.htm
 SPDX-License-Identifier: EPL-2.0
 
 Copyright Contributors to the Zowe Project.
+
+![Zowe logo](https://i.imgur.com/AxHe5p7.png)
 # zlux-app-server
 This is the default setup of the Zowe App Server, built upon the zLUX framework. Within, you will find a collection of build, deploy, and run scripts as well as configuration files that will help you to configure a simple zLUX server with a few Apps included.
 
-## Server layout
-At the core of the zLUX App infrastructure backend is an extensible server, written for nodeJS and utilizing expressJS for routing. It handles the backend components of Apps, and also can serve as a proxy for requests from Apps to additional servers as needed. One such proxy destination is the ZSS - a Zowe backend component called **Zowe System Services**. It's a so-called agent for the App server.
+**To request features or report bugs, please use the issues page at the [zlux repo](https://github.com/zowe/zlux/issues) with the server infrastructure or server security tags**
 
-### ZSS & zLUX Server overlap
-The zLUX App Server and ZSS utilize the same deployment & App/Plugin structure, and share some configuration parameters as well. It is possible to run ZSS and zLUX App Server from the same system, in which case you would be running under z/OS USS. This configuration requires that IBM's version of nodeJS is installed prior.
+## Introduction
 
-Another way to set up zLUX is to have the zLUX App Server running under LUW, while keeping ZSS under USS. This is the configuration scenario presented below. In this scenario, you'll need to clone these github repositories to two different systems, and they'll need to have compatible configurations. For first-timers, it is fine to have identical configuration files and /plugins folders in order to get going.
+
+### What is Zowe?
+Zowe is an open source project created to host technologies that benefit the Z platform from all members of the Z community (Integrated Software Vendors, System Integrators and z/OS consumers). Zowe, like Mac OS or Windows, comes with a set of APIs and OS capabilities with a virtual web desktop that offers a modern interface to interact with z/OS in a way that is similar to what you experience on cloud platforms today.
+
+### ZSS & zLUX App Server layout
+The zLUX App Server consists of the Zowe Desktop, its Apps, and the authentication. The zLUX App Server backend is an extensible server, written using nodeJS and utilizes expressJS for routing. It handles the backend components of Apps and can also serve as a proxy for requests from Apps to additional servers. One such proxy destination is the ZSS - a Zowe backend component called **Zowe System Services**. It is a so-called agent for the App server. **NOTE: ZSS is optional, as having a mainframe is NOT a requirement for using the Zowe Desktop. That being said, many apps will not function as intended since they rely on an agent for data.**
+
+The zLUX App Server and ZSS utilize the same deployment & App/Plugin structure, and share some configuration parameters as well. It is possible to run ZSS and zLUX App Server from the same system, in which case you would be running under z/OS USS. This configuration requires that IBM's version of nodeJS is installed and used. Another way to set up zLUX is to have the zLUX App Server running under LUW, while keeping ZSS under USS. This is the configuration scenario presented below. In this scenario, you'll need to clone these github repositories to two different systems, and they'll need to have compatible configurations. For first-timers, it is fine to have identical configuration files and `/plugins` folders in order to get going.
 
 ## First-time Installation & Use
 Getting started with this server requires just a few steps:
@@ -22,11 +29,11 @@ Getting started with this server requires just a few steps:
 0. [Install Prerequisites](#0-install-prerequisites)
 1. [Acquire the source code](#1-acquire-the-source-code)
 2. [Set the server configuration](#2-set-the-server-configuration)
-3. [Build zLUX Apps](#3-build-zlux-apps)
+3. [Build Apps](#3-build-zlux-apps)
 4. [Deploy server configuration files](#4-deploy-server-configuration-files)
 5. [Build ZSS](#5-build-zss)
 6. [Run the server](#6-run-the-server)
-7. [Connect in a browser!](#7-connect-in-a-browser)
+7. [Connect in a browser!](#7-connect-to-the-zowe-desktop-via-a-browser)
 
 So, with that in mind, follow each step and you'll be on your way to your first zLUX App Server instance!
 
@@ -63,20 +70,32 @@ On z/OS, git 2.14.4 is the minimum needed.
 
 
 ### 1. Acquire the source code
-To get started, first clone (or download) the code necessary to build zss and the zss cross memory server.
+
+#### (Recommended) ZSS
+
+To get started, first clone or download the code necessary to build ZSS and the ZSS cross memory server.
 If using git, the following commands should be used on z/OS:
 ```
 git clone --recursive git@github.com:zowe/zss.git
 ```
 
+#### Zowe Desktop
+
 Afterwards, clone (or download) the github capstone repository, https://github.com/zowe/zlux
 As we'll be configuring ZSS on z/OS's USS, and the zLUX App Server on a LUW host, you'll need to put the contents on both systems.
-If using git, the following commands should be used:
+If using git, run the following commands:
 ```
 git clone --recursive git@github.com:zowe/zlux.git
 cd zlux
 git submodule foreach "git checkout master"
 ```
+
+NOTE: For the most up-to-date features (but potentially less stable), use the 'staging' branch by instead doing
+```
+git submodule foreach "git checkout staging"
+```
+
+#### (Recommended) Authentication
 
 By default the trivial authentication backend is enabled which always returns successful unless authentication 
 information provided is in an incorrect format. To use ZSS as an authentication backend, clone (or download) the 
@@ -86,7 +105,9 @@ information provided is in an incorrect format. To use ZSS as an authentication 
 git clone git@github.com:zowe/zss-auth.git
 ```
 
-To bring Apps to zLUX App server, you need to clone (or download) corresponding repositories into `zlux`. For 
+#### (Recommended) Apps
+
+To add Apps to the Zowe desktop, you need to clone, or download, them (currently available via Git repositories) into the `/zlux` folder. For 
 example, clone (or download) the following to get sample apps source code:
 
 ```
@@ -111,10 +132,13 @@ Next, set **agent.http.port** to the port where you want ZSS to listen on. This 
 Finally, if the App server is running off of z/OS, then you will need to change **agent.http.ipAddresses** to a hostname or ip address that is externally visible.
 **Note: It is highly recommended to turn on HTTPS for ZSS via [configuring AT-TLS](https://zowe.github.io/docs-site/latest/user-guide/mvd-configuration.html#configuring-zss-for-https) when using ZSS externally, as the session security is essential for all but trivial development environments**
 
-For each App that is supposed to be loaded by zLUX App server, a plugin locator should be defined. Read the 
-[Plugin Definition & Structure](https://github.com/zowe/zlux/wiki/Zlux-Plugin-Definition-&-Structure) wiki page for 
-details. For example, to enable Angular Sample App, create 
-`zlux-app-server/plugins/org.zowe.zlux.sample.angular.json` with the following contents:
+#### Setup for Apps
+
+You can follow these steps or for a more detailed overview check out [this wiki](https://github.com/zowe/zlux/wiki/Installing-Plugins) on installing apps.
+
+For each App that is supposed to be loaded by zLUX App server (used in the Zowe Desktop), a plugin JSON should be defined. For more details, check out the  
+[Locating Plugins](https://github.com/zowe/zlux/wiki/Zlux-Plugin-Definition-&-Structure#locating-plugins) section in the wiki. For example, to enable Angular Sample App, create a
+`zlux/zlux-app-server/plugins/org.zowe.zlux.sample.angular.json` with the following contents:
 ```
 {
   "identifier": "org.zowe.zlux.sample.angular",
@@ -122,50 +146,30 @@ details. For example, to enable Angular Sample App, create
 }
 ```
 
-#### Setup for ZSS
-If you will be using ZSS as an authentication backend, set `dataserviceAuthentication.defaultAuthentication = "zss"` and
- `dataserviceAuthentication.implementationDefaults.zss.plugins = ["org.zowe.zlux.auth.zss"]`.
- 
-Next, set **agent.http.port** to the port where you want ZSS to listen on. This must be done at minimum on the z/OS host, but can also be done in the zluxserver.json where the App server is running, if it is not the same.
-Finally, if the App server is running off of z/OS, then you will need to change **agent.http.ipAddresses** to a hostname or ip address that is externally visible.
-**Note: It is highly recommended to turn on HTTPS for ZSS via [configuring AT-TLS](https://zowe.github.io/docs-site/latest/user-guide/mvd-configuration.html#configuring-zss-for-https) when using ZSS externally, as the session security is essential for all but trivial development environments**
+#### Setup for TN3270/VT Terminal or other terminal apps
 
-For each App that is supposed to be loaded by zLUX App server, a plugin locator should be defined. Read the 
-[Plugin Definition & Structure](https://github.com/zowe/zlux/wiki/Zlux-Plugin-Definition-&-Structure) wiki page for 
-details. For example, to enable Angular Sample App, create 
-`zlux-app-server/plugins/org.zowe.zlux.sample.angular.json` with the following contents:
-```
-{
-  "identifier": "org.zowe.zlux.sample.angular",
-  "pluginLocation": "../../sample-angular-app"
-}
-```
+Before continuing, if you intend to use the terminal, the app may need to be pre-configured to know the destination host.
+Edit `tn3270-ng2/_defaultTN3270.json` to set *host* and *port* to a valid TN3270 server telnet host and port and then save the file.
+Edit `vt-ng2/_defaultVT.json` to set *host* and *port* to a valid ssh host and port and then save the file. 
+For the TN3270 and VT Terminal apps, this file is set to use the default host when nothing is specified.
 
-Before continuing, if you intend to use the terminal, at this time (temporarily) it must be pre-configured to know the destination host.
-Edit *tn3270-ng2/_defaultTN3270.json* to set *host* and *port* to a valid TN3270 server telnet host and port and then save the file.
-Edit *vt-ng2/_defaultVT.json* to set *host* and *port* to a valid ssh host and port and then save the file.
+### 3. Build Apps
+**Note when building, NPM is used. The version of NPM needed for the build to succeed should be at least 6.4. You can update NPM by executing `npm install -g npm`. The following provides steps on how to build all of Zowe. If you would like to build individual apps (or after your Zowe has already been built) you can follow the [instructions here](https://github.com/zowe/zlux/wiki/Building-Plugins)**
 
-### 3. Build zLUX Apps
-**Note when building, NPM is used. The version of NPM needed for the build to succeed should be at least 6.4. You can update NPM by executing `npm install -g npm`**
-
-zLUX Apps can contain server and/or web components. The web components must be built, as webpack is involved in optimized packaging, and server components are also likely to need building if they require external dependencies from NPM, use native code, or are written in typescript.
+If you downloaded any Apps from the first step, you need to build them. zLUX Apps (Apps on the Zowe Desktop) may contain server (`/nodeServer`) and/or web (`/webClient`) components. The web components must be built, as webpack is involved in optimized packaging, and server components are also likely to need building if they require external dependencies from NPM, use native code, or are written in typescript. You can find more details for server and web [here](https://github.com/zowe/zlux/wiki/ZLUX-App-filesystem-structure)
 
 This server only needs transpilation and packaging of web components, and therefore we do not need any special build steps for the host running ZSS.
 
-Instead, on the host running the zLUX App Server, run the script that will automatically build all included Apps.
-Simply,
+Instead, on the host running the zLUX App Server, inside `zlux-build` run the script that will automatically build all packaged Apps:
 ```
-cd zlux-build
-
 //Windows
 build.bat
 
 //Otherwise
 ./build.sh
 ```
-This will take some time to complete.
 
-**Note:** It has been reported that building can hang on Windows if you have put the code in a directory that has a symbolic link. Build time can depend on hardware speed, but should take minutes not hours.
+**NOTE: This may take some time to complete (<40 minutes), depending on which environment you are trying to use Zowe on. It has been reported that building can hang on Windows if you have put the code in a directory that has a symbolic link. **
 
 ### 4. Deploy server configuration files
 If you are running the zLUX App Server seperate from ZSS, you must ensure the ZSS installation has its configuration deployed. You can accomplish this via:
@@ -180,25 +184,22 @@ On the other hand, if you are running ZSS and the zLUX App Server on the same ho
 However, if you need to change the server configuration files or want to add more Apps to be included at startup, you'll need to update the deploy content to reflect this. Simply running deploy.bat or deploy.sh will accomplish this, but files such as zluxserver.json are only read at startup, so a reload of the zLUX App Server & ZSS would be required.
 
 ### 5. Build ZSS
-ZSS is a dependency of zLUX, but exists in a seperate repository and must be run on z/OS. To get the code, first do the following on z/OS:
-```
-git clone --recursive git@github.com:zowe/zss.git
-cd zss/build
-```
-Ant is used to build ZSS, and ZSS is built in two parts: the ZSS Server and the ZSS Cross-memory Server. ZSS Server communicates through HTTP(S) to zLUX, while the cross memory server is communicated with by ZSS through in-system calls.
+If you downloaded ZSS from the first step and wish to use ZSS for authentication, you need to build it. ZSS is a dependency of zLUX, but exists in a seperate repository and must be run on z/OS. To get the code, go back to [here](https://github.com/zowe/zlux-app-server/tree/staging#1-acquire-the-source-code)
+
+Go inside the `build` folder. Ant is used to build ZSS, and ZSS is built in two parts: the ZSS Server and the ZSS cross memory Server. ZSS Server communicates through HTTP(S) to zLUX, while the cross memory server is communicated with by ZSS through in-system calls.
 To build both, run:
 ```
 ant zss
 ant zis
 ```
-Afterwards, you need to copy `zssServer` to the `zlux-app-server/bin` directory, so that `nodeServer.sh` and `zssServer.sh` can invoke it.
+
+Afterwards, you need to copy the newly built `zssServer` file to the `zlux/zlux-app-server/bin` directory, so that `nodeServer.sh` and `zssServer.sh` can invoke it when executed.
 You should also set the p attribute on it.
-Do:
 ```
 cp zssServer ../../zlux-app-server/bin
 extattr +p ../../zlux-app-server/bin/zssServer
 ```
-Finally, the ZSS Cross memory server must be installed and configured according to [This Install Guide](https://github.com/zowe/docs-site/blob/master/docs/user-guide/install-zos.md#manually-installing-the-zowe-cross-memory-server)
+Finally, the ZSS cross memory server must be installed and configured according to [This Install Guide](https://github.com/zowe/docs-site/blob/master/docs/user-guide/install-zos.md#manually-installing-the-zowe-cross-memory-server)
 
 
 ### 6. Run the server
@@ -210,8 +211,8 @@ cd ../zlux-app-server/bin
 ```
 This should start the zssServer. If the server did not start, two common sources of error are:
 
-1. The *zssPort* chosen is already occupied. To fix, edit *config/zluxserver.json* to choose a new one, and re-run *build/deploy.sh* to have that change take effect.
-2. The zssServer binary does not have the APF bit set. Since this server is meant for secure services, it is required. To fix, execute `extattr +a zssServer`.  Note you may need to alter the execute permissions of zssServer.sh in the event that the previous command is not satisfactory (eg chmod +x zssServer.sh) 
+1. The *zssPort* chosen is already occupied. To fix, edit `config/zluxserver.json` to choose a new one, and re-run `build/deploy.sh` to have that change take effect.
+2. The zssServer binary does not have the APF bit set. Since this server is meant for secure services, it is required. To fix, execute `extattr +a zssServer`.  Note you may need to alter the execute permissions of zssServer.sh in the event that the previous command is not satisfactory (eg `chmod +x zssServer.sh`) 
 
 Second, from the system with the zLUX App Server, start it with a few parameters to hook it to ZSS.
 ```
@@ -245,22 +246,45 @@ After which we'd be able to connect to the App server at HTTPS port 19998.
 
 When the zLUX App Server has started, one of the last messages you will see as bootstrapping completes is that the server is listening on the HTTP/s port. At this time, you should be able to use the server.
 
-### 7. Connect in a browser
+### 7. Connect to the Zowe Desktop via a browser
 Now that ZSS & the zLUX App Server are both started, you can access this instance by pointing your web browser to the zLUX App Server.
-In this example, the address you will want to go to first is the location of the window management App - Zowe Desktop.
+In this example, the address you will want to go to first is the location of the window management App - the Zowe Desktop.
 The URL for this is:
 
-http(s)://\<zLUX App Server\>:\<node.http(s).port\>/ZLUX/plugins/org.zowe.zlux.bootstrap/web/index.html
+`http(s)://<zLUX App Server>:<node.http(s).port>`
 
-Once here, you should be greeted with a Login screen and Apps in the main menu if there were 
-included some. If you set up ZSS as an authentication backend, you can login with your mainframe 
-credentials. By default trivial authentication is used which allows to login with arbitrary credentials.
+Which just points to: 
 
-There're a few Apps that you can try out to see how they interact with the framework:
-- [tn3270-ng2](https://github.com/zowe/tn3270-ng2): This App communicates with the zLUX App Server to enable a TN3270 connection in the browser
-- [sample-angular-app](https://github.com/zowe/sample-angular-app): A simple app showing how a zLUX App frontend (here, Angular) component can communicate with an App backend (REST) component.
-- [sample-react-app](https://github.com/zowe/sample-react-app): Similar to the Angular App, but using React instead to show how you have the flexibility to use a framework of your choice.
-- [sample-iframe-app](https://github.com/zowe/sample-iframe-app): Similar in functionality to the Angular & React Apps, but presented via inclusion of an iframe, to show that even pre-existing pages can be included
+`http(s)://<zLUX App Server>:<node.http(s).port>/ZLUX/plugins/org.zowe.zlux.bootstrap/web/index.html`
+
+Most likely for you, `zLUX App Server` will be `localhost`. `node.http(s).port` is the `-s` or `-p` port from the commands above. 
+
+Here you should be greeted with a login screen and after loggin in, a desktop with a bottom menubar and apps (if you downloaded and installed them). If you set up ZSS as an authentication backend, you can login with your mainframe 
+credentials. By default, trivial authentication is used which allows to login with arbitrary credentials. If you are unable to log in, make sure your ZSS authentication is probably set up by reviewing the [Server Configuration](https://github.com/zowe/zlux/wiki/Auth-Plugin-Configuration#server-configuration) for ZSS implementation.
+
+### Try some apps
+
+There are a few Apps you can try to see how they interact with the Zowe framework:
+
+- [Zowe Editor](https://github.com/zowe/zlux-editor): This App can be used to navigate USS files & directories along with Datasets, given the proper authentication is set up. Current features including viewing Dataset contents & properties, writing/deleting files & directories, saving new files/folders and more. Continous development will lead to more support and community support is always encouraged.
+
+- [TN3270](https://github.com/zowe/tn3270-ng2): This App communicates with the zLUX App Server to enable a TN3270 connection in the browser.
+
+- [Sample Angular App](https://github.com/zowe/sample-angular-app): A simple App showing how a zLUX App frontend (this one uses Angular) component can communicate with an App backend (REST) component.
+
+- [Sample React App](https://github.com/zowe/sample-react-app): Similar to the Angular App, but using React instead to show how you have the flexibility to use a framework of your choice.
+
+- [Sample Iframe App](https://github.com/zowe/sample-iframe-app): Similar as the previous apps, but presented via usage of an IFrame and an Iframe adapter script that allows for the same Zowe framework features shared by Angular and React.
+
+This concludes the zLUX App Server setup for first-time users.
+
+## App configuration
+This section does not cover any dynamic runtime inclusion of Apps, but rather Apps defined in advance.
+In the configuration file, a directory can be specified which contains JSON files which tell the server what App is to be included and where to find it on disk. The backend of these Apps use the Server's Plugin structure, so much of the server-side references to Apps use the term Plugin.
+
+To include Apps, be sure to define the location of the Plugins directory in the configuration file, via the top-level attribute *pluginsDir*
+
+**NOTE: In this repository, the directory for these JSON files is `/plugins`. Yet, in order to seperate configuration files from runtime files, the zlux-app-server repository copies the contents of this folder into `/deploy/instance/ZLUX/plugins`. So, the example configuration file uses the latter directory.**
 
 
 #### Deploy example
@@ -275,14 +299,6 @@ There're a few Apps that you can try out to see how they interact with the frame
   "usersDir":"../deploy/instance/users"
 
 ```
-
-### App configuration
-This section does not cover any dynamic runtime inclusion of Apps, but rather Apps defined in advance.
-In the configuration file, a directory can be specified which contains JSON files which tell the server what App is to be included and where to find it on disk. The backend of these Apps use the Server's Plugin structure, so much of the server-side references to Apps use the term Plugin.
-
-To include Apps, be sure to define the location of the Plugins directory in the configuration file, via the top-level attribute *pluginsDir*
-
-**NOTE: In this repository, the directory for these JSON files is /plugins. Yet, in order to seperate configuration files from runtime files, the zlux-app-server repository copies the contents of this folder into /deploy/instance/ZLUX/plugins. So, the example configuration file uses the latter directory.**
 
 #### Plugins directory example
 ```

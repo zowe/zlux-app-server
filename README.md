@@ -16,7 +16,7 @@ This is the default setup of the Zowe App Server, built upon the zLUX framework.
 
 
 ### What is Zowe?
-Zowe is an open source project created to host technologies that benefit the Z platform from all members of the Z community (Integrated Software Vendors, System Integrators and z/OS consumers). Zowe, like Mac OS or Windows, comes with a set of APIs and OS capabilities with a virtual web desktop that offers a modern interface to interact with z/OS in a way that is similar to what you experience on cloud platforms today.
+Zowe is an open source project created to host technologies that benefit the Z platform from all members of the Z community (Integrated Software Vendors, System Integrators and z/OS consumers). Zowe, like Mac OS or Windows, comes with a set of APIs and OS capabilities with a virtual web desktop that offers a modern interface to interact with z/OS in a way that is similar to what you experience on cloud platforms today. To find out more, visit the [Zowe website](https://www.zowe.org/).
 
 ### ZSS & zLUX App Server layout
 The zLUX App Server consists of the Zowe Desktop, its Apps, and the authentication. The zLUX App Server backend is an extensible server, written using nodeJS and utilizes expressJS for routing. It handles the backend components of Apps and can also serve as a proxy for requests from Apps to additional servers. One such proxy destination is the ZSS - a Zowe backend component called **Zowe System Services**. It is a so-called agent for the App server. **NOTE: ZSS is optional, as having a mainframe is NOT a requirement for using the Zowe Desktop. That being said, many apps will not function as intended since they rely on an agent for data.**

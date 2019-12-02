@@ -6,4 +6,13 @@
 # SPDX-License-Identifier: EPL-2.0
 # 
 # Copyright Contributors to the Zowe Project.
-./start.sh
+
+
+# Required variables on shell:
+# - ROOT_DIR
+# - WORKSPACE_DIR
+# - NODE_HOME
+
+NODE_BIN=${NODE_HOME}/bin/node
+cd ${ROOT_DIR}/zlux-app-server/lib
+__UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js

@@ -47,7 +47,7 @@ exit %rc%
 
 rem Create a directory if it does not exist yet
 :makedir
-if not exist "%ZLUX_NODE_LOG_DIR%" mkdir "%ZLUX_NODE_LOG_DIR%"
+if not exist %1 mkdir %1
 goto :eof
 REM This program and the accompanying materials are
 REM made available under the terms of the Eclipse Public License v2.0 which accompanies

@@ -6,4 +6,6 @@
 # SPDX-License-Identifier: EPL-2.0
 # 
 # Copyright Contributors to the Zowe Project.
-./start.sh
+
+# This file is historic, to be replaced by the one below
+./start-app-server.sh

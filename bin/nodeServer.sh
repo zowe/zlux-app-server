@@ -6,4 +6,6 @@
 # SPDX-License-Identifier: EPL-2.0
 # 
 # Copyright Contributors to the Zowe Project.
-ZLUX_NO_CLUSTER=1 ./start.sh
+
+# This file is historic, to be replaced by the one below
+ZLUX_NO_CLUSTER=1 ./start-app-server.sh

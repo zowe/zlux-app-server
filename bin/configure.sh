@@ -12,7 +12,12 @@
 # - ROOT_DIR
 # - WORKSPACE_DIR
 # - NODE_HOME
-
-NODE_BIN=${NODE_HOME}/bin/node
+if [ -n "$NODE_HOME" ]
+then
+  NODE_BIN=${NODE_HOME}/bin/node
+else
+  NODE_BIN=node
+fi
 cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/lib
+export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH
 __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js

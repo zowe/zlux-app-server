@@ -30,9 +30,9 @@ shift
 
 if [ -z "$plugin_dir" ]
 then
-  if [ -e "${WORKSPACE_DIR}/app-server/serverConfig/server.json" ]
+  if [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
   then
-    json_path=${WORKSPACE_DIR}/app-server/serverConfig/server.json
+    json_path=${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json
   else
     json_path=$zlux_path/zlux-app-server/defaults/serverConfig/server.json
   fi
@@ -49,6 +49,7 @@ then
   fi
 fi
 
+PLUGIN_LOG_FILE=/dev/null
 if [ ! -z "$ZLUX_INSTALL_LOG_DIR" ]
 then
   if [ ! -d "$ZLUX_INSTALL_LOG_DIR" ]
@@ -57,7 +58,6 @@ then
      mkdir -p $ZLUX_INSTALL_LOG_DIR
   fi
   PLUGIN_LOG_FILE="$ZLUX_INSTALL_LOG_DIR/install-app.log"
-  LOG_CMD="| tee $PLUGIN_LOG_FILE"
 fi
 
 
@@ -74,10 +74,10 @@ echo "utils_path=${utils_path}\napp_path=${app_path}"
 if [ -d "$plugin_dir" ]
 then
   echo "plugin_dir=${plugin_dir}"
-__UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 $LOG_CMD
+__UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 | tee $PLUGIN_LOG_FILE
 else
   echo "json_path=${json_path}"
-__UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -c "$json_path" $@ 2>&1 $LOG_CMD
+__UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -c "$json_path" $@ 2>&1 | tee $PLUGIN_LOG_FILE
 fi
 rc=$?
 echo "Plugin install completed with rc=${rc}"

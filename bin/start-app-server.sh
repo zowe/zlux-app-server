@@ -32,6 +32,8 @@ dir=$(cd `dirname $0` && pwd)
 
 . ./convert-env.sh
 
+#ZLUX_CONFIG_FILE, WORKSPACE_DIR, and INSTANCE_DIR are for official Zowe environment use.
+#If none found, will assume dev environment and consider ~/.zowe as INSTANCE_DIR
 if [ -e "$ZLUX_CONFIG_FILE" ]
 then
   CONFIG_FILE=$ZLUX_CONFIG_FILE
@@ -41,9 +43,17 @@ then
 elif [ -d "$INSTANCE_DIR" ]
 then
   CONFIG_FILE="${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json"
+elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]
+then
+  CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/server.json"
 else
-  echo "No config file specified, using default"
-  CONFIG_FILE="${dir}/../defaults/serverConfig/server.json"
+  echo "No config file or instance directory found, initializing..."
+  INSTANCE_DIR="${HOME}/.zowe"
+  mkdir -p ${INSTANCE_DIR}/logs
+  cd ../lib
+  NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+  CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/server.json"
+  cd ../bin
 fi
 
 if [ -n "$ZLUX_NODE_LOG_FILE" ]

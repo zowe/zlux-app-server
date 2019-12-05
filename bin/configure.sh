@@ -21,3 +21,18 @@ fi
 cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/lib
 export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH
 __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+
+if [[ $ZOWE_APIM_ENABLE_SSO == "true" ]]; then
+  if [ ! -e "${WORKSPACE_DIR}/app-server/plugins/org.zowe.zlux.auth.apiml.json" ]
+  then
+    cd ../bin
+    ./install-app.sh ${ROOT_DIR}/components/api-mediation/apiml-auth
+    # Activate the plugin
+    $NODE_BIN -e "let serverConfig = require('${WORKSPACE_DIR}/app-server/server.json');\
+ if (!serverConfig.dataserviceAuthentication.implementationDefaults.apiml) {\
+serverConfig.dataserviceAuthentication.implementationDefaults.apiml={plugins:['org.zowe.zlux.auth.apiml']\}; \
+const fs = require('fs'); \
+fs.writeFileSync('${WORKSPACE_DIR}/app-server/server.json', JSON.stringify(serverConfig, null, 2));\
+}"
+  fi
+fi

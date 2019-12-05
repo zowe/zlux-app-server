@@ -24,17 +24,30 @@ __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
 
 APP_WORKSPACE_DIR=${INSTANCE_DIR}/workspace/app-server
 
-if [[ $APIML_ENABLE_SSO == "true" ]]; then
-  if [ ! -e "${APP_WORKSPACE_DIR}/plugins/org.zowe.zlux.auth.apiml.json" ]
-  then
-    cd ../bin
-    ./install-app.sh ${ROOT_DIR}/components/api-mediation/apiml-auth
-    # Activate the plugin
-    $NODE_BIN -e "let serverConfig = require('${APP_WORKSPACE_DIR}/serverConfig/server.json');\
+if [[ $LAUNCH_COMPONENT_GROUPS == *"GATEWAY"* ]]; then
+  if [[ $APIML_ENABLE_SSO == "true" ]]; then
+    if [ ! -e "${APP_WORKSPACE_DIR}/plugins/org.zowe.zlux.auth.apiml.json" ]
+    then
+      cd ../bin
+      ./install-app.sh ${ROOT_DIR}/components/api-mediation/apiml-auth
+      # Activate the plugin
+      $NODE_BIN -e "let serverConfig = require('${APP_WORKSPACE_DIR}/serverConfig/server.json');\
  if (!serverConfig.dataserviceAuthentication.implementationDefaults.apiml) {\
-serverConfig.dataserviceAuthentication.implementationDefaults.apiml={plugins:['org.zowe.zlux.auth.apiml']}; \
-const fs = require('fs'); \
-fs.writeFileSync('${APP_WORKSPACE_DIR}/serverConfig/server.json', JSON.stringify(serverConfig, null, 2));\
+ serverConfig.dataserviceAuthentication.implementationDefaults.apiml={plugins:['org.zowe.zlux.auth.apiml']};\
+ const fs = require('fs');\
+ fs.writeFileSync('${APP_WORKSPACE_DIR}/serverConfig/server.json', JSON.stringify(serverConfig, null, 2));\
 }"
+    fi
   fi
+elif [ -e "${APP_WORKSPACE_DIR}/plugins/org.zowe.zlux.auth.apiml.json" ]
+then
+  rm "${APP_WORKSPACE_DIR}/plugins/org.zowe.zlux.auth.apiml.json"
+  # Remove plugin from config
+  $NODE_BIN -e "let serverConfig = require('${APP_WORKSPACE_DIR}/serverConfig/server.json');\
+ if (serverConfig.dataserviceAuthentication.implementationDefaults.apiml) {\
+ delete serverConfig.dataserviceAuthentication.implementationDefaults.apiml;\
+ const fs = require('fs');\
+ fs.writeFileSync('${APP_WORKSPACE_DIR}/serverConfig/server.json', JSON.stringify(serverConfig, null, 2));\
+}"
 fi
+     

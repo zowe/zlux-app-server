@@ -29,6 +29,13 @@ else
 fi
 
 dir=$(cd `dirname $0` && pwd)
+if [ ! -e "${dir}/convert-env.sh" ]
+then
+  if [ -n "$CONDA_PREFIX" ]
+  then
+    cd "$CONDA_PREFIX/lib/zowe/zlux/zlux-app-server"
+  fi
+fi
 
 . ./convert-env.sh
 

@@ -18,7 +18,19 @@ else
   NODE_BIN=node
 fi
 
-zlux_path=$(cd $(dirname "$0")/../..; pwd)
+dir=$(cd `dirname $0` && pwd)
+if [ -e "${dir}/../instance.env" ]
+then
+  . ${dir}/../instance.env
+  zlux_path="$ROOT_DIR/components/app-server/share"
+elif [ -d "${dir}/../../zlux-server-framework" ]
+then
+  zlux_path=$(cd $(dirname "$0")/../..; pwd)
+elif [ -n "$CONDA_PREFIX" ]
+then
+  zlux_path="$CONDA_PREFIX/lib/zowe/zlux"
+fi
+
 utils_path=$zlux_path/zlux-server-framework/utils
 app_path=$(cd "$1"; pwd)
 if [ $# -gt 1 ]

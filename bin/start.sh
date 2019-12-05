@@ -22,4 +22,4 @@
 # - ZOWE_ZLUX_SECURITY_TYPE
 
 cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/bin
-./start-app-server.sh
+./app-server.sh

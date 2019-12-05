@@ -30,50 +30,17 @@ fi
 
 dir=$(cd `dirname $0` && pwd)
 
-# shape old env vars into app-server compatible ones
-# mediation layer
-if [ "$APIML_ENABLE_SSO" = "true" ]
-then
-  if [ -z "$ZWED_node_mediationLayer_server_gatewayPort" ]
-  then
-    export ZWED_node_mediationLayer_server_gatewayPort = $GATEWAY_PORT
-  fi
-fi
-if [ -z "$ZWED_node_mediationLayer_server_port" ]
-then
-  export ZWED_node_mediationLayer_server_port = $DISCOVERY_PORT
-fi
-if [ -z "ZWED_node_mediationLayer_server_hostname" ]
-then
-  export ZWED_node_mediationLayer_server_hostname = $ZOWE_EXPLORER_HOST
-fi
+. ./convert-env.sh
 
-# app server
-if [ -z "$ZWED_node_https_port" ]
-then
-  export ZWED_node_https_port = $ZOWE_ZLUX_SERVER_HTTPS_PORT
-fi
-
-# zss
-if [ -z "$ZWED_agent_http_port" ]
-then
-  export ZWED_agent_http_port = $ZOWE_ZSS_SERVER_PORT
-fi
-if [ -z "$ZWED_privilegedServerName" ]
-then
-  export ZWED_privilegedServerName = $ZOWE_ZSS_XMEM_SERVER_NAME
-fi
-
-
-
-
-
-if [ -n "$ZLUX_CONFIG_FILE" ]
+if [ -e "$ZLUX_CONFIG_FILE" ]
 then
   CONFIG_FILE=$ZLUX_CONFIG_FILE
-elif [ -n "$WORKSPACE_DIR" ]
+elif [ -d "$WORKSPACE_DIR" ]
 then
-  CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/server.json"  
+  CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/server.json"
+elif [ -d "$INSTANCE_DIR" ]
+then
+  CONFIG_FILE="${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json"
 else
   echo "No config file specified, using default"
   CONFIG_FILE="${dir}/../defaults/serverConfig/server.json"
@@ -89,7 +56,7 @@ else
   # _FILE was not specified; default filename, and check and maybe default _DIR
   if [ -z "$ZLUX_NODE_LOG_DIR" ]
   then
-    if [ -n "$INSTANCE_DIR" ]
+    if [ -d "$INSTANCE_DIR" ]
     then
       ZLUX_NODE_LOG_DIR=${INSTANCE_DIR}/logs
     else

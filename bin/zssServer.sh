@@ -10,10 +10,8 @@
 ## launch the Zowe Secure Services Server
 
 ZSS_SCRIPT_DIR=$(cd `dirname $0` && pwd)
-echo "pwd = `pwd`"
-echo "Script dir = $(cd `dirname $0` && pwd)"
 
-. ./convert-env.sh
+. ${ZSS_SCRIPT_DIR}/convert-env.sh
 
 if [ -e "$ZSS_CONFIG_FILE" ]
 then

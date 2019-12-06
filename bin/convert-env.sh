@@ -9,33 +9,51 @@
 
 # shape old env vars into app-server compatible ones
 # mediation layer
-if [[ $APIML_ENABLE_SSO == "true" ]]; then
+if [ "$APIML_ENABLE_SSO" = "true" ]; then
   if [ -z "$ZWED_node_mediationLayer_server_gatewayPort" ]
   then
-    export ZWED_node_mediationLayer_server_gatewayPort=$GATEWAY_PORT
+    if [ -n "$GATEWAY_PORT" ]
+    then
+      export ZWED_node_mediationLayer_server_gatewayPort=$GATEWAY_PORT
+    fi
   fi
 fi
 if [ -z "$ZWED_node_mediationLayer_server_port" ]
 then
-  export ZWED_node_mediationLayer_server_port=$DISCOVERY_PORT
+  if [ -n "$DISCOVERY_PORT" ]
+  then
+    export ZWED_node_mediationLayer_server_port=$DISCOVERY_PORT
+  fi
 fi
-if [ -z "ZWED_node_mediationLayer_server_hostname" ]
+if [ -z "ZWED_node_mediationLayer_server_hostname" ] 
 then
-  export ZWED_node_mediationLayer_server_hostname=$ZOWE_EXPLORER_HOST
+  if [ -n "$ZOWE_EXPLORER_HOST" ]
+  then
+    export ZWED_node_mediationLayer_server_hostname=$ZOWE_EXPLORER_HOST
+  fi
 fi
 
 # app server
-if [ -z "$ZWED_node_https_port" ]
+if [ -z "$ZWED_node_https_port" ] 
 then
-  export ZWED_node_https_port=$ZOWE_ZLUX_SERVER_HTTPS_PORT
+  if [ -n "$ZOWE_ZLUX_SERVER_HTTPS_PORT" ]
+  then
+    export ZWED_node_https_port=$ZOWE_ZLUX_SERVER_HTTPS_PORT
+  fi
 fi
 
 # zss
 if [ -z "$ZWED_agent_http_port" ]
 then
-  export ZWED_agent_http_port=$ZOWE_ZSS_SERVER_PORT
+  if [ -n "$ZOWE_ZSS_SERVER_PORT" ]
+  then
+    export ZWED_agent_http_port=$ZOWE_ZSS_SERVER_PORT
+  fi
 fi
 if [ -z "$ZWED_privilegedServerName" ]
 then
-  export ZWED_privilegedServerName=$ZOWE_ZSS_XMEM_SERVER_NAME
+  if [ -n "$ZOWE_ZSS_XMEM_SERVER_NAME" ]
+  then
+    export ZWED_privilegedServerName=$ZOWE_ZSS_XMEM_SERVER_NAME
+  fi 
 fi

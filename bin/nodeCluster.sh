@@ -8,4 +8,4 @@
 # Copyright Contributors to the Zowe Project.
 
 # This file is historic, to be replaced by the one below
-./app-server.sh
+./app-server.sh $@

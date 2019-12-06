@@ -8,4 +8,4 @@
 # Copyright Contributors to the Zowe Project.
 
 # This file is historic, to be replaced by the one below
-ZLUX_NO_CLUSTER=1 ./app-server.sh
+ZLUX_NO_CLUSTER=1 ./app-server.sh $@

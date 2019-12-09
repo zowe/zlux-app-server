@@ -44,18 +44,23 @@ fi
 if [ -e "$ZLUX_CONFIG_FILE" ]
 then
   CONFIG_FILE=$ZLUX_CONFIG_FILE
-elif [ -d "$WORKSPACE_DIR" ]
+elif [ -e "${WORKSPACE_DIR}/app-server/serverConfig/server.json" ]
 then
   CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/server.json"
-elif [ -d "$INSTANCE_DIR" ]
+elif [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
 then
   CONFIG_FILE="${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json"
 elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]
 then
   CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/server.json"
+elif [ -e "../deploy/instance/ZLUX/serverConfig/zluxserver.json" ]
+then
+  echo "WARNING: Using old configuration present in ${dir}/../deploy\n\
+This configuration should be migrated for use with future versions. See documentation for more information.\n"
+  CONFIG_FILE="../deploy/instance/ZLUX/serverConfig/zluxserver.json"
 else
-  echo "No config file or instance directory found, initializing..."
-  INSTANCE_DIR="${HOME}/.zowe"
+  echo "No config file found, initializing..."
+  export INSTANCE_DIR="${HOME}/.zowe"
   mkdir -p ${INSTANCE_DIR}/logs
   cd ../lib
   NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js

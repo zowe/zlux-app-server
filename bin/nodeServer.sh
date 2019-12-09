@@ -147,7 +147,7 @@ type node
 
 echo Starting node
 
-_BPX_JOBNAME=${ZOWE_PREFIX}DS1 node --harmony zluxServer.js --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZLUX_NODE_LOG_FILE
+__UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 node --harmony zluxServer.js --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZLUX_NODE_LOG_FILE
 echo "Ended with rc=$?"
 
 

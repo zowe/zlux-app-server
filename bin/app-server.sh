@@ -43,13 +43,29 @@ fi
 #If none found, will assume dev environment and consider ~/.zowe as INSTANCE_DIR
 if [ -e "$ZLUX_CONFIG_FILE" ]
 then
-  CONFIG_FILE=$ZLUX_CONFIG_FILE
-elif [ -e "${WORKSPACE_DIR}/app-server/serverConfig/server.json" ]
+    CONFIG_FILE=$ZLUX_CONFIG_FILE
+elif [ -n "${WORKSPACE_DIR}" ]
 then
-  CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/server.json"
-elif [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
+  if [ -e "${WORKSPACE_DIR}/app-server/serverConfig/server.json" ]
+  then
+    CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/server.json"
+  else
+    cd ../lib
+    NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+    CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/server.json"
+    cd ../bin
+  fi
+elif [ -n "${INSTANCE_DIR}" ]
 then
-  CONFIG_FILE="${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json"
+  if [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
+  then
+    CONFIG_FILE="${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json"
+  else
+    cd ../lib
+    NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+    CONFIG_FILE="${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json"
+    cd ../bin
+  fi
 elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]
 then
   CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/server.json"

@@ -45,6 +45,14 @@ then
   if [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
   then
     json_path=${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json
+  elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]
+  then
+    json_path=${HOME}/.zowe/workspace/app-server/serverConfig/server.json
+  elif [ -e "../deploy/instance/ZLUX/serverConfig/zluxserver.json" ]
+  then
+    echo "WARNING: Using old configuration present in ${dir}/../deploy\n\
+This configuration should be migrated for use with future versions. See documentation for more information.\n"
+    json_path="../deploy/instance/ZLUX/serverConfig/zluxserver.json"
   else
     json_path=$zlux_path/zlux-app-server/defaults/serverConfig/server.json
   fi

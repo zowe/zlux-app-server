@@ -6,9 +6,9 @@ REM
 REM SPDX-License-Identifier: EPL-2.0
 REM 
 REM Copyright Contributors to the Zowe Project.
-
 if [%1]==[] goto :fail
-setlocal
+setlocal EnableDelayedExpansion
+
 set app_path="%~f1"
 set temp_cd=%CD%
 if not defined ZLUX_INSTALL_LOG_DIR (
@@ -30,8 +30,8 @@ if not defined ZLUX_CONFIG_FILE (
 echo Checking for node
 where node
 if %ERRORLEVEL% neq 0 goto :nonode
-echo Running installer. Log location=%ZLUX_LOG_PATH%
-node "%~dp0..\..\zlux-server-framework\utils\install-app.js" -i "%app_path%"  -o "%~dp0..\..\\" -c "%ZLUX_CONFIG_FILE%" %2 > %ZLUX_LOG_PATH% 2>&1
+echo Running installer. Log location=!ZLUX_LOG_PATH!
+node "%~dp0..\..\zlux-server-framework\utils\install-app.js" -i "%app_path%"  -o "%~dp0..\..\\" -c "!ZLUX_CONFIG_FILE!" %2 > !ZLUX_LOG_PATH! 2>&1
 set rc=%ERRORLEVEL%
 echo Ended with rc=%rc%
 endlocal
@@ -51,10 +51,4 @@ rem Create a directory if it does not exist yet
 :makedir
 if not exist %1 mkdir %1
 goto :eof
-REM This program and the accompanying materials are
-REM made available under the terms of the Eclipse Public License v2.0 which accompanies
-REM this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html
-REM 
-REM SPDX-License-Identifier: EPL-2.0
-REM 
-REM Copyright Contributors to the Zowe Project.
+

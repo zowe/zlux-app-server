@@ -6,7 +6,7 @@ REM
 REM SPDX-License-Identifier: EPL-2.0
 REM 
 REM Copyright Contributors to the Zowe Project.
-setlocal
+setlocal EnableDelayedExpansion
 
 if defined NODE_HOME (
   set NODE_BIN=%NODE_HOME%\bin\node
@@ -31,7 +31,7 @@ if exist "%ZLUX_CONFIG_FILE%" (
       set CONFIG_FILE=%WORKSPACE_DIR%\app-server\serverConfig\server.json
     ) else (
       cd ..\lib
-      %NODE_BIN% initInstance.js
+      !NODE_BIN! initInstance.js
       cd ..\bin
     )
   ) else (
@@ -40,7 +40,7 @@ if exist "%ZLUX_CONFIG_FILE%" (
         set CONFIG_FILE=%INSTANCE_DIR%\workspace\app-server\serverConfig\server.json
       ) else (
         cd ..\lib
-        %NODE_BIN% initInstance.js
+        !NODE_BIN! initInstance.js
         cd ..\bin        
       )
     ) else (
@@ -54,9 +54,9 @@ if exist "%ZLUX_CONFIG_FILE%" (
         ) else (
           echo No config file found, initializing
           set INSTANCE_DIR=%USERPROFILE%\.zowe
-          call :makedir "%INSTANCE_DIR%\logs"
+          call :makedir "!INSTANCE_DIR!\logs"
           cd ..\lib
-          %NODE_BIN% initInstance.js
+          !NODE_BIN! initInstance.js
           set CONFIG_FILE=%USERPROFILE%\.zowe\workspace\app-server\serverConfig\server.json
           cd ..\bin
         )
@@ -72,20 +72,16 @@ if defined ZLUX_NODE_LOG_FILE (
     echo "ZLUX_NODE_LOG_FILE set (value %ZLUX_NODE_LOG_FILE%). Ignoring ZLUX_NODE_LOG_DIR."
   )
 ) else (
-  if defined ZLUX_NODE_LOG_DIR (
-    call :makedir "%ZLUX_NODE_LOG_DIR%"
-    cd "%ZLUX_NODE_LOG_DIR%"
-    for %%I in (.) do set ZLUX_LOG_PATH="%%~dpfI\appServer.log"
-  ) else (
-    if exist "%INSTANCE_DIR%" (
-      set ZLUX_NODE_LOG_DIR=%INSTANCE_DIR%\logs
+  if not defined ZLUX_NODE_LOG_DIR (
+    if exist "!INSTANCE_DIR!" (
+      set ZLUX_NODE_LOG_DIR=!INSTANCE_DIR!\logs
     ) else (
-      set ZLUX_NODE_LOG_DIR=..\log
+      set ZLUX_NODE_LOG_DIR="..\log"
     )
-    call :makedir "%ZLUX_NODE_LOG_DIR%"
-    cd "%ZLUX_NODE_LOG_DIR%"
-    for %%I in (.) do set ZLUX_LOG_PATH="%%~dpfI\appServer.log"    
   )
+  call :makedir "!ZLUX_NODE_LOG_DIR!"
+  cd "!ZLUX_NODE_LOG_DIR!"
+  for %%I in (.) do set ZLUX_LOG_PATH="%%~dpfI\appServer.log"
 )
 
 cd %temp_cd%
@@ -103,11 +99,11 @@ if "%ZLUX_NO_CLUSTER%" == "1" (
 REM Check if print to terminal argument exists
 echo.%* | findstr /C:"--logToTerminal" 1>nul
 if errorlevel 1 (
-  echo Server startup. Log location=%ZLUX_LOG_PATH%
-  %NODE_BIN% --harmony %ZLUX_SERVER_FILE% --config="%CONFIG_FILE%" %* > "%ZLUX_LOG_PATH%" 2>&1
+  echo Server startup. Log location=!ZLUX_LOG_PATH!
+  !NODE_BIN! --harmony !ZLUX_SERVER_FILE! --config="!CONFIG_FILE!" %* > "!ZLUX_LOG_PATH!" 2>&1
 ) ELSE (
   echo Server startup. Logging to terminal...
-  %NODE_BIN% --harmony %ZLUX_SERVER_FILE% --config="%CONFIG_FILE%" %*
+  !NODE_BIN! --harmony !ZLUX_SERVER_FILE! --config="!CONFIG_FILE!" %*
 )
 set rc=%ERRORLEVEL%
 echo Ended with rc=%rc%

@@ -6,7 +6,7 @@ REM
 REM SPDX-License-Identifier: EPL-2.0
 REM 
 REM Copyright Contributors to the Zowe Project.
-setlocal
+setlocal EnableDelayedExpansion
 set ZLUX_NO_CLUSTER=1
 CALL app-server.bat
 endlocal

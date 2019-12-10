@@ -33,7 +33,7 @@ if [ ! -e "${dir}/convert-env.sh" ]
 then
   if [ -n "$CONDA_PREFIX" ]
   then
-    cd "$CONDA_PREFIX/lib/zowe/zlux/zlux-app-server"
+    cd "$CONDA_PREFIX/lib/zowe/zlux/zlux-app-server/bin"
   fi
 fi
 
@@ -197,19 +197,6 @@ cd $dir
 export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH
 cd ../lib
 
-if [ -n "$NODE_HOME" ]
-then
-  export PATH=$NODE_HOME/bin:$PATH
-else
-  echo WARN- NODE_HOME environment variable not defined, not setting PATH
-fi
-
-if [ -z `command -v node` ]
-then
-  echo "Node not found in path. Please ensure NODE_HOME variable is properly set"
-  exit 1
-fi
-
 export "_CEE_RUNOPTS=XPLINK(ON),HEAPPOOLS(ON)"
 export _BPXK_AUTOCVT=ON
 
@@ -223,8 +210,9 @@ echo Starting node
 if [ -z "$ZLUX_NO_CLUSTER" ]
 then
   export minWorkers=2
-  __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony zluxCluster.js --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZLUX_NODE_LOG_FILE
+  ZLUX_SERVER_FILE=zluxCluster.js
 else
-  __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony zluxServer.js --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZLUX_NODE_LOG_FILE
+  ZLUX_SERVER_FILE=zluxServer.js
 fi
+__UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZLUX_NODE_LOG_FILE
 echo "Ended with rc=$?"

@@ -48,7 +48,7 @@ if exist "%ZLUX_CONFIG_FILE%" (
         set CONFIG_FILE=%USERPROFILE%\.zowe\workspace\app-server\serverConfig\server.json
       ) else (
         if exist "..\deploy\instance\ZLUX\serverConfig\zluxserver.json" (
-          echo WARNING: Using old configuration present in "%temp_cd%/../deploy"
+          echo WARNING: Using old configuration present in "%temp_cd%\..\deploy"
           echo This configuration should be migrated for use with future versions. See documentation for more information.\n
           set CONFIG_FILE=..\deploy\instance\ZLUX\serverConfig\zluxserver.json
         ) else (

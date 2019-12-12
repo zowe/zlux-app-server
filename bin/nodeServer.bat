@@ -8,5 +8,5 @@ REM
 REM Copyright Contributors to the Zowe Project.
 setlocal EnableDelayedExpansion
 set ZLUX_NO_CLUSTER=1
-CALL app-server.bat
+CALL app-server.bat %*
 endlocal

@@ -50,7 +50,7 @@ else
   then
     if [ -d "$INSTANCE_DIR" ]
     then
-      ZLUX_NODE_LOG_DIR=${INSTANCE_DIR}/logs
+      ZSS_LOG_DIR=${INSTANCE_DIR}/logs
     else
       ZSS_LOG_DIR="../log"
     fi

@@ -325,7 +325,7 @@ ZWED_agent_http_port=9999
 ZWED_node_https_ipAddresses=127.0.0.1,192.168.1.100
 ``` 
 
-This would override the `server.json` value of `agent.http.port` to be 9999, and `node.https.ipAddresses` to be ['127.0.0.1,'192.168.1.100'].
+This would override the `server.json` value of `agent.http.port` to be 9999, and `node.https.ipAddresses` to be ['127.0.0.1','192.168.1.100'].
 
 2. CLI argument configuration
 Items in server.json can also be substituded by arguments and flags. The pattern for arguments is

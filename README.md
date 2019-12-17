@@ -70,7 +70,9 @@ Git bash or putty's pageant are some of various tools that can help you setup & 
 
 ### (Optional) Install git for z/OS
 Because all of our code is on github, yet ZSS must run on z/OS and the zLUX App Server may optionally run on z/OS as well, having git on z/OS is the most convenient way to work with the source code. The alternative would be to utilize FTP or another method to transfer contents to z/OS.
-If you'd like to go this route, you can find git for z/OS free of charge here: http://www.rocketsoftware.com/product-categories/mainframe/git-for-zos
+If you'd like to go this route, you can find git for z/OS free of charge here: 
+http://www.rocketsoftware.com/product-categories/mainframe/git-for-zos
+
 On z/OS, git 2.14.4 is the minimum needed.
 
 
@@ -108,7 +110,9 @@ build.bat
 ```
 
 This will take some time to complete.
+
 **Note when building, NPM is used. The version of NPM needed for the build to succeed should be at least 6.4. You can update NPM by executing `npm install -g npm`**
+
 **Note:** It has been reported that building can hang on Windows if you have put the code in a directory that has a symbolic link. Build time can depend on hardware speed, but should take minutes not hours.
 
 
@@ -156,6 +160,7 @@ The Plugins which have web components are also called "Apps" within the UI.
 To add a plugin to the server, it must first be built. Plugins that you download may already be pre-built.
 
 [Click here to read about building plugins](https://github.com/zowe/zlux/wiki/Building-Plugins)
+
 [Click here to read about installing plugins](https://github.com/zowe/zlux/wiki/Installing-Plugins)
 
 ### Plugin Build & Add Example
@@ -190,10 +195,12 @@ git clone git@github.com:zowe/sample-react-app.git
 git clone git@github.com:zowe/sample-iframe-app.git
 ```
 
-## 7. Adding ZSS to the enviroment
-Like the App Server, ZSS is an HTTP(S) server component of Zowe. However unlike the App Server, ZSS is a z/OS specific component which exists to provide core low-level & security APIs, as well as a place to attach lower-level plugins than could be built with the App Server. The configuration, directories, and network-level API structures are similar, as these servers work together to support Apps. Also, some of the low-level APIs are made possibly by ZSS working in concert with the Zowe Cross Memory Server, which is not an HTTP(S) server, but ZSS provides any needed HTTP(S) access. So, if you need the APIs provided by ZSS, or want to build & use low-level plugins, then you must add ZSS and the Cross Memory Server to your Zowe environment.
+## 7. Adding ZSS to the environment
+Like the App Server, ZSS is an HTTP(S) server component of Zowe. 
+However unlike the App Server, ZSS is a z/OS specific component which exists to provide core low-level & security APIs, as well as a place to attach lower-level plugins than could be built with the App Server. The configuration, directories, and network-level API structures are similar, as these servers work together to support Apps.
+Also, some of the low-level APIs are made possibly by ZSS working in concert with the Zowe Cross Memory Server, which is not an HTTP(S) server, but ZSS provides any needed HTTP(S) access. So, if you need the APIs provided by ZSS, or want to build & use low-level plugins, then you must add ZSS and the Cross Memory Server to your Zowe environment.
 
-Since ZSS adheres to the same configuration & directory structure as the App server, the easiest way to set up ZSS is to clone all of the App Server repos (Step 1) onto z/OS if you have not already done so. However, strictly speaking the only non-ZSS repo needed is the `zlux-app-server` repo because it contains the scripts that are used to start the servers.
+Since ZSS adheres to the same configuration & directory structure as the App server, the easiest way to set up ZSS is to clone all of the App Server repos ([Step 1](#1-acquire-the-source-code)) onto z/OS if you have not already done so. However, strictly speaking the only non-ZSS repo needed is the `zlux-app-server` repo because it contains the scripts that are used to start the servers.
 
 ### Building ZSS
 To build ZSS from source, it is recommended to use git on z/OS. You can use this command to get the code:
@@ -260,7 +267,7 @@ As a result of the above edits to server.json, an example of what it may now loo
       "keys": ["../defaults/serverConfig/zlux.keystore.key"],
       "certificates": ["../defaults/serverConfig/zlux.keystore.cer"],
       "certificateAuthorities": ["../defaults/serverConfig/apiml-localca.cer"]
-    }
+    },
     "childProcesses": [
       {
         "path": "../bin/zssServer.sh",
@@ -310,17 +317,23 @@ When running the App Server with an Agent such as ZSS, you can either set the `s
 
 1. Environment variable configuration
 Items in server.json can be substitued by environment variables that have a name that corresponds to each item. The pattern is 
+
 `ZWED_json_key=value` where `ZWED_` is the prefix, and `json_key` is the name of the key. For example,
+
 ```
 ZWED_agent_http_port=9999
 ZWED_node_https_ipAddresses=127.0.0.1,192.168.1.100
 ``` 
+
 This would override the `server.json` value of `agent.http.port` to be 9999, and `node.https.ipAddresses` to be ['127.0.0.1,'192.168.1.100'].
 
 2. CLI argument configuration
 Items in server.json can also be substituded by arguments and flags. The pattern for arguments is
+
 `-Djson.key=value`, where `-D` denotes an argument, and `json.key` is the name of the key. For example,
+
 `-Dagent.http.port=9999 -Dnode.https.ipAddresses=127.0.0.1,192.168.1.100` Would set `agent.http.port` to be 9999, and `node.https.ipAddresses` to be ['127.0.0.1,'192.168.1.100'].
+
 There are also specific flags used for well-known configuration items, such as:
 - *-h*: Declares the host where ZSS can be found. Use as "-h \<hostname\>"
 - *-P*: Declares the port at which ZSS is listening.

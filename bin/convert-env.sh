@@ -33,6 +33,33 @@ then
   fi
 fi
 
+# certificates
+if [ -z "ZWED_node_https_certificates" ] 
+then
+  if [ -n "$KEYSTORE_CERTIFICATE" ]
+  then
+    #, at end turns it into an array
+    export ZWED_node_https_certificates=$KEYSTORE_CERTIFICATE,
+  fi
+fi
+if [ -z "ZWED_node_https_certificateAuthorities" ] 
+then
+  if [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
+  then
+    #, at end turns it into an array
+    export ZWED_node_https_certificateAuthorities=$KEYSTORE_CERTIFICATE_AUTHORITY,
+  fi
+fi
+if [ -z "ZWED_node_https_keys" ] 
+then
+  if [ -n "$KEYSTORE_KEY" ]
+  then
+    #, at end turns it into an array
+    export ZWED_node_https_keys=$KEYSTORE_KEY,
+  fi
+fi
+
+
 # app server
 if [ -z "$ZWED_node_https_port" ] 
 then

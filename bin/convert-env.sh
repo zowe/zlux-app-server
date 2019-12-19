@@ -34,7 +34,7 @@ then
 fi
 
 # certificates
-if [ -z "ZWED_node_https_certificates" ] 
+if [ -z "$ZWED_node_https_certificates" ]
 then
   if [ -n "$KEYSTORE_CERTIFICATE" ]
   then
@@ -42,7 +42,7 @@ then
     export ZWED_node_https_certificates=$KEYSTORE_CERTIFICATE,
   fi
 fi
-if [ -z "ZWED_node_https_certificateAuthorities" ] 
+if [ -z "$ZWED_node_https_certificateAuthorities" ]
 then
   if [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
   then
@@ -50,7 +50,7 @@ then
     export ZWED_node_https_certificateAuthorities=$KEYSTORE_CERTIFICATE_AUTHORITY,
   fi
 fi
-if [ -z "ZWED_node_https_keys" ] 
+if [ -z "$ZWED_node_https_keys" ]
 then
   if [ -n "$KEYSTORE_KEY" ]
   then

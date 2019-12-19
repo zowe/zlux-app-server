@@ -10,18 +10,24 @@
 ## launch the Zowe Secure Services Server
 
 ZSS_SCRIPT_DIR=$(cd `dirname $0` && pwd)
-echo "pwd = `pwd`"
-echo "Script dir = $(cd `dirname $0` && pwd)"
 
-if [ -n "$ZSS_CONFIG_FILE" ]
+. ${ZSS_SCRIPT_DIR}/convert-env.sh
+
+if [ -e "$ZSS_CONFIG_FILE" ]
 then
     CONFIG_FILE=$ZSS_CONFIG_FILE
-elif [ -n "$ZLUX_CONFIG_FILE" ]
+elif [ -e "$ZLUX_CONFIG_FILE" ]
 then
     CONFIG_FILE=$ZLUX_CONFIG_FILE
-else
+elif [ -d "$WORKSPACE_DIR" ]
+then
+  CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/server.json"
+elif [ -d "$INSTANCE_DIR" ]
+then
+  CONFIG_FILE="${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json"
+else  
     echo "No config file specified, using default"
-    CONFIG_FILE="${ZSS_SCRIPT_DIR}/../deploy/instance/ZLUX/serverConfig/zluxserver.json"
+    CONFIG_FILE="${ZSS_SCRIPT_DIR}/../defaults/serverConfig/server.json"
 fi
 
 
@@ -42,7 +48,12 @@ else
 # _FILE was not specified; default filename, and check and maybe default _DIR
   if [ -z "$ZSS_LOG_DIR" ]
   then
-    ZSS_LOG_DIR="../log"
+    if [ -d "$INSTANCE_DIR" ]
+    then
+      ZSS_LOG_DIR=${INSTANCE_DIR}/logs
+    else
+      ZSS_LOG_DIR="../log"
+    fi
   fi
 
   if [ -f "$ZSS_LOG_DIR" ]

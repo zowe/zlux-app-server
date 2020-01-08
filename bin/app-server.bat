@@ -87,7 +87,9 @@ if defined ZLUX_NODE_LOG_FILE (
 cd %temp_cd%
 
 cd ..\lib
-set minWorkers=2
+if not defined ZLUX_MIN_WORKERS (
+  set ZLUX_MIN_WORKERS=2
+)
 set NODE_CLUSTER_SCHED_POLICY=rr
 
 if "%ZLUX_NO_CLUSTER%" == "1" (

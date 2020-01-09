@@ -22,7 +22,17 @@ dir=$(cd `dirname $0` && pwd)
 if [ -e "${dir}/../instance.env" ]
 then
   . ${dir}/../instance.env
+  if [ -z "$INSTANCE_DIR" ]
+  then
+     export INSTANCE_DIR=$(cd "${dir}/.." && pwd)
+  fi
   zlux_path="$ROOT_DIR/components/app-server/share"
+  if [ ! -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
+  then
+    cd ${zlux_path}/zlux-app-server/lib
+    export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH
+    __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+  fi
 elif [ -d "${dir}/../../zlux-server-framework" ]
 then
   zlux_path=$(cd $(dirname "$0")/../..; pwd)
@@ -36,6 +46,7 @@ app_path=$(cd "$1"; pwd)
 if [ $# -gt 1 ]
 then
   plugin_dir=$2
+  mkdir -p $plugin_dir
   shift
 fi
 shift

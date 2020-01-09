@@ -18,6 +18,9 @@ then
 else
   NODE_BIN=node
 fi
+cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/bin
+. ./convert-env.sh
+
 cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/lib
 export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH
 __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js

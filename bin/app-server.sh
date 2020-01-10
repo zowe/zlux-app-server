@@ -34,7 +34,8 @@ if [ ! -e "${dir}/convert-env.sh" ]
 then
   if [ -n "$CONDA_PREFIX" ]
   then
-    cd "$CONDA_PREFIX/lib/zowe/zlux/zlux-app-server/bin"
+    dir="$CONDA_PREFIX/lib/zowe/app-server/share/zlux-app-server/bin"
+    cd $dir
   fi
 fi
 
@@ -70,6 +71,8 @@ then
 elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]
 then
   CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/server.json"
+  mkdir -p ${INSTANCE_DIR}/logs
+  export INSTANCE_DIR="${HOME}/.zowe"
 elif [ -e "../deploy/instance/ZLUX/serverConfig/zluxserver.json" ]
 then
   echo "WARNING: Using old configuration present in ${dir}/../deploy\n\
@@ -193,7 +196,6 @@ then
 fi
 
 #Determined log file.  Run node appropriately.
-export dir=`dirname "$0"`
 cd $dir
 export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH
 cd ../lib

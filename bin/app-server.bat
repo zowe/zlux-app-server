@@ -15,7 +15,7 @@ if defined NODE_HOME (
 )
 
 if defined CONDA_PREFIX (
-  cd "%CONDA_PREFIX%\lib\zowe\zlux\zlux-app-server\bin"
+  cd "%CONDA_PREFIX%\lib\zowe\app-server\share\zlux-app-server\bin"
 )
 set temp_cd=%CD%
 

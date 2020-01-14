@@ -89,13 +89,6 @@ cd %temp_cd%
 cd ..\lib
 if not defined ZLUX_MIN_WORKERS (
   set ZLUX_MIN_WORKERS=2
-) else (
-  if ZLUX_MIN_WORKERS LEQ 0 (
-    set ZLUX_MIN_WORKERS=1
-  )
-  if ZLUX_MIN_WORKERS GEQ %NUMBER_OF_PROCESSORS%*2 (
-    set ZLUX_MIN_WORKERS=%NUMBER_OF_PROCESSORS%*2
-  )
 )
 set NODE_CLUSTER_SCHED_POLICY=rr
 

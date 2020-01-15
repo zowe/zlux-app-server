@@ -34,7 +34,7 @@ if [ ! -e "${dir}/convert-env.sh" ]
 then
   if [ -n "$CONDA_PREFIX" ]
   then
-    dir="$CONDA_PREFIX/lib/zowe/app-server/share/zlux-app-server/bin"
+    dir="$CONDA_PREFIX/share/zowe/app-server/zlux-app-server/bin"
     cd $dir
   fi
 fi

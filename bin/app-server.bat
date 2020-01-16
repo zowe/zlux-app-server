@@ -9,7 +9,7 @@ REM Copyright Contributors to the Zowe Project.
 setlocal EnableDelayedExpansion
 
 if defined NODE_HOME (
-  set NODE_BIN=%NODE_HOME%\bin\node
+  set NODE_BIN="%NODE_HOME%\node"
 ) else (
   set NODE_BIN=node
 )

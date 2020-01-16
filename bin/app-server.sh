@@ -210,8 +210,11 @@ type node
 echo Starting node
 if [ -z "$ZLUX_NO_CLUSTER" ]
 then
-  export minWorkers=2
   ZLUX_SERVER_FILE=zluxCluster.js
+  if [ -z "$ZLUX_MIN_WORKERS" ]
+  then
+    export ZLUX_MIN_WORKERS=2
+  fi
 else
   ZLUX_SERVER_FILE=zluxServer.js
 fi

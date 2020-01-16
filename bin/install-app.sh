@@ -38,7 +38,7 @@ then
   zlux_path=$(cd $(dirname "$0")/../..; pwd)
 elif [ -n "$CONDA_PREFIX" ]
 then
-  zlux_path="$CONDA_PREFIX/lib/zowe/zlux"
+  zlux_path="$CONDA_PREFIX/share/zowe/app-server"
 fi
 
 utils_path=$zlux_path/zlux-server-framework/utils

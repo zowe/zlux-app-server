@@ -9,13 +9,15 @@ REM Copyright Contributors to the Zowe Project.
 setlocal EnableDelayedExpansion
 
 if defined NODE_HOME (
-  set NODE_BIN=%NODE_HOME%\bin\node
+  set NODE_BIN="%NODE_HOME%\node"
 ) else (
   set NODE_BIN=node
 )
 
-if defined CONDA_PREFIX (
-  cd "%CONDA_PREFIX%\lib\zowe\zlux\zlux-app-server\bin"
+if not exist "..\lib\zluxArgs.js" (
+  if defined CONDA_PREFIX (
+    cd "%CONDA_PREFIX%\share\zowe\app-server\zlux-app-server\bin"
+  )
 )
 set temp_cd=%CD%
 
@@ -46,6 +48,7 @@ if exist "%ZLUX_CONFIG_FILE%" (
     ) else (
       if exist "%USERPROFILE%\.zowe\workspace\app-server\serverConfig\server.json" (
         set CONFIG_FILE=%USERPROFILE%\.zowe\workspace\app-server\serverConfig\server.json
+        set INSTANCE_DIR=%USERPROFILE%\.zowe
       ) else (
         if exist "..\deploy\instance\ZLUX\serverConfig\zluxserver.json" (
           echo WARNING: Using old configuration present in "%temp_cd%\..\deploy"

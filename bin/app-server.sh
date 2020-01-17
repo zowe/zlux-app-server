@@ -220,5 +220,5 @@ then
 else
   ZLUX_SERVER_FILE=zluxServer.js
 fi
-__UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZLUX_NODE_LOG_FILE
-echo "Ended with rc=$?"
+{ __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 ; echo "Ended with rc=$?" ; } | tee $ZLUX_NODE_LOG_FILE
+

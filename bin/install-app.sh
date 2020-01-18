@@ -108,6 +108,6 @@ then
 { __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 ; echo "Ended with rc=?" ; } | tee $PLUGIN_LOG_FILE
 else
   echo "json_path=${json_path}"
-{ __ UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -c "$json_path" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee $PLUGIN_LOG_FILE
+{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -c "$json_path" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee $PLUGIN_LOG_FILE
 fi
 

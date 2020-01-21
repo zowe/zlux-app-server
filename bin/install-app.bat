@@ -11,6 +11,11 @@ setlocal EnableDelayedExpansion
 
 set app_path="%~f1"
 set temp_cd=%CD%
+set zlux_path="%~dp0\..\.."
+if defined CONDA_PREFIX (
+  set zlux_path="%CONDA_PREFIX%\share\zowe\app-server"
+)
+
 if not defined ZLUX_INSTALL_LOG_DIR (
   if exist "%INSTANCE_DIR%" (
     set ZLUX_INSTALL_LOG_DIR=%INSTANCE_DIR%\logs
@@ -30,12 +35,12 @@ if exist "%INSTANCE_DIR%\workspace\app-server\serverConfig\server.json" (
   if exist "%USERPROFILE%\.zowe\workspace\app-server\serverConfig\server.json" (
     set ZLUX_CONFIG_FILE="%USERPROFILE%\.zowe\workspace\app-server\serverConfig\server.json"
   ) else (
-    if exist "..\deploy\instance\ZLUX\serverConfig\zluxserver.json" (
-      echo WARNING: Using old configuration present in "%temp_cd%\..\deploy"
+    if exist "!zlux_path!\zlux-app-server\deploy\instance\ZLUX\serverConfig\zluxserver.json" (
+      echo WARNING: Using old configuration present in "!zlux_path!\zlux-app-server\deploy"
       echo This configuration should be migrated for use with future versions. See documentation for more information.\n
-      set ZLUX_CONFIG_FILE="..\deploy\instance\ZLUX\serverConfig\zluxserver.json"
+      set ZLUX_CONFIG_FILE="!zlux_path!\zlux-app-server\deploy\instance\ZLUX\serverConfig\zluxserver.json"
     ) else (
-      set ZLUX_CONFIG_FILE="..\defaults\serverConfig\server.json"
+      set ZLUX_CONFIG_FILE="!zlux_path!\zlux-app-server\defaults\serverConfig\server.json"
     )
   )
 )
@@ -44,7 +49,7 @@ echo Checking for node
 where node
 if %ERRORLEVEL% neq 0 goto :nonode
 echo Running installer. Log location=!ZLUX_LOG_PATH!
-node "%~dp0..\..\zlux-server-framework\utils\install-app.js" -i "!app_path!"  -o "%~dp0..\..\\" -c "!ZLUX_CONFIG_FILE!" %2 > !ZLUX_LOG_PATH! 2>&1
+node "!zlux_path!\zlux-server-framework\utils\install-app.js" -i "!app_path!"  -c "!ZLUX_CONFIG_FILE!" %2 > !ZLUX_LOG_PATH! 2>&1
 set rc=%ERRORLEVEL%
 echo Ended with rc=%rc%
 endlocal

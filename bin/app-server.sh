@@ -45,7 +45,8 @@ if [ ! -e "${dir}/convert-env.sh" ]
 then
   if [ -n "$CONDA_PREFIX" ]
   then
-    cd "$CONDA_PREFIX/lib/zowe/zlux/zlux-app-server/bin"
+    dir="$CONDA_PREFIX/share/zowe/app-server/zlux-app-server/bin"
+    cd $dir
   fi
 fi
 
@@ -81,6 +82,8 @@ then
 elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]
 then
   CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/server.json"
+  mkdir -p ${INSTANCE_DIR}/logs
+  export INSTANCE_DIR="${HOME}/.zowe"
 elif [ -e "../deploy/instance/ZLUX/serverConfig/zluxserver.json" ]
 then
   echo "WARNING: Using old configuration present in ${dir}/../deploy\n\
@@ -204,7 +207,6 @@ then
 fi
 
 #Determined log file.  Run node appropriately.
-export dir=`dirname "$0"`
 cd $dir
 export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH
 cd ../lib
@@ -229,5 +231,5 @@ then
 else
   ZLUX_SERVER_FILE=zluxServer.js
 fi
-__UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZLUX_NODE_LOG_FILE
-echo "Ended with rc=$?"
+{ __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 ; echo "Ended with rc=$?" ; } | tee $ZLUX_NODE_LOG_FILE
+

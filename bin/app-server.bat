@@ -14,6 +14,14 @@ if defined NODE_HOME (
   set NODE_BIN=node
 )
 
+set nodeVersion=
+for /f "delims=" %%a in ('node -v') do @set nodeVersion=%%a
+if "%nodeVersion:~1,2%" == "12" (
+  set _TAG_REDIR_ERR=txt
+  set _TAG_REDIR_IN=txt
+  set _TAG_REDIR_OUT=txt
+)
+
 if defined CONDA_PREFIX (
   cd "%CONDA_PREFIX%\lib\zowe\zlux\zlux-app-server\bin"
 )

@@ -29,6 +29,17 @@ else
   NODE_BIN=node
 fi
 
+nodeVersion="$(node -v)"
+nodeMajorVersion=$(echo ${nodeVersion} | cut -c2-3)
+echo $nodeMajorVersion
+if [ $nodeMajorVersion = "12" ]
+then
+  export _TAG_REDIR_ERR=txt
+  export _TAG_REDIR_IN=txt
+  export _TAG_REDIR_OUT=txt
+fi
+
+
 dir=$(cd `dirname $0` && pwd)
 if [ ! -e "${dir}/convert-env.sh" ]
 then

@@ -14,8 +14,10 @@ if defined NODE_HOME (
   set NODE_BIN=node
 )
 
-if defined CONDA_PREFIX (
-  cd "%CONDA_PREFIX%\lib\zowe\zlux\zlux-app-server\bin"
+if not exist "..\lib\zluxArgs.js" (
+  if defined CONDA_PREFIX (
+    cd "%CONDA_PREFIX%\share\zowe\app-server\zlux-app-server\bin"
+  )
 )
 set temp_cd=%CD%
 

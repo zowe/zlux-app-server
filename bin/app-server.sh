@@ -25,11 +25,15 @@ if [ -n "$NODE_HOME" ]
 then
   NODE_BIN=${NODE_HOME}/bin/node
   export PATH=${NODE_HOME}/bin:$PATH
+elif [ -n "$ZOWE_NODE_HOME" ]
+then
+  NODE_BIN=${ZOWE_NODE_HOME}/bin/node
+  export PATH=${ZOWE_NODE_HOME}/bin:$PATH
 else
   NODE_BIN=node
 fi
 
-nodeVersion="$(node -v)"
+nodeVersion="$(${NODE_BIN} -v)"
 nodeMajorVersion=$(echo ${nodeVersion} | cut -c2-3)
 if [ $nodeMajorVersion = "12" ]
 then

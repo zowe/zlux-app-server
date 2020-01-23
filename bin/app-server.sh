@@ -33,7 +33,7 @@ else
   NODE_BIN=node
 fi
 
-nodeVersion="$(${NODE_BIN} -v)"
+nodeVersion="$(${NODE_BIN} --version)"
 nodeMajorVersion=$(echo ${nodeVersion} | cut -c2-3)
 if [ $nodeMajorVersion = "12" ]
 then

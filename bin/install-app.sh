@@ -22,13 +22,23 @@ dir=$(cd `dirname $0` && pwd)
 if [ -e "${dir}/../instance.env" ]
 then
   . ${dir}/../instance.env
+  if [ -z "$INSTANCE_DIR" ]
+  then
+     export INSTANCE_DIR=$(cd "${dir}/.." && pwd)
+  fi
   zlux_path="$ROOT_DIR/components/app-server/share"
+  if [ ! -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
+  then
+    cd ${zlux_path}/zlux-app-server/lib
+    export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH
+    __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+  fi
 elif [ -d "${dir}/../../zlux-server-framework" ]
 then
   zlux_path=$(cd $(dirname "$0")/../..; pwd)
 elif [ -n "$CONDA_PREFIX" ]
 then
-  zlux_path="$CONDA_PREFIX/lib/zowe/zlux"
+  zlux_path="$CONDA_PREFIX/share/zowe/app-server"
 fi
 
 utils_path=$zlux_path/zlux-server-framework/utils
@@ -36,6 +46,7 @@ app_path=$(cd "$1"; pwd)
 if [ $# -gt 1 ]
 then
   plugin_dir=$2
+  mkdir -p $plugin_dir
   shift
 fi
 shift
@@ -94,11 +105,9 @@ echo "utils_path=${utils_path}\napp_path=${app_path}"
 if [ -d "$plugin_dir" ]
 then
   echo "plugin_dir=${plugin_dir}"
-__UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 | tee $PLUGIN_LOG_FILE
+{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 ; echo "Ended with rc=?" ; } | tee $PLUGIN_LOG_FILE
 else
   echo "json_path=${json_path}"
-__UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -c "$json_path" $@ 2>&1 | tee $PLUGIN_LOG_FILE
+{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -c "$json_path" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee $PLUGIN_LOG_FILE
 fi
-rc=$?
-echo "Plugin install completed with rc=${rc}"
-exit $rc
+

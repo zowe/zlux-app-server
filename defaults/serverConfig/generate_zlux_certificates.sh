@@ -20,7 +20,7 @@
 
 BASE_DIR=$(dirname "$0")
 if [ -z ${APIML_HOME+x} ]; then
-    APIML_HOME="${BASE_DIR}/../../../api-layer"
+    APIML_HOME="${BASE_DIR}/../../../../api-layer"
 fi
 
 SERVICE_KEYSTORE="${BASE_DIR}/zlux.keystore"

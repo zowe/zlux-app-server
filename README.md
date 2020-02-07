@@ -83,7 +83,7 @@ If using git, the following commands should be used:
 ```
 git clone --recursive git@github.com:zowe/zlux.git
 cd zlux
-git submodule foreach "git checkout staging"
+git submodule foreach "git checkout master"
 ```
 
 For the initial setup, the default authentication is the "trivial authentication" plugin, which allows login to the App Server without valid credentials. At the end of this guide, you can customize the environment to switch to a secure authentication plugin instead, such as the ZSS authentication plugin, covered in [Section 7](#7-adding-zss-to-the-environment).

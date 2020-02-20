@@ -24,6 +24,10 @@ dir=$(cd `dirname $0` && pwd)
 if [ -e "${dir}/../instance.env" ]
 then
   . ${dir}/../instance.env
+  if [ -e "$ROOT_DIR/bin/internal/zowe-set-env.sh" ]
+  then
+    . ${ROOT_DIR}/bin/internal/zowe-set-env.sh
+  fi
   if [ -z "$INSTANCE_DIR" ]
   then
      export INSTANCE_DIR=$(cd "${dir}/.." && pwd)

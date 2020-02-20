@@ -17,6 +17,8 @@ then
 else
   NODE_BIN=node
 fi
+export _BPXK_AUTOCVT=ON
+
 
 dir=$(cd `dirname $0` && pwd)
 if [ -e "${dir}/../instance.env" ]

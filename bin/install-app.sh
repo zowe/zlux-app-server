@@ -17,11 +17,17 @@ then
 else
   NODE_BIN=node
 fi
+export _BPXK_AUTOCVT=ON
+
 
 dir=$(cd `dirname $0` && pwd)
 if [ -e "${dir}/../instance.env" ]
 then
   . ${dir}/../instance.env
+  if [ -e "$ROOT_DIR/bin/internal/zowe-set-env.sh" ]
+  then
+    . ${ROOT_DIR}/bin/internal/zowe-set-env.sh
+  fi
   if [ -z "$INSTANCE_DIR" ]
   then
      export INSTANCE_DIR=$(cd "${dir}/.." && pwd)
@@ -105,11 +111,9 @@ echo "utils_path=${utils_path}\napp_path=${app_path}"
 if [ -d "$plugin_dir" ]
 then
   echo "plugin_dir=${plugin_dir}"
-__UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 | tee $PLUGIN_LOG_FILE
+{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 ; echo "Ended with rc=?" ; } | tee $PLUGIN_LOG_FILE
 else
   echo "json_path=${json_path}"
-__UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -c "$json_path" $@ 2>&1 | tee $PLUGIN_LOG_FILE
+{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -c "$json_path" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee $PLUGIN_LOG_FILE
 fi
-rc=$?
-echo "Plugin install completed with rc=${rc}"
-exit $rc
+

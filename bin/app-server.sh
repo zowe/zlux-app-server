@@ -25,8 +25,22 @@ if [ -n "$NODE_HOME" ]
 then
   NODE_BIN=${NODE_HOME}/bin/node
   export PATH=${NODE_HOME}/bin:$PATH
+elif [ -n "$ZOWE_NODE_HOME" ]
+then
+  NODE_BIN=${ZOWE_NODE_HOME}/bin/node
+  export PATH=${ZOWE_NODE_HOME}/bin:$PATH
 else
   NODE_BIN=node
+fi
+export _BPXK_AUTOCVT=ON
+
+nodeVersion="$(${NODE_BIN} --version)"
+nodeMajorVersion=$(echo ${nodeVersion} | cut -c2-3)
+if [ $nodeMajorVersion = "12" ]
+then
+  export _TAG_REDIR_ERR=txt
+  export _TAG_REDIR_IN=txt
+  export _TAG_REDIR_OUT=txt
 fi
 
 dir=$(cd `dirname $0` && pwd)
@@ -201,7 +215,6 @@ export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH
 cd ../lib
 
 export "_CEE_RUNOPTS=XPLINK(ON),HEAPPOOLS(ON)"
-export _BPXK_AUTOCVT=ON
 
 echo Show Environment
 env
@@ -220,5 +233,5 @@ then
 else
   ZLUX_SERVER_FILE=zluxServer.js
 fi
-__UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZLUX_NODE_LOG_FILE
-echo "Ended with rc=$?"
+{ __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 ; echo "Ended with rc=$?" ; } | tee $ZLUX_NODE_LOG_FILE
+

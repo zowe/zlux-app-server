@@ -32,6 +32,7 @@ then
 else
   NODE_BIN=node
 fi
+export _BPXK_AUTOCVT=ON
 
 nodeVersion="$(${NODE_BIN} --version)"
 nodeMajorVersion=$(echo ${nodeVersion} | cut -c2-3)
@@ -214,7 +215,6 @@ export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH
 cd ../lib
 
 export "_CEE_RUNOPTS=XPLINK(ON),HEAPPOOLS(ON)"
-export _BPXK_AUTOCVT=ON
 
 echo Show Environment
 env

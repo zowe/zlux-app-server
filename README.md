@@ -166,16 +166,18 @@ To add a plugin to the server, it must first be built. Plugins that you download
 ### Plugin Build & Add Example
 Following the references above, this is how you can add a TN3270 terminal emulator app to your App Server, for an App server installed in `~/my-zowe`
 
-1. `git clone https://github.com/zowe/tn3270-ng2.git ~/my-zowe-plugins/tn3270-ng2`
-1. `cd ~/my-zowe-plugins/tn3270-ng2`
+1. `git clone https://github.com/zowe/tn3270-ng2.git ~/my-zowe/tn3270-ng2`
+1. `cd ~/my-zowe/tn3270-ng2`
 1. Set the environment variable `MVD_DESKTOP_DIR` to the path of zlux-app-manager/virtual-desktop, such as `export MVD_DESKTOP_DIR=~/my-zowe/zlux-app-manager/virtual-desktop`
 1. `cd webClient`
 1. `npm install`
 1. `npm run build` (This will take some time to complete.)
 1. `cd ~/my-zowe/zlux-app-server/bin`
-1. `./install-app.sh ~/my-zowe-plugins/tn3270-ng2`
+1. `./install-app.sh ~/my-zowe/tn3270-ng2`
 
 **Note:** If on Windows, try `%USERPROFILE%/` instead of `~/`, and `install-app.bat` instead of `./install-app.sh`
+
+**Note:** In a production environment you should not have 3rd party apps in the same root folder as the App Server, but currently some apps have relative path limitations during build & development that lead to developing apps within the same root folder.
 
 **Note:** It has been reported that building can hang on Windows if you have put the code in a directory that has a symbolic link. Build time can depend on hardware speed, but should take minutes not hours.
 

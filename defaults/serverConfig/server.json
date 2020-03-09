@@ -17,6 +17,12 @@
       },
       "enabled": false
     },
+    "headers": {
+      "Content-Security-Policy": {
+        "override": true,
+        "preset": "strict"
+      }
+    },
     "childProcesses": [
       {
         "path": "../bin/zssServer.sh",

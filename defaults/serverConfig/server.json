@@ -18,9 +18,9 @@
       "enabled": false
     },
     "headers": {
-      "Content-Security-Policy": {
+      "X-frame-Options": {
         "override": true,
-        "preset": "strict"
+        "value": "sameorigin"
       }
     },
     "childProcesses": [

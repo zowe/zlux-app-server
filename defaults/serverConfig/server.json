@@ -17,6 +17,12 @@
       },
       "enabled": false
     },
+    "headers": {
+      "X-frame-Options": {
+        "override": true,
+        "value": "sameorigin"
+      }
+    },
     "childProcesses": [
       {
         "path": "../bin/zssServer.sh",

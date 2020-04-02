@@ -14,8 +14,8 @@
 # You can execute it from any directory and it will update regenerate certificates for zLUX
 # in the same directory where the script is.
 #
-# It assumes that the `api-layer` repository is cloned at the same directory as `zlux`.
-# If it is different you need to set the `APIML_HOME` variable.
+# It assumes that the `api-layer` and `zowe-install-packaging` repositories are cloned at the same directory as `zlux`.
+# If it is different you need to set the `APIML_HOME` and `ZOWE_INSTALL_PACKAGING_HOME` variables.
 #
 
 BASE_DIR=$(dirname "$0")

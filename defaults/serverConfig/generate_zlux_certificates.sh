@@ -22,13 +22,16 @@ BASE_DIR=$(dirname "$0")
 if [ -z ${APIML_HOME+x} ]; then
     APIML_HOME="${BASE_DIR}/../../../../api-layer"
 fi
+if [ -z ${ZOWE_INSTALL_PACKAGING_HOME+x} ]; then
+    ZOWE_INSTALL_PACKAGING_HOME="${BASE_DIR}/../../../../zowe-install-packaging"
+fi
 
 SERVICE_KEYSTORE="${BASE_DIR}/zlux.keystore"
 SERVICE_TRUSTSTORE="${BASE_DIR}/zlux.truststore"
 SERVICE_DNAME="EMAILADDRESS=zowe-zlc@lists.openmainframeproject.org,CN=Zowe zLUX,O=Zowe,ST=California,C=US"
 LOCAL_CA_FILENAME="${APIML_HOME}/keystore/local_ca/localca"
 
-${APIML_HOME}/scripts/apiml_cm.sh --action new-service \
+${ZOWE_INSTALL_PACKAGING_HOME}/bin/apiml_cm.sh --action new-service \
   --local-ca-filename ${LOCAL_CA_FILENAME} --service-dname "${SERVICE_DNAME}" \
   --service-keystore ${SERVICE_KEYSTORE} --service-truststore ${SERVICE_TRUSTSTORE}
 

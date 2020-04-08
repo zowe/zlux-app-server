@@ -244,5 +244,4 @@ then
 fi
 JOBNAME=${ZOWE_PREFIX}DS${ZOWE_INSTANCE}
 
-{ __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${JOBNAME} ${NODE_BIN} --harmony --title "${JOBNAME}" ${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 ; echo "Ended with rc=$?" ; } | tee $ZLUX_NODE_LOG_FILE
-
+{ __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${JOBNAME} ${NODE_BIN} --harmony "${JOBNAME}" ${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 ; echo "Ended with rc=$?" ; } | tee $ZLUX_NODE_LOG_FILE

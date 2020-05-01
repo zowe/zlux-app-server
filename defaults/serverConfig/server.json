@@ -22,13 +22,7 @@
         "override": true,
         "value": "sameorigin"
       }
-    },
-    "childProcesses": [
-      {
-        "path": "../bin/zssServer.sh",
-        "once": true
-      }
-    ]
+    }
   },
 
 // section used to define a connection to a server that can handle native or high privilege commands that the app server cannot  

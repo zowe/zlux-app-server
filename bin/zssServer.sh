@@ -9,9 +9,17 @@
 
 ## launch the Zowe Secure Services Server
 
-ZSS_SCRIPT_DIR=$(cd `dirname $0` && pwd)
+ZSS_FILE=zssServer
+ZSS_COMPONENT=${ROOT_DIR}/components/zss/bin
 
-. ${ZSS_SCRIPT_DIR}/convert-env.sh
+if test -f "$ZSS_FILE"; then
+  ZSS_SCRIPT_DIR=$(cd `dirname $0` && pwd)
+elif [ -d "$ZSS_COMPONENT" ]; then
+  ZSS_SCRIPT_DIR=$ZSS_COMPONENT
+fi
+
+
+./convert-env.sh
 
 if [ -e "$ZSS_CONFIG_FILE" ]
 then
@@ -25,9 +33,15 @@ then
 elif [ -d "$INSTANCE_DIR" ]
 then
   CONFIG_FILE="${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json"
-else  
+elif [ -d "$ROOT_DIR" ]
+then
+# This conditional and the else conditional are here for backup purposes, INSTANCE_DIR and WORKSPACE_DIR are defined
+# in the initialization of the app-server if they are not defined but in the case of zss development they might not be defined
+# and will use the default server configuration
+    CONFIG_FILE="${ROOT_DIR}/components/app-server/share/zlux-app-server/defaults/serverConfig/server.json"
+else
     echo "No config file specified, using default"
-    CONFIG_FILE="${ZSS_SCRIPT_DIR}/../defaults/serverConfig/server.json"
+    CONFIG_FILE="../defaults/serverConfig/server.json"
 fi
 
 
@@ -148,7 +162,6 @@ fi
 #Determined log file.  Run zssServer.
 export dir=`dirname "$0"`
 cd $ZSS_SCRIPT_DIR
-
 _BPX_SHAREAS=NO _BPX_JOBNAME=${ZOWE_PREFIX}SZ1 ./zssServer "${CONFIG_FILE}" 2>&1 | tee $ZSS_LOG_FILE
 
 

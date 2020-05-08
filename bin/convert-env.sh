@@ -69,6 +69,13 @@ then
 fi
 
 #SSO
+if [ -z "$ZWED_agent_jwt_fallback" ]
+then
+  if [ -n $SSO_FALLBACK_TO_NATIVE_AUTH ]
+  then
+    export ZWED_agent_jwt_fallback=$SSO_FALLBACK_TO_NATIVE_AUTH
+  fi
+fi
 if [ -z "$ZWED_agent_jwt_token_name" ]
 then
   if [ -n $PKCS11_TOKEN_NAME ]

@@ -45,7 +45,11 @@ fi
 # certificates
 if [ -z "$ZWED_node_https_certificates" ]
 then
-  if [ -n "$KEYSTORE_CERTIFICATE" ]
+  if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
+  then
+    #, at end turns it into an array
+    export ZWED_node_https_certificates="${KEYSTORE}&${KEY_ALIAS}",
+  elif [ -n "$KEYSTORE_CERTIFICATE" ]
   then
     #, at end turns it into an array
     export ZWED_node_https_certificates=$KEYSTORE_CERTIFICATE,
@@ -53,7 +57,11 @@ then
 fi
 if [ -z "$ZWED_node_https_certificateAuthorities" ]
 then
-  if [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
+  if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
+  then
+    #, at end turns it into an array
+    export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&localca",
+  elif [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
   then
     #, at end turns it into an array
     export ZWED_node_https_certificateAuthorities=$KEYSTORE_CERTIFICATE_AUTHORITY,
@@ -61,7 +69,11 @@ then
 fi
 if [ -z "$ZWED_node_https_keys" ]
 then
-  if [ -n "$KEYSTORE_KEY" ]
+  if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
+  then
+    #, at end turns it into an array
+    export ZWED_node_https_keys="${KEYSTORE}&${KEY_ALIAS}",
+  elif [ -n "$KEYSTORE_KEY" ]
   then
     #, at end turns it into an array
     export ZWED_node_https_keys=$KEYSTORE_KEY,

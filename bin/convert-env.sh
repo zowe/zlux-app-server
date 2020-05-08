@@ -68,6 +68,28 @@ then
   fi
 fi
 
+#SSO
+if [ -z "$ZWED_agent_jwt_fallback" ]
+then
+  if [ -n $SSO_FALLBACK_TO_NATIVE_AUTH ]
+  then
+    export ZWED_agent_jwt_fallback=$SSO_FALLBACK_TO_NATIVE_AUTH
+  fi
+fi
+if [ -z "$ZWED_agent_jwt_token_name" ]
+then
+  if [ -n $PKCS11_TOKEN_NAME ]
+  then
+    export ZWED_agent_jwt_token_name=$PKCS11_TOKEN_NAME
+  fi
+fi
+if [ -z "$ZWED_agent_jwt_token_label" ]
+then
+  if [ -n $PKCS11_TOKEN_LABEL ]
+  then
+    export ZWED_agent_jwt_token_label=$PKCS11_TOKEN_LABEL
+  fi
+fi
 
 # app server
 if [ -z "$ZWED_node_https_port" ] 

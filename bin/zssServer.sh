@@ -6,21 +6,30 @@
 # SPDX-License-Identifier: EPL-2.0
 #
 # Copyright Contributors to the Zowe Project.
-
 ## launch the Zowe Secure Services Server
 
-ZSS_FILE=zssServer
-ZSS_COMPONENT=${ROOT_DIR}/components/zss/bin
+export _BPXK_AUTOCVT=ON
 
-if test -f "$ZSS_FILE"; then
-  ZSS_SCRIPT_DIR=$(cd `dirname $0` && pwd)
-elif [ -d "$ZSS_COMPONENT" ]; then
-  ZSS_SCRIPT_DIR=$ZSS_COMPONENT
+if [ -e "../bin/app-server.sh" ]
+then
+  in_app_server=true
+else
+  in_app_server=false
 fi
-
-
-./convert-env.sh
-
+if $in_app_server
+then
+  ZSS_FILE=../bin/zssServer
+  ZSS_COMPONENT=${ROOT_DIR}/components/zss/bin
+  if test -f "$ZSS_FILE"; then
+    ZSS_SCRIPT_DIR=$(cd `dirname $0`/../bin && pwd)
+  elif [ -d "$ZSS_COMPONENT" ]; then
+    ZSS_SCRIPT_DIR=$ZSS_COMPONENT
+  fi
+  ../bin/convert-env.sh
+else
+  ZSS_SCRIPT_DIR=$(cd `dirname $0` && pwd)
+  . ${ZSS_SCRIPT_DIR}/../../app-server/share/zlux-app-server/bin/convert-env.sh
+fi
 if [ -e "$ZSS_CONFIG_FILE" ]
 then
     CONFIG_FILE=$ZSS_CONFIG_FILE
@@ -33,6 +42,9 @@ then
 elif [ -d "$INSTANCE_DIR" ]
 then
   CONFIG_FILE="${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json"
+elif $in_app_server
+then
+  CONFIG_FILE="../defaults/serverConfig/server.json"
 elif [ -d "$ROOT_DIR" ]
 then
 # This conditional and the else conditional are here for backup purposes, INSTANCE_DIR and WORKSPACE_DIR are defined
@@ -41,10 +53,8 @@ then
     CONFIG_FILE="${ROOT_DIR}/components/app-server/share/zlux-app-server/defaults/serverConfig/server.json"
 else
     echo "No config file specified, using default"
-    CONFIG_FILE="../defaults/serverConfig/server.json"
+    CONFIG_FILE="${ZSS_SCRIPT_DIR}/../../app-server/share/zlux-app-server/defaults/serverConfig/server.json"
 fi
-
-
 if [ -n "$ZSS_LOG_FILE" ]
 then
   if [[ $ZSS_LOG_FILE == /* ]]
@@ -69,7 +79,6 @@ else
       ZSS_LOG_DIR="../log"
     fi
   fi
-
   if [ -f "$ZSS_LOG_DIR" ]
   then
     ZSS_LOG_FILE=$ZSS_LOG_DIR
@@ -83,7 +92,6 @@ else
       ZSS_LOG_FILE=/dev/null
     fi
   fi
-
   ZLUX_ROTATE_LOGS=0
   if [ -d "$ZSS_LOG_DIR" ] && [ -z "$ZSS_LOG_FILE" ]
   then
@@ -103,7 +111,6 @@ else
       ZLUX_ROTATE_LOGS=1
     fi
   fi
-
   #Clean up excess logs, if appropriate.
   if [ $ZLUX_ROTATE_LOGS -ne 0 ]
   then
@@ -114,7 +121,6 @@ else
     done
   fi
 fi
-
 ZSS_CHECK_DIR="$(dirname "$ZSS_LOG_FILE")"
 if [ ! -d "$ZSS_CHECK_DIR" ]
 then
@@ -132,11 +138,8 @@ then
   ZSS_CHECK_DIR=$(cd "$(dirname "$ZSS_LOG_FILE")"; pwd)
   ZSS_LOG_FILE=$ZSS_CHECK_DIR/$(basename "$ZSS_LOG_FILE")
 fi
-
-
 echo ZSS_LOG_FILE=${ZSS_LOG_FILE}
 export ZSS_LOG_FILE=$ZSS_LOG_FILE
-
 if [ ! -e $ZSS_LOG_FILE ]
 then
   touch $ZSS_LOG_FILE
@@ -152,19 +155,15 @@ else
     ZSS_LOG_FILE=/dev/null
   fi
 fi
-
 if [ ! -w "$ZSS_LOG_FILE" ]
 then
   echo file "$ZSS_LOG_FILE" is not writable. Logging disabled.
   ZSS_LOG_FILE=/dev/null
 fi
-
 #Determined log file.  Run zssServer.
 export dir=`dirname "$0"`
 cd $ZSS_SCRIPT_DIR
 _BPX_SHAREAS=NO _BPX_JOBNAME=${ZOWE_PREFIX}SZ1 ./zssServer "${CONFIG_FILE}" 2>&1 | tee $ZSS_LOG_FILE
-
-
 # This program and the accompanying materials are
 # made available under the terms of the Eclipse Public License v2.0 which accompanies
 # this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html

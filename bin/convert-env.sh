@@ -111,6 +111,13 @@ then
     export ZWED_node_https_port=$ZOWE_ZLUX_SERVER_HTTPS_PORT
   fi
 fi
+if [ -z "$ZWED_productDir" ]
+then
+  if [ -n "$ROOT_DIR" ]
+  then
+  export ZWED_productDir=$ROOT_DIR/components/app-server/share/zlux-app-server/defaults
+  fi
+fi
 
 # zss
 if [ -z "$ZWED_agent_http_port" ]

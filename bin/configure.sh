@@ -12,6 +12,9 @@
 # - ROOT_DIR
 # - WORKSPACE_DIR
 # - NODE_HOME
+
+ROOT_DIR=/root/zowe/1.11.0
+
 if [ -n "$NODE_HOME" ]
 then
   NODE_BIN=${NODE_HOME}/bin/node

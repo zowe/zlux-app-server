@@ -45,7 +45,11 @@ fi
 # certificates
 if [ -z "$ZWED_node_https_certificates" ]
 then
-  if [ -n "$KEYSTORE_CERTIFICATE" ]
+  if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
+  then
+    #, at end turns it into an array
+    export ZWED_node_https_certificates="${KEYSTORE}&${KEY_ALIAS}",
+  elif [ -n "$KEYSTORE_CERTIFICATE" ]
   then
     #, at end turns it into an array
     export ZWED_node_https_certificates=$KEYSTORE_CERTIFICATE,
@@ -53,7 +57,11 @@ then
 fi
 if [ -z "$ZWED_node_https_certificateAuthorities" ]
 then
-  if [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
+  if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
+  then
+    #, at end turns it into an array
+    export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&localca",
+  elif [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
   then
     #, at end turns it into an array
     export ZWED_node_https_certificateAuthorities=$KEYSTORE_CERTIFICATE_AUTHORITY,
@@ -61,13 +69,39 @@ then
 fi
 if [ -z "$ZWED_node_https_keys" ]
 then
-  if [ -n "$KEYSTORE_KEY" ]
+  if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
+  then
+    #, at end turns it into an array
+    export ZWED_node_https_keys="${KEYSTORE}&${KEY_ALIAS}",
+  elif [ -n "$KEYSTORE_KEY" ]
   then
     #, at end turns it into an array
     export ZWED_node_https_keys=$KEYSTORE_KEY,
   fi
 fi
 
+#SSO
+if [ -z "$ZWED_agent_jwt_fallback" ]
+then
+  if [ -n $SSO_FALLBACK_TO_NATIVE_AUTH ]
+  then
+    export ZWED_agent_jwt_fallback=$SSO_FALLBACK_TO_NATIVE_AUTH
+  fi
+fi
+if [ -z "$ZWED_agent_jwt_token_name" ]
+then
+  if [ -n $PKCS11_TOKEN_NAME ]
+  then
+    export ZWED_agent_jwt_token_name=$PKCS11_TOKEN_NAME
+  fi
+fi
+if [ -z "$ZWED_agent_jwt_token_label" ]
+then
+  if [ -n $PKCS11_TOKEN_LABEL ]
+  then
+    export ZWED_agent_jwt_token_label=$PKCS11_TOKEN_LABEL
+  fi
+fi
 
 # app server
 if [ -z "$ZWED_node_https_port" ] 
@@ -75,6 +109,13 @@ then
   if [ -n "$ZOWE_ZLUX_SERVER_HTTPS_PORT" ]
   then
     export ZWED_node_https_port=$ZOWE_ZLUX_SERVER_HTTPS_PORT
+  fi
+fi
+if [ -z "$ZWED_productDir" ]
+then
+  if [ -n "$ROOT_DIR" ]
+  then
+  export ZWED_productDir=$ROOT_DIR/components/app-server/share/zlux-app-server/defaults
   fi
 fi
 

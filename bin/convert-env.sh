@@ -9,15 +9,14 @@
 
 # shape old env vars into app-server compatible ones
 # mediation layer
-if [ "$APIML_ENABLE_SSO" = "true" ]; then
-  if [ -z "$ZWED_node_mediationLayer_server_gatewayPort" ]
+if [ -z "$ZWED_node_mediationLayer_server_gatewayPort" ]
+then
+  if [ -n "$GATEWAY_PORT" ]
   then
-    if [ -n "$GATEWAY_PORT" ]
-    then
-      export ZWED_node_mediationLayer_server_gatewayPort=$GATEWAY_PORT
-    fi
+    export ZWED_node_mediationLayer_server_gatewayPort=$GATEWAY_PORT
   fi
 fi
+
 if [ -z "$ZWED_node_mediationLayer_server_port" ]
 then
   if [ -n "$DISCOVERY_PORT" ]
@@ -25,6 +24,7 @@ then
     export ZWED_node_mediationLayer_server_port=$DISCOVERY_PORT
   fi
 fi
+
 if [ -z "$ZWED_node_mediationLayer_server_hostname" ]
 then
   if [ -n "$ZOWE_EXPLORER_HOST" ]

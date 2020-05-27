@@ -37,6 +37,12 @@
       ]
     },
     {
+      "identifier": "org.zowe.zlux.auth.safsso",
+      "versions": [
+        "*"
+      ]
+    },
+    {
       "identifier": "org.zowe.zlux.auth.trivial",
       "versions": [
         "*"
@@ -74,6 +80,12 @@
     },
     {
       "identifier": "org.zowe.zlux.ng2desktop.settings",
+      "versions": [
+        "*"
+      ]
+    },
+    {
+      "identifier": "org.zowe.zlux.ng2desktop.webbrowser",
       "versions": [
         "*"
       ]

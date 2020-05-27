@@ -22,13 +22,7 @@
         "override": true,
         "value": "sameorigin"
       }
-    },
-    "childProcesses": [
-      {
-        "path": "../bin/zssServer.sh",
-        "once": true
-      }
-    ]
+    }
   },
 
 // section used to define a connection to a server that can handle native or high privilege commands that the app server cannot  
@@ -54,27 +48,7 @@
   "dataserviceAuthentication": {
     //this specifies the default authentication type for dataservices that didn't specify which type to use. These dataservices therefore should not expect a particular type of authentication to be used.
     "defaultAuthentication": "fallback",
-    "rbac": false,
-
-    //each authentication type may have more than one implementing plugin. define defaults and fallbacks below as well
-    //any types that have no implementers are ignored, and any implementations specified here that are not known to the server are also ignored.
-    "implementationDefaults": {
-      //each type has an object which describes which implementation to use based on some criteria to find which is best for the task. For now, just "plugins" will
-      //be used to state that you want a particular plugin.
-      "zosmf": {
-      // zosmf plugin needs to be configured to target a zosmf instance. configure before using.
-      // "plugins": ["org.zowe.zlux.auth.zosmf"]
-      },
-
-      "zss": {
-      // "plugins": ["org.zowe.zlux.auth.zss"]
-      },
-
-      "fallback": {
-        "plugins": ["org.zowe.zlux.auth.trivial"]
-      }
-      
-    }
+    "rbac": false
   },
   // Specifies the default language for the server framework logging
   "logLanguage": "en"

@@ -41,6 +41,10 @@ then
     fi
   fi
 fi
+if [ -z "$ZWED_node_mediationLayer_enabled" ]
+then
+    export ZWED_node_mediationLayer_enabled="false"
+fi
 
 # certificates
 if [ -z "$ZWED_node_https_certificates" ]

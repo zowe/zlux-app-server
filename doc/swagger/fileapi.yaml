@@ -785,6 +785,53 @@ paths:
             properties:
               error: 
                 type: string
+  '/unixfile/chmod/{directory}':
+    post:
+      summary: change directory/file mode
+      tags:
+        - Unix File
+      parameters:
+        - name: directory
+          in: path
+          description: the initial directory/file
+          required: true
+          type: string
+        - name: recursive
+          in: query
+          description: whether or not to proceed down the directory path
+          type: boolean
+        - name: mode
+          in: query
+          description: 'mode of file as 0oxxx or xxx, octal format'
+          type: string
+        - name: pattern
+          in: query
+          description: pattern to match to file/pattern
+          type: string
+      consumes:
+        - text/plain
+      responses:
+        '200':
+          description: successfully Modified Modes
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        '400':
+          description: 'Failed to change mode,  mode not octal'
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        '500':
+          description: failed to modify file modes
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
   '/unixfile/metadata/{directory}':
     get:
       summary: retrieves metadata for directory

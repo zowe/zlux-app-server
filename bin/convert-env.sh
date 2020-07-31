@@ -7,6 +7,15 @@
 #
 # Copyright Contributors to the Zowe Project.
 
+# For backwards compatible behavior, only set the instance ID if it is non-default
+if [ -n "$ZOWE_INSTANCE" ]
+then
+    if [ "$ZOWE_INSTANCE" != "1" ]
+    then
+        export ZWED_instanceID=$ZOWE_INSTANCE
+    fi
+fi
+
 # shape old env vars into app-server compatible ones
 # mediation layer
 if [ -z "$ZWED_node_mediationLayer_server_gatewayPort" ]
@@ -40,6 +49,10 @@ then
       esac
     fi
   fi
+fi
+if [ -z "$ZWED_node_mediationLayer_enabled" ]
+then
+    export ZWED_node_mediationLayer_enabled="false"
 fi
 
 # certificates

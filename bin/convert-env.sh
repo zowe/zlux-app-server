@@ -77,7 +77,7 @@ then
     then
       export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&localca","${TRUSTSTORE}&${EXTERNAL_ROOT_CA}"
     else
-      export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&localca"
+      export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&localca",
     fi
   elif [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
   then

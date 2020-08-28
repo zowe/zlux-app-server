@@ -73,7 +73,12 @@ then
   if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
   then
     #, at end turns it into an array
-    export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&localca","${TRUSTSTORE}&${EXTERNAL_ROOT_CA}"
+    if [ -n "$EXTERNAL_ROOT_CA" ]
+    then
+      export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&localca","${TRUSTSTORE}&${EXTERNAL_ROOT_CA}"
+    else
+      export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&localca"
+    fi
   elif [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
   then
     #, at end turns it into an array

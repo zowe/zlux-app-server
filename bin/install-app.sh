@@ -78,6 +78,39 @@ fi
 
 cd $zlux_path/zlux-app-server/bin
 
+if [ -n "$INSTALL_NO_NODE" ]
+then
+  echo "Installing app JSON without calling install-app.js."
+  # Installs a zowe plugin by finding its ID and writing the locator json WITHOUT using install-app.js
+  # This is to be used in cases where there are issues using JS.
+  # Input: relative or fully qualified path to a directory containing a plugindir=$(cd `dirname $0` && pwd)
+  #
+  # a little bit of node
+  # id=`node -e "const fs=require('fs'); const content=require('${app_path}/pluginDefinition.json'); console.log(content.identifier);"`
+  #
+  # works with gnu sed
+  # id=`sed -nE '/identifier/{s/.*:\s*"(.*)",/\1/p;q}' ${app_path}/pluginDefinition.json`
+  #
+  # works with posix sed
+  id=`grep "identifier" ${app_path}/pluginDefinition.json |  sed -e 's/"//g' | sed -e 's/.*: *//g' | sed -e 's/,.*//g'`
+
+  if [ -n "${id}" ]
+  then
+    echo "Found plugin=${id}"
+
+cat <<EOF >${INSTANCE_DIR}/workspace/app-server/plugins/${id}.json
+{
+  "identifier": "${id}",
+  "pluginLocation": "${app_path}"
+}
+EOF
+  else
+      echo "Error: could not find plugin id for path=${app_path}"
+      exit 1
+  fi
+
+else
+
 if [ -z "$ZLUX_INSTALL_LOG_DIR" ]
 then
   if [ -d "${INSTANCE_DIR}/logs" ]
@@ -111,9 +144,10 @@ echo "utils_path=${utils_path}\napp_path=${app_path}"
 if [ -d "$plugin_dir" ]
 then
   echo "plugin_dir=${plugin_dir}"
-{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 ; echo "Ended with rc=?" ; } | tee $PLUGIN_LOG_FILE
+{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee $PLUGIN_LOG_FILE
 else
   echo "json_path=${json_path}"
 { __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -c "$json_path" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee $PLUGIN_LOG_FILE
 fi
 
+fi

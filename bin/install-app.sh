@@ -62,9 +62,11 @@ then
   if [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
   then
     json_path=${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json
+    fallback_inst=${INSTANCE_DIR}  
   elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]
   then
     json_path=${HOME}/.zowe/workspace/app-server/serverConfig/server.json
+    fallback_inst=${HOME}/.zowe  
   elif [ -e "../deploy/instance/ZLUX/serverConfig/zluxserver.json" ]
   then
     echo "WARNING: Using old configuration present in ${dir}/../deploy\n\
@@ -78,11 +80,10 @@ fi
 
 cd $zlux_path/zlux-app-server/bin
 
-if [ -n "$INSTALL_NO_NODE" ]
-then
-  echo "Installing app JSON without calling install-app.js."
+installNojs() {
+ echo "NodeJS not found or not requested, attempting fallback plugin install behavior"
   # Installs a zowe plugin by finding its ID and writing the locator json WITHOUT using install-app.js
-  # This is to be used in cases where there are issues using JS.
+  # This is to be used in cases where there are issues using JS, or nodejs is not found.
   # Input: relative or fully qualified path to a directory containing a plugindir=$(cd `dirname $0` && pwd)
   #
   # a little bit of node
@@ -98,19 +99,31 @@ then
   then
     echo "Found plugin=${id}"
 
-cat <<EOF >${INSTANCE_DIR}/workspace/app-server/plugins/${id}.json
+cat <<EOF >${fallback_inst}/workspace/app-server/plugins/${id}.json
 {
   "identifier": "${id}",
   "pluginLocation": "${app_path}"
 }
 EOF
+  echo "Ended with rc=$?"
   else
       echo "Error: could not find plugin id for path=${app_path}"
       exit 1
   fi
+}
 
-else
-
+if [ -n "$INSTALL_NO_NODE" ]
+then
+ installNojs
+else  
+  echo "Testing if node exists"
+  type ${NODE_BIN}
+  rc=$?
+  if [ $rc -ne 0 ]
+  then
+    installNojs
+  else
+# normal case follows
 if [ -z "$ZLUX_INSTALL_LOG_DIR" ]
 then
   if [ -d "${INSTANCE_DIR}/logs" ]
@@ -131,14 +144,6 @@ then
 fi
 
 
-echo "Verifying node exists"
-type ${NODE_BIN}
-rc=$?
-if [ $rc -ne 0 ]
-    then
-    echo "Node required for installation. Add to PATH and try again"
-    exit $rc
-fi
 echo "Running app-server plugin installer. Log=$PLUGIN_LOG_FILE"
 echo "utils_path=${utils_path}\napp_path=${app_path}"
 if [ -d "$plugin_dir" ]
@@ -150,4 +155,5 @@ else
 { __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -c "$json_path" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee $PLUGIN_LOG_FILE
 fi
 
+fi
 fi

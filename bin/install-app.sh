@@ -17,8 +17,20 @@ then
 else
   NODE_BIN=node
 fi
-export _BPXK_AUTOCVT=ON
 
+setVars() {
+  export _CEE_RUNOPTS="FILETAG(AUTOCVT,AUTOTAG) POSIX(ON)"
+  export _TAG_REDIR_IN=txt
+  export _TAG_REDIR_OUT=txt
+  export _TAG_REDIR_ERR=txt
+  export _BPXK_AUTOCVT="ON"
+
+  export _EDC_ADD_ERRNO2=1                        # show details on error
+  unset ENV             # just in case, as it can cause unexpected output
+  umask 0002                                       # similar to chmod 755
+
+  export __UNTAGGED_READ_MODE=V6
+}
 
 dir=$(cd `dirname $0` && pwd)
 if [ -e "${dir}/../instance.env" ]
@@ -27,6 +39,8 @@ then
   if [ -e "$ROOT_DIR/bin/internal/zowe-set-env.sh" ]
   then
     . ${ROOT_DIR}/bin/internal/zowe-set-env.sh
+  else
+    setVars
   fi
   if [ -z "$INSTANCE_DIR" ]
   then
@@ -42,9 +56,11 @@ then
 elif [ -d "${dir}/../../zlux-server-framework" ]
 then
   zlux_path=$(cd $(dirname "$0")/../..; pwd)
+  setVars
 elif [ -n "$CONDA_PREFIX" ]
 then
   zlux_path="$CONDA_PREFIX/share/zowe/app-server"
+  setVars
 fi
 
 utils_path=$zlux_path/zlux-server-framework/utils
@@ -62,9 +78,11 @@ then
   if [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
   then
     json_path=${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json
+    fallback_inst=${INSTANCE_DIR}  
   elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]
   then
     json_path=${HOME}/.zowe/workspace/app-server/serverConfig/server.json
+    fallback_inst=${HOME}/.zowe  
   elif [ -e "../deploy/instance/ZLUX/serverConfig/zluxserver.json" ]
   then
     echo "WARNING: Using old configuration present in ${dir}/../deploy\n\
@@ -78,6 +96,50 @@ fi
 
 cd $zlux_path/zlux-app-server/bin
 
+installNojs() {
+ echo "NodeJS not found or not requested, attempting fallback plugin install behavior"
+  # Installs a zowe plugin by finding its ID and writing the locator json WITHOUT using install-app.js
+  # This is to be used in cases where there are issues using JS, or nodejs is not found.
+  # Input: relative or fully qualified path to a directory containing a plugindir=$(cd `dirname $0` && pwd)
+  #
+  # a little bit of node
+  # id=`node -e "const fs=require('fs'); const content=require('${app_path}/pluginDefinition.json'); console.log(content.identifier);"`
+  #
+  # works with gnu sed
+  # id=`sed -nE '/identifier/{s/.*:\s*"(.*)",/\1/p;q}' ${app_path}/pluginDefinition.json`
+  #
+  # works with posix sed
+  id=`grep "identifier" ${app_path}/pluginDefinition.json |  sed -e 's/"//g' | sed -e 's/.*: *//g' | sed -e 's/,.*//g'`
+
+  if [ -n "${id}" ]
+  then
+    echo "Found plugin=${id}"
+
+cat <<EOF >${fallback_inst}/workspace/app-server/plugins/${id}.json
+{
+  "identifier": "${id}",
+  "pluginLocation": "${app_path}"
+}
+EOF
+  echo "Ended with rc=$?"
+  else
+      echo "Error: could not find plugin id for path=${app_path}"
+      exit 1
+  fi
+}
+
+if [ -n "$INSTALL_NO_NODE" ]
+then
+ installNojs
+else  
+  echo "Testing if node exists"
+  type ${NODE_BIN}
+  rc=$?
+  if [ $rc -ne 0 ]
+  then
+    installNojs
+  else
+# normal case follows
 if [ -z "$ZLUX_INSTALL_LOG_DIR" ]
 then
   if [ -d "${INSTANCE_DIR}/logs" ]
@@ -98,22 +160,16 @@ then
 fi
 
 
-echo "Verifying node exists"
-type ${NODE_BIN}
-rc=$?
-if [ $rc -ne 0 ]
-    then
-    echo "Node required for installation. Add to PATH and try again"
-    exit $rc
-fi
 echo "Running app-server plugin installer. Log=$PLUGIN_LOG_FILE"
 echo "utils_path=${utils_path}\napp_path=${app_path}"
 if [ -d "$plugin_dir" ]
 then
   echo "plugin_dir=${plugin_dir}"
-{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 ; echo "Ended with rc=?" ; } | tee $PLUGIN_LOG_FILE
+{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee $PLUGIN_LOG_FILE
 else
   echo "json_path=${json_path}"
 { __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -c "$json_path" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee $PLUGIN_LOG_FILE
 fi
 
+fi
+fi

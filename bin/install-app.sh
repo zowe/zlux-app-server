@@ -17,8 +17,20 @@ then
 else
   NODE_BIN=node
 fi
-export _BPXK_AUTOCVT=ON
 
+setVars() {
+  export _CEE_RUNOPTS="FILETAG(AUTOCVT,AUTOTAG) POSIX(ON)"
+  export _TAG_REDIR_IN=txt
+  export _TAG_REDIR_OUT=txt
+  export _TAG_REDIR_ERR=txt
+  export _BPXK_AUTOCVT="ON"
+
+  export _EDC_ADD_ERRNO2=1                        # show details on error
+  unset ENV             # just in case, as it can cause unexpected output
+  umask 0002                                       # similar to chmod 755
+
+  export __UNTAGGED_READ_MODE=V6
+}
 
 dir=$(cd `dirname $0` && pwd)
 if [ -e "${dir}/../instance.env" ]
@@ -27,6 +39,8 @@ then
   if [ -e "$ROOT_DIR/bin/internal/zowe-set-env.sh" ]
   then
     . ${ROOT_DIR}/bin/internal/zowe-set-env.sh
+  else
+    setVars
   fi
   if [ -z "$INSTANCE_DIR" ]
   then
@@ -42,9 +56,11 @@ then
 elif [ -d "${dir}/../../zlux-server-framework" ]
 then
   zlux_path=$(cd $(dirname "$0")/../..; pwd)
+  setVars
 elif [ -n "$CONDA_PREFIX" ]
 then
   zlux_path="$CONDA_PREFIX/share/zowe/app-server"
+  setVars
 fi
 
 utils_path=$zlux_path/zlux-server-framework/utils

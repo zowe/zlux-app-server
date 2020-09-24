@@ -65,7 +65,7 @@ then
   elif [ -n "$KEYSTORE_CERTIFICATE" ]
   then
     #, at end turns it into an array
-    export ZWED_node_https_certificates=$KEYSTORE_CERTIFICATE,
+    export ZWED_node_https_certificates=$KEYSTORE_CERTIFICATE,$KEYSTORE,
   fi
 fi
 if [ -z "$ZWED_node_https_certificateAuthorities" ]
@@ -77,7 +77,7 @@ then
   elif [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
   then
     #, at end turns it into an array
-    export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA}
+    export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA},$KEYSTORE,
   fi
 fi
 if [ -z "$ZWED_node_https_keys" ]

@@ -177,6 +177,66 @@ paths:
             type: string
         '404':
           description: File could not be opened or does not exist
+
+  '/datasetEnqueue/{dataset}':
+    get:
+      summary: Enqueue of a dataset via ISGENQ
+      tags:
+        - Dataset
+      parameters:
+        - name: dataset
+          in: path
+          description: Cache results for future
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              records:
+                type: array
+                items:
+                  type: string
+        '404':
+          description: Enqueue could not be obtained
+    post:
+      summary: Empty at present
+      tags:
+        - Dataset
+      parameters:
+        - name: dataset
+          in: path
+          description: Cache results for future
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              records:
+                type: array
+                items:
+                  type: string
+      consumes:
+        - application/json
+      produces:
+        - text/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+        '404':
+          description: File could not be opened or does not exist
+
+
+
   '/VSAMdatasetContents/{dataset}':
     get:
       summary: Get a VSAM dataset
@@ -784,6 +844,53 @@ paths:
             type: object
             properties:
               error: 
+                type: string
+  '/unixfile/chmod/{directory}':
+    post:
+      summary: change directory/file mode
+      tags:
+        - Unix File
+      parameters:
+        - name: directory
+          in: path
+          description: the initial directory/file
+          required: true
+          type: string
+        - name: recursive
+          in: query
+          description: whether or not to proceed down the directory path
+          type: boolean
+        - name: mode
+          in: query
+          description: 'mode of file as 0oxxx or xxx, octal format'
+          type: string
+        - name: pattern
+          in: query
+          description: pattern to match to file/pattern
+          type: string
+      consumes:
+        - text/plain
+      responses:
+        '200':
+          description: successfully Modified Modes
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        '400':
+          description: 'Failed to change mode,  mode not octal'
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        '500':
+          description: failed to modify file modes
+          schema:
+            type: object
+            properties:
+              error:
                 type: string
   '/unixfile/metadata/{directory}':
     get:

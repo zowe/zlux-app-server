@@ -2,7 +2,7 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
-## v1.16.0
+## v1.17.0
 
 - Bugfix: make use of external certificate authorities referenced during keystore setup time
 

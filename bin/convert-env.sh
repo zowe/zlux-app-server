@@ -82,7 +82,12 @@ then
   elif [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
   then
     #, at end turns it into an array
-    export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA}
+    if [ -n "$EXTERNAL_CERTIFICATE_AUTHORITIES" ]
+    then
+      export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA},$(echo "$EXTERNAL_CERTIFICATE_AUTHORITIES" | tr " " ",")
+    else
+      export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA},
+    fi
   fi
 fi
 if [ -z "$ZWED_node_https_keys" ]

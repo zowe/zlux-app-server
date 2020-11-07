@@ -72,17 +72,26 @@ if [ -z "$ZWED_node_https_certificateAuthorities" ]
 then
   if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
   then
+    if [ -z "$LOCAL_CA" ]
+    then
+      LOCAL_CA=localca
+    fi
     #, at end turns it into an array
     if [ -n "$EXTERNAL_ROOT_CA" ]
     then
-      export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&localca","${TRUSTSTORE}&${EXTERNAL_ROOT_CA}"
+      export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&${LOCAL_CA}","${TRUSTSTORE}&${EXTERNAL_ROOT_CA}"
     else
-      export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&localca",
+      export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&${LOCAL_CA}",
     fi
   elif [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
   then
     #, at end turns it into an array
-    export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA}
+    if [ -n "$EXTERNAL_CERTIFICATE_AUTHORITIES" ]
+    then
+      export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA},$(echo "$EXTERNAL_CERTIFICATE_AUTHORITIES" | tr " " ",")
+    else
+      export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA},
+    fi
   fi
 fi
 if [ -z "$ZWED_node_https_keys" ]

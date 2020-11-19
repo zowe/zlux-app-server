@@ -24,7 +24,7 @@ Another way to set up zLUX is to have the zLUX App Server running under LUW, whi
 ## First-time Installation & Use
 Getting started with this server requires just a few steps:
 
-0. [Install Prerequisites](#0-install-prerequisites)
+0. [Prerequisites](#0-prerequisites)
 1. [Acquire the Source Code](#1-acquire-the-source-code)
 2. [Initial Build](#2-initial-build)
 3. [Initial Startup](#3-initial-startup)
@@ -42,14 +42,14 @@ Getting started with this server requires just a few steps:
 
 Follow each step and you'll be on your way to your first App Server instance!
 
-## 0. Install Prerequisites
-Wherever the App Server is installed, the following is required for running:
+## 0. Prerequisites
 
-* **NodeJS** - v6.14.4 minimum, v8.16.x maximum for z/OS,  elsewhere 6 through 12 work well.
+### Building & Developing
+To build the App Server and Apps, the following is required:
+
+* **NodeJS** - v12.x minimum. The App Server and server plugins must support minimum v8.16.x at runtime, but v12.x is used for building.
 
 * **npm** - v6.4 minimum
-
-For building zLUX framework and apps:
 
 * **jdk** - v8 minimum
  
@@ -68,12 +68,19 @@ For development:
 * **ssh agent** - Our repositories are structured to expect that you have ssh keys setup for github. This assists with rapid development and automation. 
 Git bash or putty's pageant are some of various tools that can help you setup & work with ssh keys over git.
 
-### (Optional) Install git for z/OS
+#### (Optional) Install git for z/OS
 Because all of our code is on github, yet ZSS must run on z/OS and the zLUX App Server may optionally run on z/OS as well, having git on z/OS is the most convenient way to work with the source code. The alternative would be to utilize FTP or another method to transfer contents to z/OS.
 If you'd like to go this route, you can find git for z/OS free of charge here: 
 http://www.rocketsoftware.com/product-categories/mainframe/git-for-zos
 
 On z/OS, git 2.14.4 is the minimum needed.
+
+### Runtime
+To use the App Server, the following is required:
+
+* **NodeJS** - v8.16.x minimum up to v12.x is officially supported by the Zowe community.
+
+Plugins may depend upon other technologies, such as Java or ZSS. An plugin's [pluginDefinition](https://github.com/zowe/zlux/wiki/Zlux-Plugin-Definition-&-Structure) or README will help you to understand if additional prerequisites are needed for that plugin.
 
 
 ## 1. Acquire the source code

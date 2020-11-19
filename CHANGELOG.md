@@ -2,6 +2,10 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v1.17.0
+
+- Bugfix: make use of external certificate authorities referenced during keystore setup time
+
 ## v1.16.0
 
 - Bugfix: Changes to terminal settings in instance.env would not take effect post-install, causing the initial values to be permenent unless users set personalized settings

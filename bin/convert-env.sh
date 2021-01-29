@@ -7,6 +7,15 @@
 #
 # Copyright Contributors to the Zowe Project.
 
+# For backwards compatible behavior, only set the instance ID if it is non-default
+if [ -n "$ZOWE_INSTANCE" ]
+then
+    if [ "$ZOWE_INSTANCE" != "1" ]
+    then
+        export ZWED_instanceID=$ZOWE_INSTANCE
+    fi
+fi
+
 # shape old env vars into app-server compatible ones
 # mediation layer
 if [ -z "$ZWED_node_mediationLayer_server_gatewayPort" ]
@@ -41,6 +50,10 @@ then
     fi
   fi
 fi
+if [ -z "$ZWED_node_mediationLayer_enabled" ]
+then
+    export ZWED_node_mediationLayer_enabled="false"
+fi
 
 # certificates
 if [ -z "$ZWED_node_https_certificates" ]
@@ -59,12 +72,26 @@ if [ -z "$ZWED_node_https_certificateAuthorities" ]
 then
   if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
   then
+    if [ -z "$LOCAL_CA" ]
+    then
+      LOCAL_CA=localca
+    fi
     #, at end turns it into an array
-    export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&localca",
+    if [ -n "$EXTERNAL_ROOT_CA" ]
+    then
+      export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&${LOCAL_CA}","${TRUSTSTORE}&${EXTERNAL_ROOT_CA}"
+    else
+      export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&${LOCAL_CA}",
+    fi
   elif [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
   then
     #, at end turns it into an array
-    export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA}
+    if [ -n "$EXTERNAL_CERTIFICATE_AUTHORITIES" ]
+    then
+      export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA},$(echo "$EXTERNAL_CERTIFICATE_AUTHORITIES" | tr " " ",")
+    else
+      export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA},
+    fi
   fi
 fi
 if [ -z "$ZWED_node_https_keys" ]

@@ -2,6 +2,10 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v1.20.0
+
+- Added a manifest file, a validate script, and refactored configure, start, and app-server scripts to better conform to zowe lifecycle management standards
+
 ## v1.17.0
 
 - Bugfix: make use of external certificate authorities referenced during keystore setup time

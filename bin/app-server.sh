@@ -209,6 +209,9 @@ then
   ZLUX_NODE_LOG_FILE=/dev/null
 fi
 
+export ZOWE_LIB_DIR=$dir/../lib
+echo $ZOWE_LIB_DIR
+
 #Determined log file.  Run node appropriately.
 cd $dir
 export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH
@@ -221,6 +224,14 @@ env
 echo Show location of node
 type node
 
+if [ -z "$ZOWE_WORKING_DIR" ]
+then
+  export ZOWE_WORKING_DIR=$ZOWE_LIB_DIR
+else
+  echo "Server is about to start with a non default working directory. Working dir=$ZOWE_WORKING_DIR"
+fi
+
+cd $ZOWE_WORKING_DIR
 
 echo Starting node
 if [ -z "$ZLUX_NO_CLUSTER" ]
@@ -233,5 +244,5 @@ then
 else
   ZLUX_SERVER_FILE=zluxServer.js
 fi
-{ __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 ; echo "Ended with rc=$?" ; } | tee $ZLUX_NODE_LOG_FILE
+{ __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 ; echo "Ended with rc=$?" ; } | tee $ZLUX_NODE_LOG_FILE
 

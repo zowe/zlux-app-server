@@ -90,6 +90,8 @@ if defined ZLUX_NODE_LOG_FILE (
 cd %temp_cd%
 
 cd ..\lib
+set ZOWE_LIB_DIR=%CD%
+
 if not defined ZLUX_MIN_WORKERS (
   set ZLUX_MIN_WORKERS=2
 )
@@ -101,14 +103,21 @@ if "%ZLUX_NO_CLUSTER%" == "1" (
   set ZLUX_SERVER_FILE=zluxCluster.js
 )
 
+if not defined ZOWE_WORKING_DIR (
+  set ZOWE_WORKING_DIR=!ZOWE_LIB_DIR!
+) else (
+   echo Server is about to start with a non default working directory. Working dir=!ZOWE_WORKING_DIR!
+)
+
 REM Check if print to terminal argument exists
 echo.%* | findstr /C:"--logToTerminal" 1>nul
+cd !ZOWE_WORKING_DIR!
 if errorlevel 1 (
   echo Server startup. Log location=!ZLUX_LOG_PATH!
-  !NODE_BIN! --harmony !ZLUX_SERVER_FILE! --config="!CONFIG_FILE!" %* > "!ZLUX_LOG_PATH!" 2>&1
+  !NODE_BIN! --harmony !ZOWE_LIB_DIR!\!ZLUX_SERVER_FILE! --config="!CONFIG_FILE!" %* > "!ZLUX_LOG_PATH!" 2>&1
 ) ELSE (
   echo Server startup. Logging to terminal...
-  !NODE_BIN! --harmony !ZLUX_SERVER_FILE! --config="!CONFIG_FILE!" %*
+  !NODE_BIN! --harmony !ZOWE_LIB_DIR!\!ZLUX_SERVER_FILE! --config="!CONFIG_FILE!" %*
 )
 set rc=%ERRORLEVEL%
 echo Ended with rc=%rc%

@@ -106,7 +106,7 @@ if "%ZLUX_NO_CLUSTER%" == "1" (
 if not defined ZOWE_WORKING_DIR (
   set ZOWE_WORKING_DIR=!ZOWE_LIB_DIR!
 ) else (
-   echo Server is about to start with a non default working directory. Working dir=!ZOWE_WORKING_DIR!
+   echo Server is about to start with a non default working directory. Working dir=!ZOWE_WORKING_DIR! 
 )
 
 REM Check if print to terminal argument exists

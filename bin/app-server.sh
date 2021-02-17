@@ -231,6 +231,8 @@ else
   echo "Server is about to start with a non default working directory. Working dir=$ZOWE_WORKING_DIR"
 fi
 
+echo "BIG TEST"
+
 cd $ZOWE_WORKING_DIR
 
 echo Starting node

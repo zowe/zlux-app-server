@@ -209,13 +209,12 @@ then
   ZLUX_NODE_LOG_FILE=/dev/null
 fi
 
-export ZOWE_LIB_DIR=$dir/../lib
-echo $ZOWE_LIB_DIR
-
 #Determined log file.  Run node appropriately.
 cd $dir
 export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH
 cd ../lib
+
+export ZOWE_LIB_DIR=$(cd `dirname $0` && pwd)
 
 export "_CEE_RUNOPTS=XPLINK(ON),HEAPPOOLS(ON)"
 

@@ -2,7 +2,20 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
-## Recent Changes
+## v1.17.0
+
+- Bugfix: make use of external certificate authorities referenced during keystore setup time
+
+## v1.16.0
+
+- Bugfix: Changes to terminal settings in instance.env would not take effect post-install, causing the initial values to be permenent unless users set personalized settings
+- Feature: More terminal settings present in the UI can be set as defaults from instance.env. TN3270 mod type can be set by ZOWE_ZLUX_TN3270_MOD, and the row and column by ZOWE_ZLUX_TN3270_ROW and ZOWE_ZLUX_TN3270_COL. ZOWE_ZLUX_TN3270_CODEPAGE also can be used to set the default codepage to a value which matches the strings seen in the UI, such as "278: Finnish/Swedish" for EBCDIC-278. As a shorthand, just the number can be set as well, such as "278".
+
+## v1.13.0
+
+- Align app server's instance ID parameter to the Zowe Instance value
+
+## v1.12.0
 
 - Add v1.12 update script for replacing all bundled plugin references with ones that use $ROOT_DIR environment variable
 - Change Scripts to work with independent zss component

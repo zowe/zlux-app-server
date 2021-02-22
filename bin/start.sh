@@ -8,12 +8,12 @@
 # Copyright Contributors to the Zowe Project.
 
 
-# Required variables on shell (from start-app-server.sh):
+# Required variables on shell:
 # - ROOT_DIR
 # - WORKSPACE_DIR
 # - NODE_HOME
 #
-# Optional variables on shell (from start-app-server.sh):
+# Optional variables on shell:
 # - APIML_ENABLE_SSO
 # - GATEWAY_PORT
 # - DISCOVERY_PORT
@@ -21,5 +21,9 @@
 # - ZOWE_ZLUX_TELNET_PORT
 # - ZOWE_ZLUX_SECURITY_TYPE
 
-cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/bin
+if [ -n "${ROOT_DIR}" ]
+then
+ #not a dev env
+ cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/bin
+fi
 ./app-server.sh

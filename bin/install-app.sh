@@ -11,37 +11,20 @@ if [ $# -eq 0 ]
     echo "Usage: $0 AppPath [PluginsDir]"
     exit 1
 fi
-if [ -n "$NODE_HOME" ]
-then
-  NODE_BIN=${NODE_HOME}/bin/node
-else
-  NODE_BIN=node
-fi
 
 setVars() {
   export _CEE_RUNOPTS="FILETAG(AUTOCVT,AUTOTAG) POSIX(ON)"
-  export _TAG_REDIR_IN=txt
-  export _TAG_REDIR_OUT=txt
-  export _TAG_REDIR_ERR=txt
-  export _BPXK_AUTOCVT="ON"
-
   export _EDC_ADD_ERRNO2=1                        # show details on error
   unset ENV             # just in case, as it can cause unexpected output
   umask 0002                                       # similar to chmod 755
-
-  export __UNTAGGED_READ_MODE=V6
+  . ./internal-node-init.sh
 }
 
 dir=$(cd `dirname $0` && pwd)
 if [ -e "${dir}/../instance.env" ]
 then
   . ${dir}/../instance.env
-  if [ -e "$ROOT_DIR/bin/internal/zowe-set-env.sh" ]
-  then
-    . ${ROOT_DIR}/bin/internal/zowe-set-env.sh
-  else
-    setVars
-  fi
+  setVars
   if [ -z "$INSTANCE_DIR" ]
   then
      export INSTANCE_DIR=$(cd "${dir}/.." && pwd)
@@ -50,7 +33,6 @@ then
   if [ ! -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
   then
     cd ${zlux_path}/zlux-app-server/lib
-    export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH
     __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
   fi
 elif [ -d "${dir}/../../zlux-server-framework" ]

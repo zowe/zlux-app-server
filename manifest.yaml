@@ -1,0 +1,32 @@
+---
+name: app-server
+# Component identifier. This identifier matches artifact path in Zowe Artifactory https://zowe.jfrog.io/.
+id: org.zowe.zlux.app-server
+# Without the v
+version: "{{build.version}}"
+# Component version is defined in gradle.properties for Gradle project
+# Human readable component name
+title: Application Server
+# Human readable component description
+description: 'An HTTPS and Websocket server built on NodeJS and ExpressJS. It serves static content via "Plugins", and is extensible by REST and Websocket "Dataservices" optionally present within Plugins. It hosts the Zowe Desktop.'
+homepage: https://zowe.org
+keywords:
+  - zlux
+  - appfw
+license: EPL-2.0
+repository:
+  type: git
+  url: https://github.com/zowe/zlux-app-server.git
+build:
+  branch: "{{build.branch}}"
+  number: "{{build.number}}"
+  commitHash: "{{build.commitHash}}"
+  timestamp: "{{build.timestamp}}"
+commands:
+  start: bin/start.sh
+  configure: bin/configure.sh
+  validate: bin/validate.sh
+# we do not specify encoding here because its already tagged ascii
+apimlServices:
+  dynamic:
+    - serviceId: zlux

@@ -61,7 +61,10 @@ then
   then
     if [ -n "$ZOWE_IP_ADDRESS" ]
     then
-      export ZWED_node_https_ipAddresses="${ZOWE_LOOPBACK_ADDRESS},${ZOWE_IP_ADDRESS}",
+      if [ "$BIND_TO_LOOPBACK" = "true" ]
+      then
+        export ZWED_node_https_ipAddresses="${ZOWE_LOOPBACK_ADDRESS},${ZOWE_IP_ADDRESS}",
+      fi
     fi
   fi
 fi

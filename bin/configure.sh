@@ -14,6 +14,6 @@
 # - NODE_HOME
 cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/bin
 . ./convert-env.sh
-. ./set-node.sh
+. ./internal-node-init.sh
 cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/lib
 __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js

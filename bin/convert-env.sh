@@ -55,6 +55,18 @@ then
     export ZWED_node_mediationLayer_enabled="false"
 fi
 
+if [ -n "$ZOWE_LOOPBACK_ADDRESS" ]
+then
+  if [ -n "$ZOWE_IP_ADDRESS" ]
+  then
+    if [ "$BIND_TO_LOOPBACK" = "true" ]
+    then
+      export ZWED_node_https_ipAddresses="${ZOWE_LOOPBACK_ADDRESS},${ZOWE_IP_ADDRESS}",
+    fi
+  fi
+  export ZWED_node_loopbackAddress=$ZOWE_LOOPBACK_ADDRESS
+fi
+
 # certificates
 if [ -z "$ZWED_node_https_certificates" ]
 then

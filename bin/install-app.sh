@@ -17,19 +17,19 @@ setVars() {
   export _EDC_ADD_ERRNO2=1                        # show details on error
   unset ENV             # just in case, as it can cause unexpected output
   umask 0002                                       # similar to chmod 755
-  . ./internal-node-init.sh
+  . ${zlux_path}/zlux-app-server/bin/internal-node-init.sh
 }
 
 dir=$(cd `dirname $0` && pwd)
 if [ -e "${dir}/../instance.env" ]
 then
   . ${dir}/../instance.env
+  zlux_path="$ROOT_DIR/components/app-server/share"
   setVars
   if [ -z "$INSTANCE_DIR" ]
   then
      export INSTANCE_DIR=$(cd "${dir}/.." && pwd)
   fi
-  zlux_path="$ROOT_DIR/components/app-server/share"
   if [ ! -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
   then
     cd ${zlux_path}/zlux-app-server/lib

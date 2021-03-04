@@ -169,11 +169,11 @@ then
 fi
 
 # zss
-if [ -z "$ZWED_agent_http_port" ]
+if [ -z "$ZWED_agent_https_port" ]
 then
   if [ -n "$ZOWE_ZSS_SERVER_PORT" ]
   then
-    export ZWED_agent_http_port=$ZOWE_ZSS_SERVER_PORT
+    export ZWED_agent_https_port=$ZOWE_ZSS_SERVER_PORT
   fi
 fi
 if [ -z "$ZWED_privilegedServerName" ]

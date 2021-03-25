@@ -21,15 +21,22 @@ setVars() {
 }
 
 dir=$(cd `dirname $0` && pwd)
-if [ -e "${dir}/../instance.env" ]
+if [ -e "${dir}/internal/read-essential-vars.sh" -o -e "${dir}/../instance.env" ]
 then
-  . ${dir}/../instance.env
-  zlux_path="$ROOT_DIR/components/app-server/share"
-  setVars
   if [ -z "$INSTANCE_DIR" ]
   then
      export INSTANCE_DIR=$(cd "${dir}/.." && pwd)
   fi
+  if [ -e "${dir}/internal/read-essential-vars.sh" ]
+  then
+    # this function will load proper environment from either instance.env or zowe.yaml
+    . ${dir}/internal/read-essential-vars.sh
+  elif [ -e "${dir}/../instance.env" ]
+  then
+    . "${dir}/../instance.env"
+  fi
+  zlux_path="$ROOT_DIR/components/app-server/share"
+  setVars
   if [ ! -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
   then
     cd ${zlux_path}/zlux-app-server/lib

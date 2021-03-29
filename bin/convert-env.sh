@@ -53,7 +53,7 @@ fi
 if [ -z "$ZWED_node_mediationLayer_enabled" ]; then
   export ZWED_node_mediationLayer_enabled="false"
 elif [ -z "$ZWED_agent_mediationLayer_enabled" ]; then
-  export ZWED_agent_mediatonLayer_enabled="true";
+  export ZWED_agent_mediationLayer_enabled="true";
 fi
 
 # eureka hostname handling

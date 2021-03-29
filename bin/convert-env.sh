@@ -173,25 +173,19 @@ fi
 if [ "$ZOWE_ZSS_SERVER_TLS" = "false" ]
 then
   # HTTP
-  if [ -z "$ZWED_agent_http_port" ]
+  if [ -z "$ZWED_agent_http_port" -a -n "$ZOWE_ZSS_SERVER_PORT" ]
   then
-    if [ -n "$ZOWE_ZSS_SERVER_PORT" ]
-    then
-      export "ZWED_agent_http_port=$ZOWE_ZSS_SERVER_PORT"
-    fi
+    export ZWED_agent_http_port="${ZOWE_ZSS_SERVER_PORT}"
   fi
 else
   # HTTPS
-  if [ -z "$ZWED_agent_https_port" ]
+  if [ -z "$ZWED_agent_https_port" -a -n "$ZOWE_ZSS_SERVER_PORT" ]
   then
-    if [ -n "$ZOWE_ZSS_SERVER_PORT" ]
-    then
-      export "ZWED_agent_https_port=$ZOWE_ZSS_SERVER_PORT"
-    fi
+    export ZWED_agent_https_port="${ZOWE_ZSS_SERVER_PORT}"
   fi
-  if [ -z "$ZWED_agent_host" ]
+  if [ -z "$ZWED_agent_host" -a -n "$ZOWE_EXPLORER_HOST" ]
   then
-    export "ZWED_agent_host=${ZOWE_EXPLORER_HOST}"
+    export ZWED_agent_host="${ZOWE_EXPLORER_HOST}"
   fi
 fi
 if [ -z "$ZWED_privilegedServerName" ]

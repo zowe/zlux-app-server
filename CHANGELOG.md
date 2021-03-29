@@ -5,6 +5,7 @@ All notable changes to the Zlux App Server package will be documented in this fi
 ## v1.21.0
 
 - Bugfix: Set the hostname used for eureka to match the value of ZWE_EXTERNAL_HOSTS if exists, or otherwise ZOWE_EXLORER_HOST, for the purpose of avoiding certificate verification issues between app-server and APIML under certain circumstances
+- Bugfix: Sync state of certificate verification of zlux with keystore configuration, so that certificate verification can be turned on or off centrally
 
 ## v1.20.0
 

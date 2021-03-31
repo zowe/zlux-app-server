@@ -56,6 +56,15 @@ elif [ -n "$ZWED_agent_mediationLayer_serviceName" -a -z "$ZWED_agent_mediationL
   export ZWED_agent_mediatonLayer_enabled="true";
 fi
 
+# Check if Caching Service is enabled
+if [ "$ZWED_node_mediationLayer_enabled" = "true" ]; then
+  case "$LAUNCH_COMPONENTS" in
+    *caching-service*)
+      export ZWED_node_mediationLayer_cachingService_enabled="true"
+      ;;
+    esac
+fi
+
 # eureka hostname handling
 if [ -z "$ZWED_node_hostname" ]; then
   if [ -n "$ZWE_EXTERNAL_HOSTS" ]; then

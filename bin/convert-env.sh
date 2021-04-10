@@ -17,39 +17,36 @@ then
 fi
 
 # shape old env vars into app-server compatible ones
-# mediation layer
-if [ -z "$ZWED_node_mediationLayer_server_gatewayPort" ]
-then
-  if [ -n "$GATEWAY_PORT" ]
-  then
-    export ZWED_node_mediationLayer_server_gatewayPort=$GATEWAY_PORT
+# mediation layer - gateway
+if [ -z "$ZWED_node_mediationLayer_server_gatewayHostname" ]; then
+  if [ -n "$ZWE_EXTERNAL_HOSTS" ]; then
+    #just the first value in the csv
+    export ZWED_node_mediationLayer_server_gatewayHostname=$(echo "${ZWE_EXTERNAL_HOSTS}" | head -n1 | sed "s/,/ /g" | cut -d " " -f1)
+  elif [ -n "$ZOWE_EXPLORER_HOST" ]; then
+    export ZWED_node_mediationLayer_server_gatewayHostname=$ZOWE_EXPLORER_HOST
   fi
+fi
+if [ -z "$ZWED_node_mediationLayer_server_gatewayPort" -a -n "$GATEWAY_PORT" ]; then
+  export ZWED_node_mediationLayer_server_gatewayPort=$GATEWAY_PORT
+fi
+# mediation layer - discovery
+# try to extract discovery server from ZWE_DISCOVERY_SERVICES_LIST
+if [ -n "${ZWE_DISCOVERY_SERVICES_LIST}" -a -z "$ZWED_node_mediationLayer_server_hostname" -a -z "$ZWED_node_mediationLayer_server_port" ]; then
+  # get first discovery, there is chance the first discovery may fail
+  first_discovery=$(echo "${ZWE_DISCOVERY_SERVICES_LIST}" | awk -F"," '{print $1;}' | awk -F"/" '{print $3;}')
+  if [ -n "${first_discovery}" ]; then
+    export ZWED_node_mediationLayer_server_hostname=$(echo "${first_discovery}" | awk -F":" '{print $1;}')
+    export ZWED_node_mediationLayer_server_port=$(echo "${first_discovery}" | awk -F":" '{print $2;}')
+    export ZWED_node_mediationLayer_enabled="true"
+  fi
+fi
+if [ -z "$ZWED_node_mediationLayer_server_hostname" -a -n "$ZOWE_EXPLORER_HOST" ]; then
+  export ZWED_node_mediationLayer_server_hostname=$ZOWE_EXPLORER_HOST
+fi
+if [ -z "$ZWED_node_mediationLayer_server_port" -a  -n "$DISCOVERY_PORT" ]; then
+  export ZWED_node_mediationLayer_server_port=$DISCOVERY_PORT
 fi
 
-if [ -z "$ZWED_node_mediationLayer_server_port" ]
-then
-  if [ -n "$DISCOVERY_PORT" ]
-  then
-    export ZWED_node_mediationLayer_server_port=$DISCOVERY_PORT
-  fi
-fi
-
-if [ -z "$ZWED_node_mediationLayer_server_hostname" ]
-then
-  if [ -n "$ZOWE_EXPLORER_HOST" ]
-  then
-    export ZWED_node_mediationLayer_server_hostname=$ZOWE_EXPLORER_HOST
-    if [ -n "$ZWED_node_mediationLayer_server_port" ]
-    then
-      case "$LAUNCH_COMPONENT_GROUPS" in
-        *GATEWAY*)
-          #All conditions met for app-server behind gateway: hostname, port, and component
-          export ZWED_node_mediationLayer_enabled="true"
-          ;;
-      esac
-    fi
-  fi
-fi
 if [ -z "$ZWED_node_mediationLayer_enabled" ]; then
   export ZWED_node_mediationLayer_enabled="false"
 elif [ -n "$ZWED_agent_mediationLayer_serviceName" -a -z "$ZWED_agent_mediationLayer_enabled" ]; then
@@ -67,10 +64,7 @@ fi
 
 # eureka hostname handling
 if [ -z "$ZWED_node_hostname" ]; then
-  if [ -n "$ZWE_EXTERNAL_HOSTS" ]; then
-    #just the first value in the csv
-    export ZWED_node_hostname=$(echo "${ZWE_EXTERNAL_HOSTS}" | head -n1 | cut -d " " -f1 | sed "s/,/ /g")
-  elif [ -n "$ZOWE_EXPLORER_HOST" ]; then
+  if [ -n "$ZOWE_EXPLORER_HOST" ]; then
     export ZWED_node_hostname=$ZOWE_EXPLORER_HOST
   fi
 fi

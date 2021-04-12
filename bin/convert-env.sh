@@ -192,9 +192,9 @@ else
   then
     export ZWED_agent_https_port="${ZOWE_ZSS_SERVER_PORT}"
   fi
-  if [ -z "$ZWED_agent_host" -a -n "$ZOWE_EXPLORER_HOST" ]
+  if [ -z "$ZWED_agent_host" -a -n "$ZOWE_IP_ADDRESS" ]
   then
-    export ZWED_agent_host="${ZOWE_EXPLORER_HOST}"
+    export ZWED_agent_host="${ZOWE_IP_ADDRESS}"
   fi
 fi
 if [ -z "$ZWED_privilegedServerName" ]

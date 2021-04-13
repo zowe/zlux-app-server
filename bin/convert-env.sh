@@ -52,7 +52,7 @@ then
 fi
 if [ -z "$ZWED_node_mediationLayer_enabled" ]; then
   export ZWED_node_mediationLayer_enabled="false"
-elif [ -n "$ZWED_agent_mediationLayer_serviceName" -a -z "$ZWED_agent_mediationLayer_enabled" ]; then
+elif [ -z "$ZWED_agent_mediationLayer_enabled" ]; then
   export ZWED_agent_mediatonLayer_enabled="true";
 fi
 

@@ -50,9 +50,29 @@ then
     fi
   fi
 fi
-if [ -z "$ZWED_node_mediationLayer_enabled" ]
-then
-    export ZWED_node_mediationLayer_enabled="false"
+if [ -z "$ZWED_node_mediationLayer_enabled" ]; then
+  export ZWED_node_mediationLayer_enabled="false"
+elif [ -n "$ZWED_agent_mediationLayer_serviceName" -a -z "$ZWED_agent_mediationLayer_enabled" ]; then
+  export ZWED_agent_mediatonLayer_enabled="true";
+fi
+
+# Check if Caching Service is enabled
+if [ "$ZWED_node_mediationLayer_enabled" = "true" ]; then
+  case "$LAUNCH_COMPONENTS" in
+    *caching-service*)
+      export ZWED_node_mediationLayer_cachingService_enabled="true"
+      ;;
+    esac
+fi
+
+# eureka hostname handling
+if [ -z "$ZWED_node_hostname" ]; then
+  if [ -n "$ZWE_EXTERNAL_HOSTS" ]; then
+    #just the first value in the csv
+    export ZWED_node_hostname=$(echo "${ZWE_EXTERNAL_HOSTS}" | head -n1 | cut -d " " -f1 | sed "s/,/ /g")
+  elif [ -n "$ZOWE_EXPLORER_HOST" ]; then
+    export ZWED_node_hostname=$ZOWE_EXPLORER_HOST
+  fi
 fi
 
 if [ -n "$ZOWE_LOOPBACK_ADDRESS" ]
@@ -159,11 +179,22 @@ then
 fi
 
 # zss
-if [ -z "$ZWED_agent_http_port" ]
+if [ "$ZOWE_ZSS_SERVER_TLS" = "false" ]
 then
-  if [ -n "$ZOWE_ZSS_SERVER_PORT" ]
+  # HTTP
+  if [ -z "$ZWED_agent_http_port" -a -n "$ZOWE_ZSS_SERVER_PORT" ]
   then
-    export ZWED_agent_http_port=$ZOWE_ZSS_SERVER_PORT
+    export ZWED_agent_http_port="${ZOWE_ZSS_SERVER_PORT}"
+  fi
+else
+  # HTTPS
+  if [ -z "$ZWED_agent_https_port" -a -n "$ZOWE_ZSS_SERVER_PORT" ]
+  then
+    export ZWED_agent_https_port="${ZOWE_ZSS_SERVER_PORT}"
+  fi
+  if [ -z "$ZWED_agent_host" -a -n "$ZOWE_EXPLORER_HOST" ]
+  then
+    export ZWED_agent_host="${ZOWE_EXPLORER_HOST}"
   fi
 fi
 if [ -z "$ZWED_privilegedServerName" ]

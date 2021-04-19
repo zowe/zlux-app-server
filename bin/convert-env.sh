@@ -7,6 +7,8 @@
 #
 # Copyright Contributors to the Zowe Project.
 
+OSNAME=$(uname)
+
 # For backwards compatible behavior, only set the instance ID if it is non-default
 if [ -n "$ZOWE_INSTANCE" ]
 then

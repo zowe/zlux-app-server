@@ -212,5 +212,7 @@ fi
 
 # cert verification
 if [ -z "$ZWED_node_allowInvalidTLSProxy" -a -n "$VERIFY_CERTIFICATES" ]; then
-  export ZWED_node_allowInvalidTLSProxy="${VERIFY_CERTIFICATES}"
+  if [ "$VERIFY_CERTIFICATES" = "false" ]; then
+    export ZWED_node_allowInvalidTLSProxy="true"
+  fi
 fi

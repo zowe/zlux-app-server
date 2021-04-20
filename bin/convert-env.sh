@@ -209,3 +209,8 @@ then
     export ZWED_privilegedServerName=$ZOWE_ZSS_XMEM_SERVER_NAME
   fi 
 fi
+
+# cert verification
+if [ -z "$ZWED_node_allowInvalidTLSProxy" -a -n "$VERIFY_CERTIFICATES" ]; then
+  export ZWED_node_allowInvalidTLSProxy="${VERIFY_CERTIFICATES}"
+fi

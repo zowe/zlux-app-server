@@ -7,6 +7,8 @@
 #
 # Copyright Contributors to the Zowe Project.
 
+OSNAME=$(uname)
+
 # For backwards compatible behavior, only set the instance ID if it is non-default
 if [ -n "$ZOWE_INSTANCE" ]
 then
@@ -206,4 +208,11 @@ then
   then
     export ZWED_privilegedServerName=$ZOWE_ZSS_XMEM_SERVER_NAME
   fi 
+fi
+
+# cert verification
+if [ -z "$ZWED_node_allowInvalidTLSProxy" -a -n "$VERIFY_CERTIFICATES" ]; then
+  if [ "$VERIFY_CERTIFICATES" = "false" ]; then
+    export ZWED_node_allowInvalidTLSProxy="true"
+  fi
 fi

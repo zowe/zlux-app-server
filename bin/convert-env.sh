@@ -210,9 +210,15 @@ then
   fi 
 fi
 
+echo "ZWED_node_allowInvalidTLSProxy starts as $ZWED_node_allowInvalidTLSProxy"
+echo "VERIFY_CERTIFICATES starts as $VERIFY_CERTIFICATES"
 # cert verification
 if [ -z "$ZWED_node_allowInvalidTLSProxy" -a -n "$VERIFY_CERTIFICATES" ]; then
+  echo "no allowInvalidTLSProxy and VERIFY_CERTIFICATES is defined"
   if [ "$VERIFY_CERTIFICATES" = "false" ]; then
+    echo "VERIFY_CERTIFICATES is false, setting allowInvalidTLSProxy true"
     export ZWED_node_allowInvalidTLSProxy="true"
+  else
+    echo "VERIFY_CERTIFICATES was not false, not touching allowInvalidTLSProxy"
   fi
 fi

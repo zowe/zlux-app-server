@@ -55,10 +55,14 @@ fi
 if [ -z "$ZWED_node_mediationLayer_enabled" ]; then
   export ZWED_node_mediationLayer_enabled="false"
 elif [ -z "$ZWED_agent_mediationLayer_enabled" ]; then
-  if [[ "${OSNAME}" == "OS/390" ]]; then
+  echo "Checking whether or not to set agent apiml lookup on"
+  if [ "${OSNAME}" = "OS/390" ]; then
+    echo "zos, setting on"
     export ZWED_agent_mediationLayer_enabled="true";
+  else
+# else: docker... no static def file for zss means no zss unless the end user added one manually, so lets not set true here. If end user sets up a static file, they can set this true manually as well.
+    echo "not zos, keeping off unless forced on"
   fi
-  # else: docker... no static def file for zss means no zss unless the end user added one manually, so lets not set true here. If end user sets up a static file, they can set this true manually as well.
 fi
 
 # Check if Caching Service is enabled

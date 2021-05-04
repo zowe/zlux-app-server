@@ -12,6 +12,7 @@ bin/mvdserver
 *.o
 /externals
 log/
+node_modules
 
 # emacs
 *~

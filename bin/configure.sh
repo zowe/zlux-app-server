@@ -17,3 +17,14 @@ cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/bin
 . ./internal-node-init.sh
 cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/lib
 __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+OSNAME=$(uname)
+
+# conditionally set up static reg file for zss if app-server is remote to zss
+# if apiml isnt in this environment, this is harmless but does nothing, otherwise zss is attached
+if [ "${OSNAME}" != "OS/390" ]; then
+  if [ "$ZWED_agent_mediationLayer_enabled" = "true" ]; then
+    cp ${ROOT_DIR}/components/app-server/share/zlux-app-server/zss_static_registration.yaml.template ${INSTANCE_DIR}/workspace/api-mediation/api-defs/zss_static_registration_template.yml
+  elif [ -e "${INSTANCE_DIR}/workspace/api-mediation/api-defs/container-zss-static-reg.yaml.template.yml" ]; then
+    rm ${INSTANCE_DIR}/workspace/api-mediation/api-defs/zss_static_registration_template.yml
+  fi
+fi

@@ -7,13 +7,14 @@
 # 
 # Copyright Contributors to the Zowe Project.
 
-
-# Required variables on shell:
-# - ROOT_DIR
-# - WORKSPACE_DIR
-# - NODE_HOME
-cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/bin
-. ./convert-env.sh
-. ./internal-node-init.sh
-cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/lib
-__UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+type node
+if [ "$?" -ne "0" ]; then
+  if [ -e "${NODE_HOME}/bin/node" ]; then
+    echo "Node found in NODE_HOME"
+  elif [ -e "${ZOWE_NODE_HOME}/bin/node" ]; then
+    echo "Node found in NODE_HOME"
+  else 
+    echo "Error: node not found, app-server cannot run"
+    exit 1
+  fi
+fi

@@ -7,6 +7,8 @@
 #
 # Copyright Contributors to the Zowe Project.
 
+OSNAME=$(uname)
+
 # For backwards compatible behavior, only set the instance ID if it is non-default
 if [ -n "$ZOWE_INSTANCE" ]
 then
@@ -50,9 +52,44 @@ then
     fi
   fi
 fi
-if [ -z "$ZWED_node_mediationLayer_enabled" ]
+if [ -z "$ZWED_node_mediationLayer_enabled" ]; then
+  export ZWED_node_mediationLayer_enabled="false"
+elif [ -z "$ZWED_agent_mediationLayer_enabled" ]; then
+  if [[ "${OSNAME}" == "OS/390" ]]; then
+    export ZWED_agent_mediationLayer_enabled="true";
+  fi
+  # else: docker... no static def file for zss means no zss unless the end user added one manually, so lets not set true here. If end user sets up a static file, they can set this true manually as well.
+fi
+
+# Check if Caching Service is enabled
+if [ "$ZWED_node_mediationLayer_enabled" = "true" ]; then
+  case "$LAUNCH_COMPONENTS" in
+    *caching-service*)
+      export ZWED_node_mediationLayer_cachingService_enabled="true"
+      ;;
+    esac
+fi
+
+# eureka hostname handling
+if [ -z "$ZWED_node_hostname" ]; then
+  if [ -n "$ZWE_EXTERNAL_HOSTS" ]; then
+    #just the first value in the csv
+    export ZWED_node_hostname=$(echo "${ZWE_EXTERNAL_HOSTS}" | head -n1 | cut -d " " -f1 | sed "s/,/ /g")
+  elif [ -n "$ZOWE_EXPLORER_HOST" ]; then
+    export ZWED_node_hostname=$ZOWE_EXPLORER_HOST
+  fi
+fi
+
+if [ -n "$ZOWE_LOOPBACK_ADDRESS" ]
 then
-    export ZWED_node_mediationLayer_enabled="false"
+  if [ -n "$ZOWE_IP_ADDRESS" ]
+  then
+    if [ "$BIND_TO_LOOPBACK" = "true" ]
+    then
+      export ZWED_node_https_ipAddresses="${ZOWE_LOOPBACK_ADDRESS},${ZOWE_IP_ADDRESS}",
+    fi
+  fi
+  export ZWED_node_loopbackAddress=$ZOWE_LOOPBACK_ADDRESS
 fi
 
 # certificates
@@ -147,11 +184,22 @@ then
 fi
 
 # zss
-if [ -z "$ZWED_agent_http_port" ]
+if [ "$ZOWE_ZSS_SERVER_TLS" = "false" ]
 then
-  if [ -n "$ZOWE_ZSS_SERVER_PORT" ]
+  # HTTP
+  if [ -z "$ZWED_agent_http_port" -a -n "$ZOWE_ZSS_SERVER_PORT" ]
   then
-    export ZWED_agent_http_port=$ZOWE_ZSS_SERVER_PORT
+    export ZWED_agent_http_port="${ZOWE_ZSS_SERVER_PORT}"
+  fi
+else
+  # HTTPS
+  if [ -z "$ZWED_agent_https_port" -a -n "$ZOWE_ZSS_SERVER_PORT" ]
+  then
+    export ZWED_agent_https_port="${ZOWE_ZSS_SERVER_PORT}"
+  fi
+  if [ -z "$ZWED_agent_host" -a -n "$ZOWE_EXPLORER_HOST" ]
+  then
+    export ZWED_agent_host="${ZOWE_EXPLORER_HOST}"
   fi
 fi
 if [ -z "$ZWED_privilegedServerName" ]
@@ -160,4 +208,11 @@ then
   then
     export ZWED_privilegedServerName=$ZOWE_ZSS_XMEM_SERVER_NAME
   fi 
+fi
+
+# cert verification
+if [ -z "$ZWED_node_allowInvalidTLSProxy" -a -n "$VERIFY_CERTIFICATES" ]; then
+  if [ "$VERIFY_CERTIFICATES" = "false" ]; then
+    export ZWED_node_allowInvalidTLSProxy="true"
+  fi
 fi

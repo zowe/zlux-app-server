@@ -21,29 +21,12 @@
 # - ZOWE_ZLUX_TELNET_PORT
 # - ZOWE_ZLUX_SECURITY_TYPE
 
-if [ -n "$NODE_HOME" ]
+if [ -z "${ROOT_DIR}" ]
 then
-  NODE_BIN=${NODE_HOME}/bin/node
-  export PATH=${NODE_HOME}/bin:$PATH
-elif [ -n "$ZOWE_NODE_HOME" ]
-then
-  NODE_BIN=${ZOWE_NODE_HOME}/bin/node
-  export PATH=${ZOWE_NODE_HOME}/bin:$PATH
-else
-  NODE_BIN=node
-fi
-export _BPXK_AUTOCVT=ON
-
-nodeVersion="$(${NODE_BIN} --version)"
-nodeMajorVersion=$(echo ${nodeVersion} | cut -c2-3)
-if [ $nodeMajorVersion = "12" ]
-then
-  export _TAG_REDIR_ERR=txt
-  export _TAG_REDIR_IN=txt
-  export _TAG_REDIR_OUT=txt
+ #this may be a dev environment, or backward compat, so stay in current dir and check node
+ . ./validate.sh
 fi
 
-dir=$(cd `dirname $0` && pwd)
 if [ ! -e "${dir}/convert-env.sh" ]
 then
   if [ -n "$CONDA_PREFIX" ]
@@ -54,52 +37,17 @@ then
 fi
 
 . ./convert-env.sh
+. ./internal-node-init.sh
 
-#ZLUX_CONFIG_FILE, WORKSPACE_DIR, and INSTANCE_DIR are for official Zowe environment use.
-#If none found, will assume dev environment and consider ~/.zowe as INSTANCE_DIR
 if [ -e "$ZLUX_CONFIG_FILE" ]
 then
     CONFIG_FILE=$ZLUX_CONFIG_FILE
-elif [ -n "${WORKSPACE_DIR}" ]
+elif [ -z "${ROOT_DIR}" ]
 then
-  if [ -e "${WORKSPACE_DIR}/app-server/serverConfig/server.json" ]
-  then
-    CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/server.json"
-  else
-    cd ../lib
-    NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
-    CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/server.json"
-    cd ../bin
-  fi
-elif [ -n "${INSTANCE_DIR}" ]
-then
-  if [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
-  then
-    CONFIG_FILE="${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json"
-  else
-    cd ../lib
-    NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
-    CONFIG_FILE="${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json"
-    cd ../bin
-  fi
-elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]
-then
-  CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/server.json"
-  mkdir -p ${INSTANCE_DIR}/logs
-  export INSTANCE_DIR="${HOME}/.zowe"
-elif [ -e "../deploy/instance/ZLUX/serverConfig/zluxserver.json" ]
-then
-  echo "WARNING: Using old configuration present in ${dir}/../deploy\n\
-This configuration should be migrated for use with future versions. See documentation for more information.\n"
-  CONFIG_FILE="../deploy/instance/ZLUX/serverConfig/zluxserver.json"
+  #dev env or backwards compat, do late configure
+  . ./internal-inst-init.sh
 else
-  echo "No config file found, initializing..."
-  export INSTANCE_DIR="${HOME}/.zowe"
-  mkdir -p ${INSTANCE_DIR}/logs
-  cd ../lib
-  NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
-  CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/server.json"
-  cd ../bin
+  CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/server.json"
 fi
 
 if [ -n "$ZLUX_NODE_LOG_FILE" ]
@@ -210,17 +158,23 @@ then
 fi
 
 #Determined log file.  Run node appropriately.
-cd $dir
-export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH
 cd ../lib
+
+export ZOWE_LIB_DIR=$(cd `dirname $0` && pwd)
 
 export "_CEE_RUNOPTS=XPLINK(ON),HEAPPOOLS(ON)"
 
 echo Show Environment
 env
-echo Show location of node
-type node
 
+if [ -z "$ZOWE_WORKING_DIR" ]
+then
+  export ZOWE_WORKING_DIR=$ZOWE_LIB_DIR
+else
+  echo "Server is about to start with a non default working directory. Working dir=$ZOWE_WORKING_DIR"
+fi
+
+cd $ZOWE_WORKING_DIR
 
 echo Starting node
 if [ -z "$ZLUX_NO_CLUSTER" ]
@@ -233,5 +187,5 @@ then
 else
   ZLUX_SERVER_FILE=zluxServer.js
 fi
-{ __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 ; echo "Ended with rc=$?" ; } | tee $ZLUX_NODE_LOG_FILE
+{ __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 ; echo "Ended with rc=$?" ; } | tee $ZLUX_NODE_LOG_FILE
 

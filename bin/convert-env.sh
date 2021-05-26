@@ -72,9 +72,9 @@ fi
 
 # eureka hostname handling
 if [ -z "$ZWED_node_hostname" ]; then
-  if [ -n "$ZWE_EXTERNAL_HOSTS" ]; then
+  if [ -n "$ZWE_INTERNAL_HOSTS" ]; then
     #just the first value in the csv
-    export ZWED_node_hostname=$(echo "${ZWE_EXTERNAL_HOSTS}" | head -n1 | cut -d " " -f1 | sed "s/,/ /g")
+    export ZWED_node_hostname=$(echo "${ZWE_INTERNAL_HOSTS}" | head -n1 | cut -d " " -f1 | sed "s/,/ /g")
   elif [ -n "$ZOWE_EXPLORER_HOST" ]; then
     export ZWED_node_hostname=$ZOWE_EXPLORER_HOST
   fi

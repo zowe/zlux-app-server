@@ -1,4 +1,5 @@
 {
   "identifier": "org.zowe.zlux",
-  "pluginLocation": "../../zlux-server-framework/plugins/zlux-server"
+  "pluginLocation": "components/app-server/share/zlux-server-framework/plugins/zlux-server",
+  "relativeTo": "$ROOT_DIR"
 }

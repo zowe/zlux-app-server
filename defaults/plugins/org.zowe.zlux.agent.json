@@ -1,4 +1,5 @@
 {
   "identifier": "org.zowe.zlux.agent",
-  "pluginLocation": "../../zlux-server-framework/plugins/zlux-agent"
+  "pluginLocation": "components/app-server/share/zlux-server-framework/plugins/zlux-agent",
+  "relativeTo": "$ROOT_DIR"
 }

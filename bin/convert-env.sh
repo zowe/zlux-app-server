@@ -73,7 +73,7 @@ fi
 # eureka hostname handling
 if [ -z "$ZWED_node_hostname" ]; then
   if [ -n "$ZWE_INTERNAL_HOST" ]; then
-    export ZWED_node_hostname=$ZOWE_INTERNAL_HOST
+    export ZWED_node_hostname=$ZWE_INTERNAL_HOST
   elif [ -n "$ZOWE_EXPLORER_HOST" ]; then
     export ZWED_node_hostname=$ZOWE_EXPLORER_HOST
   fi

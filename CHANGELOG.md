@@ -2,6 +2,10 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v1.22.0
+
+- Bugfix: Prefer internal IP/hostname over external one when stating to discovery server where app-server is located. For many users there is no behavior difference because the values are the same.
+
 ## v1.21.0
 
 - Bugfix: Set the hostname used for eureka to match the value of ZWE_EXTERNAL_HOSTS if exists, or otherwise ZOWE_EXLORER_HOST, for the purpose of avoiding certificate verification issues between app-server and APIML under certain circumstances

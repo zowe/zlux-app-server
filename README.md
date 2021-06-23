@@ -204,7 +204,7 @@ git clone git@github.com:zowe/sample-react-app.git
 git clone git@github.com:zowe/sample-iframe-app.git
 ```
 
-**NOTE: react and iframe apps depend on the angular app, as an example of dependencies. Recent versions of the angular app also depends upon ZSS as an example, but you can use a version older than v1.21.0 if you do not have ZSS available.**
+**Sample React and Iframe Apps depend on the Sample Angular App, as an example of dependencies. Recent versions of the Angular App also depends upon ZSS as an example, but you can use a version older than v1.21.0 if you do not have ZSS available.**
 
 ## 7. Adding ZSS to the environment
 Like the App Server, ZSS is an HTTP(S) server component of Zowe. 
@@ -250,7 +250,7 @@ In App Server terminology, ZSS is a **Agent**, where the Agent is responsible fo
 
 #### Security Provider Setup
 To add ZSS as a security provider, add the **sso-auth** plugin to the App Server. Following [Section 6](#6-adding-plugins) about adding plugins, you can do the following, where `INSTANCE_DIR=~/.zowe` and the App Server in `~/my-zowe`:
-1. `./install-app.sh ~/my-zowe/zlux-server-framework/sso-auth`
+1. `./install-app.sh ~/my-zowe/zlux-server-framework/plugins/sso-auth`
 
 Then, you need set the configuration of the App Server to prefer that security provider.
 Locate and edit server.json (Within INSTANCE_DIR/workspace/app-server/serverConfig/server.json, such as `~/.zowe/workspace/app-server/serverConfig/server.json`)

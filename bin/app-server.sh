@@ -160,7 +160,7 @@ fi
 #Determined log file.  Run node appropriately.
 cd ../lib
 
-export ZOWE_LIB_DIR=$(cd `dirname $0` && pwd)
+export ZOWE_LIB_DIR=$(pwd)
 
 export "_CEE_RUNOPTS=XPLINK(ON),HEAPPOOLS(ON)"
 

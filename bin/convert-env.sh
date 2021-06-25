@@ -7,6 +7,8 @@
 #
 # Copyright Contributors to the Zowe Project.
 
+OSNAME=$(uname)
+
 # For backwards compatible behavior, only set the instance ID if it is non-default
 if [ -n "$ZOWE_INSTANCE" ]
 then
@@ -53,14 +55,25 @@ fi
 if [ -z "$ZWED_node_mediationLayer_enabled" ]; then
   export ZWED_node_mediationLayer_enabled="false"
 elif [ -z "$ZWED_agent_mediationLayer_enabled" ]; then
-  export ZWED_agent_mediationLayer_enabled="true";
+  if [[ "${OSNAME}" == "OS/390" ]]; then
+    export ZWED_agent_mediationLayer_enabled="true";
+  fi
+  # else: docker... no static def file for zss means no zss unless the end user added one manually, so lets not set true here. If end user sets up a static file, they can set this true manually as well.
+fi
+
+# Check if Caching Service is enabled
+if [ "$ZWED_node_mediationLayer_enabled" = "true" ]; then
+  case "$LAUNCH_COMPONENTS" in
+    *caching-service*)
+      export ZWED_node_mediationLayer_cachingService_enabled="true"
+      ;;
+    esac
 fi
 
 # eureka hostname handling
 if [ -z "$ZWED_node_hostname" ]; then
-  if [ -n "$ZWE_EXTERNAL_HOSTS" ]; then
-    #just the first value in the csv
-    export ZWED_node_hostname=$(echo "${ZWE_EXTERNAL_HOSTS}" | head -n1 | cut -d " " -f1 | sed "s/,/ /g")
+  if [ -n "$ZWE_INTERNAL_HOST" ]; then
+    export ZWED_node_hostname=$ZWE_INTERNAL_HOST
   elif [ -n "$ZOWE_EXPLORER_HOST" ]; then
     export ZWED_node_hostname=$ZOWE_EXPLORER_HOST
   fi
@@ -197,4 +210,11 @@ then
   then
     export ZWED_privilegedServerName=$ZOWE_ZSS_XMEM_SERVER_NAME
   fi 
+fi
+
+# cert verification
+if [ -z "$ZWED_node_allowInvalidTLSProxy" -a -n "$VERIFY_CERTIFICATES" ]; then
+  if [ "$VERIFY_CERTIFICATES" = "false" ]; then
+    export ZWED_node_allowInvalidTLSProxy="true"
+  fi
 fi

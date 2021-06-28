@@ -215,3 +215,8 @@ if [ -z "$ZWED_node_allowInvalidTLSProxy" -a -n "$VERIFY_CERTIFICATES" ]; then
     export ZWED_node_allowInvalidTLSProxy="true"
   fi
 fi
+
+# set production mode if applicable
+if [ -n "$ROOT_DIR" -a -z "$NODE_ENV" ]; then
+  export NODE_ENV=production
+fi

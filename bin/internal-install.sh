@@ -57,10 +57,6 @@ for tarfile in ${tar_path}/*.tar ; do
   mv ${tar_path}/${pluginName} .
 done
 
-# explorer-ip - install
-cd ${APP_SERVER_COMPONENT_DIR}/share/explorer-ip/bin
-./install.sh
-
 cd ${APP_SERVER_COMPONENT_DIR}/share/
 
 chtag -tc 1047 ${INSTALL_DIR}/files/zlux/config/*.json

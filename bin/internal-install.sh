@@ -43,7 +43,7 @@ do
   cd ..
 done
 
-cd ${APP_SERVER_COMPONENT_DIR}/share/
+cd ${APP_SERVER_COMPONENT_DIR}/share
 tar_path=${INSTALL_DIR}/files/zlux
 for tarfile in ${tar_path}/*.tar ; do
   if [ ! -f $tarfile ]; then
@@ -56,6 +56,10 @@ for tarfile in ${tar_path}/*.tar ; do
   tar xvf "$tarfile" -C ${tar_path}/${pluginName}
   mv ${tar_path}/${pluginName} .
 done
+
+# explorer-ip - install
+cd ${APP_SERVER_COMPONENT_DIR}/share/explorer-ip/bin
+./install.sh
 
 cd ${APP_SERVER_COMPONENT_DIR}/share/
 

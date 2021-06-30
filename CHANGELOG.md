@@ -2,6 +2,10 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v1.23.0
+
+- Bugfix: Sync state of certificate verification of zlux with keystore configuration, so that certificate verification can be turned on or off centrally
+
 ## v1.22.0
 
 - Bugfix: Prefer internal IP/hostname over external one when stating to discovery server where app-server is located. For many users there is no behavior difference because the values are the same.

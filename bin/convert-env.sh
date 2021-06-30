@@ -92,6 +92,9 @@ then
 fi
 
 # certificates
+if [ "$VERIFY_CERTIFICATES" = "false" ]; then
+  export ZWED_node_allowInvalidTLSProxy=true
+fi
 if [ -z "$ZWED_node_https_certificates" ]
 then
   if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]

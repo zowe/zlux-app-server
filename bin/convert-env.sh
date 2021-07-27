@@ -92,6 +92,9 @@ then
 fi
 
 # certificates
+if [ "$VERIFY_CERTIFICATES" = "false" ]; then
+  export ZWED_node_allowInvalidTLSProxy=true
+fi
 if [ -z "$ZWED_node_https_certificates" ]
 then
   if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
@@ -214,4 +217,9 @@ if [ -z "$ZWED_node_allowInvalidTLSProxy" -a -n "$VERIFY_CERTIFICATES" ]; then
   if [ "$VERIFY_CERTIFICATES" = "false" ]; then
     export ZWED_node_allowInvalidTLSProxy="true"
   fi
+fi
+
+# set production mode if applicable
+if [ -n "$ROOT_DIR" -a -z "$NODE_ENV" ]; then
+  export NODE_ENV=production
 fi

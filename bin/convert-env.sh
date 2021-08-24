@@ -206,7 +206,15 @@ if [ -z "$ZWED_productDir" ]
 then
   if [ -n "$ROOT_DIR" ]
   then
-  export ZWED_productDir=$ROOT_DIR/components/app-server/share/zlux-app-server/defaults
+    COMPONENT_HOME=${ROOT_DIR}/components/app-server
+
+    # containers only
+    if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
+      if [ -f "/component/manifest.yaml" ]; then
+        COMPONENT_HOME=/component
+      fi
+    fi    
+    export ZWED_productDir=$COMPONENT_HOME/share/zlux-app-server/defaults
   fi
 fi
 

@@ -1,5 +1,5 @@
 #RUNTIME PATHS
-ZLUX_RUNTIME=${ROOT_DIR}/components/app-server
+ZLUX_RUNTIME=/component
 ZLUX_APP_SERVER=${ZLUX_RUNTIME}/share/zlux-app-server
 
 # create runtime bin

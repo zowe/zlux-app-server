@@ -26,9 +26,17 @@ then
 fi
 
 umask 0002
-APP_SERVER_COMPONENT_DIR=${ZOWE_ROOT_DIR}/components/app-server
+COMPONENT_HOME=${ZOWE_ROOT_DIR}/components/app-server
 
-cd ${APP_SERVER_COMPONENT_DIR}/share
+# containers only
+if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
+  if [ -f "/component/manifest.yaml" ]; then
+    COMPONENT_HOME=/component
+  fi
+fi
+
+
+cd ${COMPONENT_HOME}/share
 for paxfile in ${INSTALL_DIR}/files/zlux/*.pax
 do
   if [ ! -f $paxfile ]; then
@@ -43,7 +51,7 @@ do
   cd ..
 done
 
-cd ${APP_SERVER_COMPONENT_DIR}/share
+cd ${COMPONENT_HOME}/share
 tar_path=${INSTALL_DIR}/files/zlux
 for tarfile in ${tar_path}/*.tar ; do
   if [ ! -f $tarfile ]; then
@@ -57,7 +65,7 @@ for tarfile in ${tar_path}/*.tar ; do
   mv ${tar_path}/${pluginName} .
 done
 
-cd ${APP_SERVER_COMPONENT_DIR}/share/
+cd ${COMPONENT_HOME}/share/
 
 chtag -tc 1047 ${INSTALL_DIR}/files/zlux/config/*.json
 chtag -tc 1047 ${INSTALL_DIR}/files/zlux/config/plugins/*.json

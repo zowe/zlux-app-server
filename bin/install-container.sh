@@ -1,13 +1,13 @@
 #RUNTIME PATHS
-ZLUX_RUNTIME=/component
-ZLUX_APP_SERVER=${ZLUX_RUNTIME}/share/zlux-app-server
+COMPONENT_HOME=/component
+ZLUX_APP_SERVER=${COMPONENT_HOME}/share/zlux-app-server
 
 # create runtime bin
-mkdir -p ${ZLUX_RUNTIME}/bin 
-cp ${ZLUX_APP_SERVER}/manifest.yaml ${ZLUX_RUNTIME} 
-cp ${ZLUX_APP_SERVER}/bin/start.sh ${ZLUX_RUNTIME}/bin 
-cp ${ZLUX_APP_SERVER}/bin/configure.sh ${ZLUX_RUNTIME}/bin
-cp ${ZLUX_APP_SERVER}/bin/start-container.sh ${ZLUX_RUNTIME}/bin 
+mkdir -p ${COMPONENT_HOME}/bin 
+cp ${ZLUX_APP_SERVER}/manifest.yaml ${COMPONENT_HOME} 
+cp ${ZLUX_APP_SERVER}/bin/start.sh ${COMPONENT_HOME}/bin 
+cp ${ZLUX_APP_SERVER}/bin/configure.sh ${COMPONENT_HOME}/bin
+cp ${ZLUX_APP_SERVER}/bin/start-container.sh ${COMPONENT_HOME}/bin 
 
 #INSTANCE PATHS 
 ZLUX_WORKSPACE=${WORKSPACE_DIR}/app-server

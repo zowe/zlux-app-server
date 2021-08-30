@@ -34,6 +34,18 @@ then
 fi
 shift
 
+if [ -e "${dir}/internal/read-essential-vars.sh" -o -e "${dir}/../instance.env" ]; then
+  if [ -z "$INSTANCE_DIR" ]; then
+     export INSTANCE_DIR=$(cd "${dir}/.." && pwd)
+  fi
+  if [ -e "${dir}/internal/read-essential-vars.sh" ]; then
+    # this function will load proper environment from either instance.env or zowe.yaml
+    . ${dir}/internal/read-essential-vars.sh
+  elif [ -e "${dir}/../instance.env" ]; then
+    . "${dir}/../instance.env"
+  fi
+fi
+
 if [ -z "$plugin_dir" ]; then
   if [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]; then
     config_path="${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json"
@@ -45,29 +57,35 @@ This configuration should be migrated for use with future versions. See document
     config_path="../deploy/instance/ZLUX/serverConfig/zluxserver.json"
   else
     echo "Error: could not find plugin directory"
+    echo "Ended with rc=1"
     exit 1
   fi
-  plugin_dir=`grep "pluginsDir" "${config_path}" |  sed -e 's/"//g' | sed -e 's/.*: *//g' | sed -e 's/,.*//g'`
+  plugin_dir=`grep "\"pluginsDir\"" "${config_path}" |  sed -e 's/"//g' | sed -e 's/.*: *//g' | sed -e 's/,.*//g'`
 fi
 
 
-if [ "$arg_path" == "true" ]; then
+if [ "$arg_path" = "true" ]; then
   id=`grep "identifier" ${app_path}/pluginDefinition.json |  sed -e 's/"//g' | sed -e 's/.*: *//g' | sed -e 's/,.*//g'`
 
   if [ -n "${id}" ]; then
     echo "Found plugin=${id}"
     app_id=$id
-    echo "Ended with rc=$?"
   else
     echo "Error: could not find plugin id for path=${app_path}"
+    echo "Ended with rc=1"
     exit 1
   fi
 fi
 
 if [ -n "${plugin_dir}" ]; then
+  echo "Removing plugin ${app_id} from ${plugin_dir}"
   rm "${plugin_dir}/${app_id}.json"
+  result=$?
+  echo "Ended with rc=$result"
+  exit $result
 else
   echo "Could not find plugins directory"
+  echo "Ended with rc=1"
   exit 1
 fi
 

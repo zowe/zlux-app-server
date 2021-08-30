@@ -2,6 +2,10 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v1.24.0
+
+- Bugfix: IP Explorer was not installed upon upgrade, only on new installs.
+
 ## v1.23.0
 
 - Bugfix: Sync state of certificate verification of zlux with keystore configuration, so that certificate verification can be turned on or off centrally

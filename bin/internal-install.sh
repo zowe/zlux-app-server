@@ -28,6 +28,10 @@ fi
 umask 0002
 COMPONENT_HOME=${ZOWE_ROOT_DIR}/components/app-server
 
+if [ -z $ZWED_INSTALL_DIR ]; then
+  ZWED_INSTALL_DIR=${INSTALL_DIR}
+fi
+
 # containers only
 if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
   if [ -f "/component/manifest.yaml" ]; then
@@ -37,7 +41,7 @@ fi
 
 
 cd ${COMPONENT_HOME}/share
-for paxfile in ${INSTALL_DIR}/files/zlux/*.pax
+for paxfile in ${ZWED_INSTALL_DIR}/files/zlux/*.pax
 do
   if [ ! -f $paxfile ]; then
     echo "No Pax Files"
@@ -52,7 +56,7 @@ do
 done
 
 cd ${COMPONENT_HOME}/share
-tar_path=${INSTALL_DIR}/files/zlux
+tar_path=${ZWED_INSTALL_DIR}/files/zlux
 for tarfile in ${tar_path}/*.tar ; do
   if [ ! -f $tarfile ]; then
     echo "No Tar Files"
@@ -67,13 +71,13 @@ done
 
 cd ${COMPONENT_HOME}/share/
 
-chtag -tc 1047 ${INSTALL_DIR}/files/zlux/config/*.json
-chtag -tc 1047 ${INSTALL_DIR}/files/zlux/config/plugins/*.json
+chtag -tc 1047 ${ZWED_INSTALL_DIR}/files/zlux/config/*.json
+chtag -tc 1047 ${ZWED_INSTALL_DIR}/files/zlux/config/plugins/*.json
 chmod -R u+w zlux-app-server 2>/dev/null
 
 mkdir -p zlux-app-server/defaults/ZLUX/pluginStorage/org.zowe.zlux.ng2desktop/ui/launchbar/plugins
-cp -f ${INSTALL_DIR}/files/zlux/config/pinnedPlugins.json zlux-app-server/defaults/ZLUX/pluginStorage/org.zowe.zlux.ng2desktop/ui/launchbar/plugins/
+cp -f ${ZWED_INSTALL_DIR}/files/zlux/config/pinnedPlugins.json zlux-app-server/defaults/ZLUX/pluginStorage/org.zowe.zlux.ng2desktop/ui/launchbar/plugins/
 mkdir -p zlux-app-server/defaults/ZLUX/pluginStorage/org.zowe.zlux.bootstrap/plugins
-cp -f ${INSTALL_DIR}/files/zlux/config/allowedPlugins.json zlux-app-server/defaults/ZLUX/pluginStorage/org.zowe.zlux.bootstrap/plugins/
-cp -f ${INSTALL_DIR}/files/zlux/config/zluxserver.json zlux-app-server/defaults/serverConfig/server.json
-cp -f ${INSTALL_DIR}/files/zlux/config/plugins/* zlux-app-server/defaults/plugins
+cp -f ${ZWED_INSTALL_DIR}/files/zlux/config/allowedPlugins.json zlux-app-server/defaults/ZLUX/pluginStorage/org.zowe.zlux.bootstrap/plugins/
+cp -f ${ZWED_INSTALL_DIR}/files/zlux/config/zluxserver.json zlux-app-server/defaults/serverConfig/server.json
+cp -f ${ZWED_INSTALL_DIR}/files/zlux/config/plugins/* zlux-app-server/defaults/plugins

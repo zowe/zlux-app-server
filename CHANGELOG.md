@@ -5,6 +5,7 @@ All notable changes to the Zlux App Server package will be documented in this fi
 ## v1.25.0
 
 - Enhancement: Changed how app-server scripts locate app-server directories so that they work in container mode, where the folder layout is different. This unifies container and non-container location behavior.
+- Enhancement: Use GATEWAY_HOST env var over ZOWE_EXPLORER_HOST to find mediation layer gateway if hostname not explicitly specified elsewhere
 
 ## v1.24.0
 

@@ -120,6 +120,7 @@ fi
 # certificates
 if [ "$VERIFY_CERTIFICATES" = "false" ]; then
   export ZWED_node_allowInvalidTLSProxy=true
+  export NODE_TLS_REJECT_UNAUTHORIZED=0
 fi
 if [ -z "$ZWED_node_https_certificates" ]
 then

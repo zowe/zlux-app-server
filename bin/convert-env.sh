@@ -214,6 +214,10 @@ then
     if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
       if [ -f "/component/manifest.yaml" ]; then
         COMPONENT_HOME=/component
+        if [ -z "$ZWED_node_pluginScanIntervalSec" ]; then  
+          # container needs plugin scanning logic on  
+          export ZWED_node_pluginScanIntervalSec=60
+        fi
       fi
     fi    
     export ZWED_productDir=$COMPONENT_HOME/share/zlux-app-server/defaults

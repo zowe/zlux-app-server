@@ -11,6 +11,7 @@
 # Copyright IBM Corporation 2021                                                        #
 #                                                                                       #
 #########################################################################################
-
+export ZWED_node_container=true
+export ZLUX_ROOT_DIR=/component/share
 ./configure.sh # create instance directory
 ./start.sh # 

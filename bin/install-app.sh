@@ -35,7 +35,17 @@ then
   then
     . "${dir}/../instance.env"
   fi
-  zlux_path="$ROOT_DIR/components/app-server/share"
+
+  COMPONENT_HOME=${ROOT_DIR}/components/app-server
+
+  # containers only
+  if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
+    if [ -f "/component/manifest.yaml" ]; then
+      COMPONENT_HOME=/component
+    fi
+  fi
+  
+  zlux_path="$COMPONENT_HOME/share"
   setVars
   if [ ! -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
   then

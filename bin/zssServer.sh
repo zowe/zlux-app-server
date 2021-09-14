@@ -10,6 +10,10 @@
 
 export _BPXK_AUTOCVT=ON
 
+if [ `uname` != "OS/390" ]; then
+  exit 0
+fi
+
 if [ -e "../bin/app-server.sh" ]
 then
   in_app_server=true

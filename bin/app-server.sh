@@ -161,6 +161,7 @@ fi
 cd ../lib
 
 export ZOWE_LIB_DIR=$(pwd)
+export ZLUX_ROOT_DIR=$(cd ../..; pwd)
 
 export "_CEE_RUNOPTS=XPLINK(ON),HEAPPOOLS(ON)"
 

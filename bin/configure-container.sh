@@ -18,5 +18,5 @@ mkdir -p ${LOG_DIR}
 chmod 777 ${LOG_DIR}
 export LOG_FILE=${LOG_DIR}/"configure-app-server`date +%Y-%m-%d-%H-%M-%S`.log"
 
-# cd ${ZOWE_ROOT_DIR}/components/app-server/share/zlux-app-server/bin
+# cd /component/bin
 ./internal-install.sh

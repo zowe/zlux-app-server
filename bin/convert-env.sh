@@ -36,22 +36,23 @@ then
   fi
 fi
 
-if [ -z "$ZWED_node_mediationLayer_server_hostname" ]
-then
-  if [ -n "$ZOWE_EXPLORER_HOST" ]
-  then
+if [ -z "$ZWED_node_mediationLayer_server_hostname" ]; then
+  if [ -n "$GATEWAY_HOST" ]; then
+    export ZWED_node_mediationLayer_server_hostname=$GATEWAY_HOST
+  elif [ -n "$ZOWE_EXPLORER_HOST" ]; then
     export ZWED_node_mediationLayer_server_hostname=$ZOWE_EXPLORER_HOST
-    if [ -n "$ZWED_node_mediationLayer_server_port" ]
-    then
-      case "$LAUNCH_COMPONENT_GROUPS" in
-        *GATEWAY*)
-          #All conditions met for app-server behind gateway: hostname, port, and component
-          export ZWED_node_mediationLayer_enabled="true"
-          ;;
-      esac
-    fi
   fi
 fi
+
+if [ -n "$ZWED_node_mediationLayer_server_port" -a -n "$ZWED_node_mediationLayer_server_hostname" ]; then
+  case "$LAUNCH_COMPONENT_GROUPS" in
+    *GATEWAY*)
+    #All conditions met for app-server behind gateway: hostname, port, and component
+    export ZWED_node_mediationLayer_enabled="true"
+    ;;
+  esac
+fi
+
 if [ -z "$ZWED_node_mediationLayer_enabled" ]; then
   export ZWED_node_mediationLayer_enabled="false"
 elif [ -z "$ZWED_agent_mediationLayer_enabled" ]; then
@@ -119,6 +120,7 @@ fi
 # certificates
 if [ "$VERIFY_CERTIFICATES" = "false" ]; then
   export ZWED_node_allowInvalidTLSProxy=true
+  export NODE_TLS_REJECT_UNAUTHORIZED=0
 fi
 if [ -z "$ZWED_node_https_certificates" ]
 then
@@ -206,7 +208,19 @@ if [ -z "$ZWED_productDir" ]
 then
   if [ -n "$ROOT_DIR" ]
   then
-  export ZWED_productDir=$ROOT_DIR/components/app-server/share/zlux-app-server/defaults
+    COMPONENT_HOME=${ROOT_DIR}/components/app-server
+
+    # containers only
+    if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
+      if [ -f "/component/manifest.yaml" ]; then
+        COMPONENT_HOME=/component
+        if [ -z "$ZWED_node_pluginScanIntervalSec" ]; then  
+          # container needs plugin scanning logic on  
+          export ZWED_node_pluginScanIntervalSec=60
+        fi
+      fi
+    fi    
+    export ZWED_productDir=$COMPONENT_HOME/share/zlux-app-server/defaults
   fi
 fi
 

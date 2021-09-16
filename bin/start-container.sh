@@ -13,5 +13,7 @@
 #########################################################################################
 export ZWED_node_container=true
 export ZLUX_ROOT_DIR=/component/share
+# kubernetes clusters provide their own clustering
+export ZLUX_NO_CLUSTER=1
 ./configure.sh # create instance directory
 ./start.sh # 

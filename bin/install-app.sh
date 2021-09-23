@@ -42,15 +42,18 @@ then
   if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
     if [ -f "/component/manifest.yaml" ]; then
       COMPONENT_HOME=/component
+      INSTALL_NO_NODE=1  
     fi
   fi
-  
-  zlux_path="$COMPONENT_HOME/share"
-  setVars
-  if [ ! -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
-  then
-    cd ${zlux_path}/zlux-app-server/lib
-    __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+
+  if [ -z "$INSTALL_NO_NODE" ]; then
+    zlux_path="$COMPONENT_HOME/share"
+    setVars
+    if [ ! -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
+    then
+      cd ${zlux_path}/zlux-app-server/lib
+      __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+    fi
   fi
 elif [ -d "${dir}/../../zlux-server-framework" ]
 then
@@ -74,7 +77,11 @@ shift
 
 if [ -z "$plugin_dir" ]
 then
-  if [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
+  if [ "$COMPONENT_HOME" = "/component" ]
+  then
+    #container, plugins folder in fixed location
+    fallback_inst=${INSTANCE_DIR}    
+  elif [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
   then
     json_path=${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json
     fallback_inst=${INSTANCE_DIR}  
@@ -92,8 +99,6 @@ This configuration should be migrated for use with future versions. See document
   fi
 fi
 
-
-cd $zlux_path/zlux-app-server/bin
 
 installNojs() {
  echo "NodeJS not found or not requested, attempting fallback plugin install behavior"
@@ -131,6 +136,8 @@ if [ -n "$INSTALL_NO_NODE" ]
 then
  installNojs
 else  
+  cd $zlux_path/zlux-app-server/bin
+
   echo "Testing if node exists"
   type ${NODE_BIN}
   rc=$?

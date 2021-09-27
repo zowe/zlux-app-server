@@ -29,7 +29,6 @@ fi
 if [ $# -gt 1 ]
 then
   plugin_dir=$2
-  mkdir -p $plugin_dir
   shift
 fi
 shift
@@ -79,6 +78,10 @@ fi
 
 if [ -n "${plugin_dir}" ]; then
   echo "Removing plugin ${app_id} from ${plugin_dir}"
+  if [ ! -d "${plugin_dir}" ]; then
+    echo "Plugins directory does not exist or is not a directory"
+    exit 1
+  fi
   rm "${plugin_dir}/${app_id}.json"
   result=$?
   echo "Ended with rc=$result"

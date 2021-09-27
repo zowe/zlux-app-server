@@ -40,8 +40,10 @@ then
 
   # containers only
   if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
-    if [ -f "/component/manifest.yaml" ]; then
+    # these files may exist in other containers where this script is run from, rather than just zlux
+    if [ -f "/component/manifest.yaml" -o -f "/component/manifest.json" -o -f "/component/manifest.yml" ]; then
       COMPONENT_HOME=/component
+      ZLUX_CONTAINER_MODE=1  
       INSTALL_NO_NODE=1  
     fi
   fi
@@ -77,10 +79,10 @@ shift
 
 if [ -z "$plugin_dir" ]
 then
-  if [ "$COMPONENT_HOME" = "/component" ]
+  if [ "$ZLUX_CONTAINER_MODE" = "1" ]
   then
     #container, plugins folder in fixed location
-    fallback_inst=${INSTANCE_DIR}    
+    fallback_inst=${INSTANCE_DIR}
   elif [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
   then
     json_path=${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json
@@ -118,6 +120,12 @@ installNojs() {
   if [ -n "${id}" ]
   then
     echo "Found plugin=${id}"
+
+    if [ "$ZLUX_CONTAINER_MODE" = "1" ]
+    then
+      # install script expected to copy the plugin into this location. could be done manually too.
+      app_path=$INSTANCE_DIR/workspace/app-server/pluginDirs/${id}
+    fi
 
 cat <<EOF >${fallback_inst}/workspace/app-server/plugins/${id}.json
 {

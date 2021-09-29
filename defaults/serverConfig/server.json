@@ -32,7 +32,7 @@
 // used by the agent 
 //    "http": {
 //      "ipAddresses": ["127.0.0.1"],
-//      "port": 8542,
+//      "port": 7557,
 //      "attls": false
 //    },
 //    "gateway": {

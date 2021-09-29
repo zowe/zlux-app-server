@@ -285,7 +285,7 @@ As a result of the above edits to server.json, an example of what it may now loo
   "agent": {
     "host": "localhost",
     "https": {
-      "port": 8542
+      "port": 7557
     }
   },
 

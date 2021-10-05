@@ -117,6 +117,14 @@ then
   export ZWED_node_loopbackAddress=$ZOWE_LOOPBACK_ADDRESS
 fi
 
+if [ -z "$ZWED_node_https_ipAddresses" ]
+then
+  if [ -n "$ZOWE_IP_ADDRESS" ]
+    then
+      export ZWED_node_https_ipAddresses="${ZOWE_IP_ADDRESS}",
+  fi
+fi
+
 # certificates
 if [ "$VERIFY_CERTIFICATES" = "false" ]; then
   export ZWED_node_allowInvalidTLSProxy=true

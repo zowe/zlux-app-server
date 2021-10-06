@@ -2,7 +2,7 @@
   "node": {
     "https": {
       "ipAddresses": ["0.0.0.0"],
-      "port": 8544,
+      "port": 7556,
       //pfx (string), keys, certificates, certificateAuthorities, and certificateRevocationLists are all valid here.
       "keys": ["../defaults/serverConfig/zlux.keystore.key"],
       "certificates": ["../defaults/serverConfig/zlux.keystore.cer"],
@@ -32,7 +32,7 @@
 // used by the agent 
 //    "http": {
 //      "ipAddresses": ["127.0.0.1"],
-//      "port": 8542,
+//      "port": 7557,
 //      "attls": false
 //    },
 //    "gateway": {

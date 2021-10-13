@@ -12,8 +12,17 @@
 # - ROOT_DIR
 # - WORKSPACE_DIR
 # - NODE_HOME
-cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/bin
+COMPONENT_HOME=${ROOT_DIR}/components/app-server
+
+# containers only
+if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
+  if [ -f "/component/manifest.yaml" ]; then
+    COMPONENT_HOME=/component
+  fi
+fi
+
+cd ${COMPONENT_HOME}/share/zlux-app-server/bin
 . ./convert-env.sh
 . ./internal-node-init.sh
-cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/lib
+cd ${COMPONENT_HOME}/share/zlux-app-server/lib
 __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js

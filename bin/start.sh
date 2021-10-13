@@ -23,7 +23,17 @@
 
 if [ -n "${ROOT_DIR}" ]
 then
- #not a dev env
- cd ${ROOT_DIR}/components/app-server/share/zlux-app-server/bin
+  #not a dev env
+
+  COMPONENT_HOME=${ROOT_DIR}/components/app-server
+
+  # containers only
+  if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
+    if [ -f "/component/manifest.yaml" ]; then
+      COMPONENT_HOME=/component
+    fi
+  fi
+
+  cd ${COMPONENT_HOME}/share/zlux-app-server/bin
 fi
 ./app-server.sh

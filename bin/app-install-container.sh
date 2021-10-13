@@ -14,7 +14,7 @@
 
 # This script is placholder from server-bundle install apps, based on apps mountpoint
 if [ -d "${apps_dir}" ]; then
-  export ZLUX_SHARE=/home/zowe/install/components/app-server/share
+  export ZLUX_SHARE=/component/share
   cd ${apps_dir}
   for D in */;
    do

@@ -306,7 +306,7 @@ As a result of the above edits to server.json, an example of what it may now loo
 #### Agent Setup (ZSS side)
 On z/OS, ZSS must be set to have the correct port, IP, and HTTP(S) configuration so that the app-server can reach it.
 
-On a release install (not covered here, but described on docs.zowe.org), ZSS is already set up for use over HTTPS. You can update `ZOWE_ZSS_SERVER_PORT` in a Zowe instance.env file to set which port it should use, to match the value you have on your dev install for `agent.https.port`.
+On a release install (not covered here, but described on docs.zowe.org), ZSS is already set up for use over HTTPS. You can update `ZWES_SERVER_PORT` in a Zowe instance.env file to set which port it should use, to match the value you have on your dev install for `agent.https.port`.
 
 On a dev install of ZSS, instead of instance.env, server.json is used just like the dev install of the app-server. In fact if App Server and ZSS are on the same system, then this can be the same file. Otherwise, you must edit the server.json file where ZSS is and keep it in sync with the App Server one with regards to the **agent** settings. In a dev install, it is recommended to use a GSKIT compatible keyring or p12 file for using ZSS over HTTPS, or HTTPS via ATTLS, but HTTP is also possible. In that case, you simply configure `agent.http.port` instead of `agent.https.port`, and `agent.http.ipAddresses` instead of `agent.https.ipAddresses`. So, use server.json to set the port and IPs you need to make ZSS visible to the system where app-server runs.
 

@@ -251,6 +251,30 @@ if [ -z "$ZWED_SECURITY_TYPE" -a -n "$ZOWE_ZLUX_SECURITY_TYPE" ]
 then
   export ZWED_SECURITY_TYPE="${ZOWE_ZLUX_SECURITY_TYPE}"
 fi
+if [ -z "$ZWED_SSH_HOST" -a -n "$ZOWE_ZLUX_SSH_HOST" ]
+then
+  export ZWED_SSH_HOST="${ZOWE_ZLUX_SSH_HOST}"
+fi
+if [ -z "$ZWED_TELNET_HOST" -a -n "$ZOWE_ZLUX_TELNET_HOST" ]
+then
+  export ZWED_TELNET_HOST="${ZOWE_ZLUX_TELNET_HOST}"
+fi
+if [ -z "$ZWED_TN3270_ROW" -a -n "$ZOWE_ZLUX_TN3270_ROW" ]
+then
+  export ZWED_TN3270_ROW="${ZOWE_ZLUX_TN3270_ROW}"
+fi
+if [ -z "$ZWED_TN3270_COL" -a -n "$ZOWE_ZLUX_TN3270_COL" ]
+then
+  export ZWED_TN3270_COL="${ZOWE_ZLUX_TN3270_COL}"
+fi
+if [ -z "$ZWED_TN3270_MOD" -a -n "$ZOWE_ZLUX_TN3270_MOD" ]
+then
+  export ZWED_TN3270_MOD="${ZOWE_ZLUX_TN3270_MOD}"
+fi
+if [ -z "$ZWED_TN3270_CODEPAGE" -a -n "$ZOWE_ZLUX_TN3270_CODEPAGE" ]
+then
+  export ZWED_TN3270_CODEPAGE="${ZOWE_ZLUX_TN3270_CODEPAGE}"
+fi
 # zss
 if [ -z "$ZWES_SERVER_PORT" -a -n "$ZOWE_ZSS_SERVER_PORT" ]
 then

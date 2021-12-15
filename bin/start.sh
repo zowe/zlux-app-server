@@ -21,6 +21,34 @@
 # - ZWED_TN3270_PORT
 # - ZWED_TN3270_SECURITY
 
+convert_v2_to_v1() {
+  while read old_name new_name; do
+    old_val=$(eval echo "\$${old_name}")
+    new_val=$(eval echo "\$${new_name}")
+    if [ -z "${old_val}" -a -n "${new_val}" ]; then
+      export "${old_name}=${new_val}"
+    fi
+  done <<EOF
+ROOT_DIR ZWE_zowe_runtimeDirectory
+ZOWE_PREFIX ZWE_zowe_job_prefix
+WORKSPACE_DIR ZWE_zowe_workspaceDirectory
+KEYSTORE_DIRECTORY ZWE_zowe_setup_certificate_pkcs12_directory
+KEY_ALIAS ZWE_zowe_certificate_keystore_alias
+KEYSTORE_PASSWORD ZWE_zowe_certificate_keystore_password
+KEYSTORE ZWE_zowe_certificate_keystore_file
+KEYSTORE_TYPE ZWE_zowe_certificate_keystore_type
+TRUSTSTORE ZWE_zowe_certificate_truststore_file
+KEYSTORE_CERTIFICATE_AUTHORITY ZWE_zowe_certificate_truststore_certificateAuthorities
+KEYSTORE_CERTIFICATE_AUTHORITY ZWE_zowe_certificate_pem_certificateAuthority
+KEYSTORE_CERTIFICATE ZWE_zowe_certificate_pem_certificate
+KEYSTORE_KEY ZWE_zowe_certificate_pem_key
+VERIFY_CERTIFICATES ZWE_zowe_verifyCertificates
+ZWED_node_https_port ZWE_configs_port
+ZWED_agent_https_port ZWE_components_zss_port
+EOF
+}
+convert_v2_to_v1
+
 if [ -n "${ROOT_DIR}" ]
 then
   #not a dev env

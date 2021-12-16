@@ -45,12 +45,9 @@ if [ -z "$ZWED_node_mediationLayer_server_hostname" ]; then
 fi
 
 if [ -n "$ZWED_node_mediationLayer_server_port" -a -n "$ZWED_node_mediationLayer_server_hostname" ]; then
-  case "$LAUNCH_COMPONENT_GROUPS" in
-    *GATEWAY*)
-    #All conditions met for app-server behind gateway: hostname, port, and component
+  if [ "${ZWE_components_gateway_enabled}" = "true" ]; then
     export ZWED_node_mediationLayer_enabled="true"
-    ;;
-  esac
+  fi
 fi
 
 if [ -z "$ZWED_node_mediationLayer_enabled" ]; then
@@ -88,12 +85,8 @@ elif [ -z "$ZWED_agent_mediationLayer_enabled" ]; then
 fi
 
 # Check if Caching Service is enabled
-if [ "$ZWED_node_mediationLayer_enabled" = "true" ]; then
-  case "$LAUNCH_COMPONENTS" in
-    *caching-service*)
-      export ZWED_node_mediationLayer_cachingService_enabled="true"
-      ;;
-    esac
+if [ "$ZWED_node_mediationLayer_enabled" = "true" -a "${ZWE_components_caching_service_enabled}" = "true" ]; then
+  export ZWED_node_mediationLayer_cachingService_enabled="true"
 fi
 
 # eureka hostname handling
@@ -126,7 +119,7 @@ then
 fi
 
 # certificates
-if [ "$VERIFY_CERTIFICATES" = "false" ]; then
+if [ "$ZWE_zowe_verifyCertificates" = "DISABLED" ]; then
   export ZWED_node_allowInvalidTLSProxy=true
   export NODE_TLS_REJECT_UNAUTHORIZED=0
 fi

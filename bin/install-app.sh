@@ -35,12 +35,27 @@ then
   then
     . "${dir}/../instance.env"
   fi
-  zlux_path="$ROOT_DIR/components/app-server/share"
-  setVars
-  if [ ! -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
-  then
-    cd ${zlux_path}/zlux-app-server/lib
-    __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+
+  COMPONENT_HOME=${ROOT_DIR}/components/app-server
+
+  # containers only
+  if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
+    # these files may exist in other containers where this script is run from, rather than just zlux
+    if [ -f "/component/manifest.yaml" -o -f "/component/manifest.json" -o -f "/component/manifest.yml" ]; then
+      COMPONENT_HOME=/component
+      ZLUX_CONTAINER_MODE=1  
+      INSTALL_NO_NODE=1  
+    fi
+  fi
+
+  if [ -z "$INSTALL_NO_NODE" ]; then
+    zlux_path="$COMPONENT_HOME/share"
+    setVars
+    if [ ! -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
+    then
+      cd ${zlux_path}/zlux-app-server/lib
+      __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+    fi
   fi
 elif [ -d "${dir}/../../zlux-server-framework" ]
 then
@@ -64,7 +79,11 @@ shift
 
 if [ -z "$plugin_dir" ]
 then
-  if [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
+  if [ "$ZLUX_CONTAINER_MODE" = "1" ]
+  then
+    #container, plugins folder in fixed location
+    fallback_inst=${INSTANCE_DIR}
+  elif [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
   then
     json_path=${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json
     fallback_inst=${INSTANCE_DIR}  
@@ -82,8 +101,6 @@ This configuration should be migrated for use with future versions. See document
   fi
 fi
 
-
-cd $zlux_path/zlux-app-server/bin
 
 installNojs() {
  echo "NodeJS not found or not requested, attempting fallback plugin install behavior"
@@ -104,6 +121,12 @@ installNojs() {
   then
     echo "Found plugin=${id}"
 
+    if [ "$ZLUX_CONTAINER_MODE" = "1" ]
+    then
+      # install script expected to copy the plugin into this location. could be done manually too.
+      app_path=$INSTANCE_DIR/workspace/app-server/pluginDirs/${id}
+    fi
+
 cat <<EOF >${fallback_inst}/workspace/app-server/plugins/${id}.json
 {
   "identifier": "${id}",
@@ -121,6 +144,8 @@ if [ -n "$INSTALL_NO_NODE" ]
 then
  installNojs
 else  
+  cd $zlux_path/zlux-app-server/bin
+
   echo "Testing if node exists"
   type ${NODE_BIN}
   rc=$?

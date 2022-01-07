@@ -310,7 +310,11 @@ On a release install (not covered here, but described on docs.zowe.org), ZSS is 
 
 On a dev install of ZSS, instead of instance.env, server.json is used just like the dev install of the app-server. In fact if App Server and ZSS are on the same system, then this can be the same file. Otherwise, you must edit the server.json file where ZSS is and keep it in sync with the App Server one with regards to the **agent** settings. In a dev install, it is recommended to use a GSKIT compatible keyring or p12 file for using ZSS over HTTPS, or HTTPS via ATTLS, but HTTP is also possible. In that case, you simply configure `agent.http.port` instead of `agent.https.port`, and `agent.http.ipAddresses` instead of `agent.https.ipAddresses`. So, use server.json to set the port and IPs you need to make ZSS visible to the system where app-server runs.
 
-**Note: It is highly recommended to turn on HTTPS for ZSS such as by following [configuring AT-TLS](https://zowe.github.io/docs-site/latest/user-guide/mvd-configuration.html#configuring-zss-for-https) or using GSKIT when using ZSS externally, as the session security is essential for all but trivial development environments**
+**Note: It is highly recommended to have HTTPS for ZSS. This is the default on a release install, but it is also possible to use AT-TLS to do this such as by following [configuring AT-TLS](https://zowe.github.io/docs-site/latest/user-guide/mvd-configuration.html#configuring-zss-for-https). It is most important when using ZSS externally, as the session security is essential for all but trivial development environments**
+
+#### Agent swagger installation
+If you intend to use the API Catalog as well, you will want to [install the plugin](https://github.com/zowe/zlux/wiki/Installing-Plugins) "zlux-agent", found in `zlux-server-framework/plugins/zlux-agent`.
+This allows the app-server to serve agent swagger definitions, which are then visible in the API catalog.
 
 
 ### Starting App Server when using ZSS

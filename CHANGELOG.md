@@ -2,7 +2,7 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
-## v1.26.0
+## v1.27.0
 
 - Bugfix: Fix development environment case in which app-server would crash without agent config being fully defined.
 

@@ -2,10 +2,6 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
-## v1.27.0
-
-- Bugfix: Fix development environment case in which app-server would crash without agent config being fully defined.
-
 ## v1.25.0
 
 - Enhancement: Changed how app-server scripts locate app-server directories so that they work in container mode, where the folder layout is different. This unifies container and non-container location behavior.

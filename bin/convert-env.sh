@@ -214,6 +214,8 @@ then
     export ZWED_productDir=$COMPONENT_HOME/share/zlux-app-server/defaults
   fi
 fi
+
+# v2 alias mapping
 if [ -z "$ZWED_NODE_LOG_FILE" -a -n "$ZLUX_NODE_LOG_FILE" ]
 then
   export ZWED_NODE_LOG_FILE="${ZLUX_NODE_LOG_FILE}"
@@ -322,4 +324,14 @@ fi
 # set production mode if applicable
 if [ -n "$ROOT_DIR" -a -z "$NODE_ENV" ]; then
   export NODE_ENV=production
+fi
+
+# v2 logging
+if [ -n "$ZWE_zowe_logDirectory" ]; then
+  if [ -z "$ZWED_NODE_LOG_DIR" ]; then
+    export ZWED_NODE_LOG_DIR="$ZWE_zowe_logDirectory"
+  fi
+  if [ -z "$ZWES_LOG_DIR" ]; then
+    export ZWES_LOG_DIR="$ZWE_zowe_logDirectory"
+  fi
 fi

@@ -9,8 +9,8 @@
 
 
 # Required variables on shell:
-# - ROOT_DIR
-# - WORKSPACE_DIR
+# - ZWE_zowe_runtimeDirectory
+# - ZWE_zowe_workspaceDirectory
 # - NODE_HOME
 #
 # Optional variables on shell:
@@ -21,7 +21,7 @@
 # - ZWED_TN3270_PORT
 # - ZWED_TN3270_SECURITY
 
-if [ -z "${ROOT_DIR}" ]
+if [ -z "${ZWE_zowe_runtimeDirectory}" ]
 then
  #this may be a dev environment, or backward compat, so stay in current dir and check node
  . ./validate.sh
@@ -42,12 +42,12 @@ fi
 if [ -e "$ZLUX_CONFIG_FILE" ]
 then
     CONFIG_FILE=$ZLUX_CONFIG_FILE
-elif [ -z "${ROOT_DIR}" ]
+elif [ -z "${ZWE_zowe_runtimeDirectory}" ]
 then
   #dev env or backwards compat, do late configure
   . ./internal-inst-init.sh
 else
-  CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/server.json"
+  CONFIG_FILE="${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json"
 fi
 
 if [ -n "$ZWED_NODE_LOG_FILE" ]
@@ -60,9 +60,9 @@ else
   # _FILE was not specified; default filename, and check and maybe default _DIR
   if [ -z "$ZWED_NODE_LOG_DIR" ]
   then
-    if [ -d "$INSTANCE_DIR" ]
+    if [ -d "$ZWE_zowe_logDirectory" ]
     then
-      ZWED_NODE_LOG_DIR=${INSTANCE_DIR}/logs
+      ZWED_NODE_LOG_DIR=${ZWE_zowe_logDirectory}
     else
       ZWED_NODE_LOG_DIR="../log"
     fi

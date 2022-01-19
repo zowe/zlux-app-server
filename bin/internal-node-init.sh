@@ -12,7 +12,7 @@ fi
 
 export NODE_BIN
 
-if [ ! -e "$ROOT_DIR/bin/internal/zowe-set-env.sh" ]; then
+if [ ! -e "${ZWE_zowe_runtimeDirectory}/bin/internal/zowe-set-env.sh" ]; then
   RUN_ON_ZOS=$(test `uname` = "OS/390" && echo "true")
   if [ "${RUN_ON_ZOS}" = "true" ]; then
     export "_CEE_RUNOPTS=XPLINK(ON),HEAPPOOLS(ON)"
@@ -30,7 +30,7 @@ if [ ! -e "$ROOT_DIR/bin/internal/zowe-set-env.sh" ]; then
 
   fi
 else
-  . ${ROOT_DIR}/bin/internal/zowe-set-env.sh
+  . ${ZWE_zowe_runtimeDirectory}/bin/internal/zowe-set-env.sh
 fi
 
 export NODE_PATH=../..:../../zlux-server-framework/node_modules:$NODE_PATH

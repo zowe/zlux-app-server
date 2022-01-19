@@ -13,7 +13,7 @@
 #########################################################################################
 
 # This script borrowed from zowe-configure-container.sh
-LOG_DIR=${INSTANCE_DIR}/logs
+LOG_DIR=/home/zowe/logs
 mkdir -p ${LOG_DIR}
 chmod 777 ${LOG_DIR}
 export LOG_FILE=${LOG_DIR}/"configure-app-server`date +%Y-%m-%d-%H-%M-%S`.log"

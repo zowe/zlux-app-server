@@ -42,12 +42,15 @@ fi
 if [ -e "$ZLUX_CONFIG_FILE" ]
 then
     CONFIG_FILE=$ZLUX_CONFIG_FILE
+elif [ -e "$ZWE_CLI_PARAMETER_CONFIG" ]
+then
+  CONFIG_FILE="$ZWE_CLI_PARAMETER_CONFIG"
 elif [ -z "${ROOT_DIR}" ]
 then
   #dev env or backwards compat, do late configure
   . ./internal-inst-init.sh
 else
-  CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/server.json"
+  CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/zowe.yaml"
 fi
 
 if [ -n "$ZWED_NODE_LOG_FILE" ]

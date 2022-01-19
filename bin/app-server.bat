@@ -28,39 +28,37 @@ REM If none found, will assume dev environment and consider ~/.zowe as INSTANCE_
 if exist "%ZLUX_CONFIG_FILE%" (
   set CONFIG_FILE=%ZLUX_CONFIG_FILE%
 ) else (
-  if exist "%WORKSPACE_DIR%" (
-    if exist "%WORKSPACE_DIR%\app-server\serverConfig\server.json" (
-      set CONFIG_FILE=%WORKSPACE_DIR%\app-server\serverConfig\server.json
-    ) else (
-      cd ..\lib
-      !NODE_BIN! initInstance.js
-      cd ..\bin
-    )
+  if exist "%ZWE_CLI_PARAMETER_CONFIG%" (
+    set CONFIG_FILE=%ZWE_CLI_PARAMETER_CONFIG%
   ) else (
-    if exist "%INSTANCE_DIR%" (
-      if exist "%INSTANCE_DIR%\workspace\app-server\serverConfig\server.json" (
-        set CONFIG_FILE=%INSTANCE_DIR%\workspace\app-server\serverConfig\server.json
+    if exist "%WORKSPACE_DIR%" (
+      if exist "%WORKSPACE_DIR%\app-server\serverConfig\zowe.yaml" (
+        set CONFIG_FILE=%WORKSPACE_DIR%\app-server\serverConfig\zowe.yaml
       ) else (
         cd ..\lib
         !NODE_BIN! initInstance.js
-        cd ..\bin        
+        cd ..\bin
       )
     ) else (
-      if exist "%USERPROFILE%\.zowe\workspace\app-server\serverConfig\server.json" (
-        set CONFIG_FILE=%USERPROFILE%\.zowe\workspace\app-server\serverConfig\server.json
-        set INSTANCE_DIR=%USERPROFILE%\.zowe
+      if exist "%INSTANCE_DIR%" (
+        if exist "%INSTANCE_DIR%\workspace\app-server\serverConfig\zowe.yaml" (
+          set CONFIG_FILE=%INSTANCE_DIR%\workspace\app-server\serverConfig\zowe.yaml
+        ) else (
+          cd ..\lib
+          !NODE_BIN! initInstance.js
+          cd ..\bin        
+        )
       ) else (
-        if exist "..\deploy\instance\ZLUX\serverConfig\zluxserver.json" (
-          echo WARNING: Using old configuration present in "%temp_cd%\..\deploy"
-          echo This configuration should be migrated for use with future versions. See documentation for more information.\n
-          set CONFIG_FILE=..\deploy\instance\ZLUX\serverConfig\zluxserver.json
+        if exist "%USERPROFILE%\.zowe\workspace\app-server\serverConfig\zowe.yaml" (
+          set CONFIG_FILE=%USERPROFILE%\.zowe\workspace\app-server\serverConfig\zowe.yaml
+          set INSTANCE_DIR=%USERPROFILE%\.zowe
         ) else (
           echo No config file found, initializing
           set INSTANCE_DIR=%USERPROFILE%\.zowe
           call :makedir "!INSTANCE_DIR!\logs"
           cd ..\lib
           !NODE_BIN! initInstance.js
-          set CONFIG_FILE=%USERPROFILE%\.zowe\workspace\app-server\serverConfig\server.json
+          set CONFIG_FILE=%USERPROFILE%\.zowe\workspace\app-server\serverConfig\zowe.yaml
           cd ..\bin
         )
       )
@@ -95,7 +93,7 @@ set ZOWE_LIB_DIR=%CD%
 if not defined ZLUX_MIN_WORKERS (
   set ZLUX_MIN_WORKERS=2
 )
-set NODE_CLUSTER_SCHED_POLICY=rr
+set NODE_CLUSTER_SCHED_POLICY=none
 
 if "%ZLUX_NO_CLUSTER%" == "1" (
   set ZLUX_SERVER_FILE=zluxServer.js
@@ -117,7 +115,7 @@ if errorlevel 1 (
   !NODE_BIN! --harmony !ZOWE_LIB_DIR!\!ZLUX_SERVER_FILE! --config="!CONFIG_FILE!" %* > "!ZLUX_LOG_PATH!" 2>&1
 ) ELSE (
   echo Server startup. Logging to terminal...
-  !NODE_BIN! --harmony !ZOWE_LIB_DIR!\!ZLUX_SERVER_FILE! --config="!CONFIG_FILE!" %*
+  !NODE_BIN! --harmony !ZOWE_LIB_DIR!\!ZLUX_SERVER_FILE! --config="!CONFIG_FILE!" %* > "C:\\Users\\lchudinov\\.zowe\\logs\\appServer.log" 2>&1
 )
 set rc=%ERRORLEVEL%
 echo Ended with rc=%rc%

@@ -33,27 +33,11 @@ then
 fi
 shift
 
-if [ -e "${dir}/internal/read-essential-vars.sh" -o -e "${dir}/../instance.env" ]; then
-  if [ -z "$INSTANCE_DIR" ]; then
-     export INSTANCE_DIR=$(cd "${dir}/.." && pwd)
-  fi
-  if [ -e "${dir}/internal/read-essential-vars.sh" ]; then
-    # this function will load proper environment from either instance.env or zowe.yaml
-    . ${dir}/internal/read-essential-vars.sh
-  elif [ -e "${dir}/../instance.env" ]; then
-    . "${dir}/../instance.env"
-  fi
-fi
-
 if [ -z "$plugin_dir" ]; then
-  if [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]; then
-    config_path="${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json"
+  if [ -e "${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json" ]; then
+    config_path="${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json"
   elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]; then
     config_path="${HOME}/.zowe/workspace/app-server/serverConfig/server.json"
-  elif [ -e "../deploy/instance/ZLUX/serverConfig/zluxserver.json" ]; then
-    echo "WARNING: Using old configuration present in ${dir}/../deploy\n\
-This configuration should be migrated for use with future versions. See documentation for more information.\n"
-    config_path="../deploy/instance/ZLUX/serverConfig/zluxserver.json"
   else
     echo "Error: could not find plugin directory"
     echo "Ended with rc=1"

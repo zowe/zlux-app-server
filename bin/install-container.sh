@@ -9,7 +9,7 @@ cp ${ZLUX_APP_SERVER}/bin/configure.sh ${ZWED_INSTALL_DIR}/bin
 cp ${ZLUX_APP_SERVER}/bin/start-container.sh ${ZWED_INSTALL_DIR}/bin 
 
 #INSTANCE PATHS 
-ZLUX_WORKSPACE=${WORKSPACE_DIR}/app-server
+ZLUX_WORKSPACE=${ZWE_zowe_workspaceDirectory}/app-server
 
 #create app-server workspace
 mkdir -p ${ZLUX_WORKSPACE} 

@@ -21,22 +21,9 @@ setVars() {
 }
 
 dir=$(cd `dirname $0` && pwd)
-if [ -e "${dir}/internal/read-essential-vars.sh" -o -e "${dir}/../instance.env" ]
+if [ -n "${ZWE_zowe_workspaceDirectory}" -a -n "${ZWE_zowe_runtimeDirectory}" ]
 then
-  if [ -z "$INSTANCE_DIR" ]
-  then
-     export INSTANCE_DIR=$(cd "${dir}/.." && pwd)
-  fi
-  if [ -e "${dir}/internal/read-essential-vars.sh" ]
-  then
-    # this function will load proper environment from either instance.env or zowe.yaml
-    . ${dir}/internal/read-essential-vars.sh
-  elif [ -e "${dir}/../instance.env" ]
-  then
-    . "${dir}/../instance.env"
-  fi
-
-  COMPONENT_HOME=${ROOT_DIR}/components/app-server
+  COMPONENT_HOME=${ZWE_zowe_runtimeDirectory}/components/app-server
 
   # containers only
   if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
@@ -51,7 +38,7 @@ then
   if [ -z "$INSTALL_NO_NODE" ]; then
     zlux_path="$COMPONENT_HOME/share"
     setVars
-    if [ ! -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
+    if [ ! -d "${ZWE_zowe_workspaceDirectory}/app-server" ]
     then
       cd ${zlux_path}/zlux-app-server/lib
       __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
@@ -77,25 +64,18 @@ then
 fi
 shift
 
-if [ -z "$plugin_dir" ]
-then
-  if [ "$ZLUX_CONTAINER_MODE" = "1" ]
-  then
+if [ -z "$plugin_dir" ]; then
+  if [ "$ZLUX_CONTAINER_MODE" = "1" ]; then
     #container, plugins folder in fixed location
-    fallback_inst=${INSTANCE_DIR}
-  elif [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json" ]
-  then
-    json_path=${INSTANCE_DIR}/workspace/app-server/serverConfig/server.json
-    fallback_inst=${INSTANCE_DIR}  
-  elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]
-  then
-    json_path=${HOME}/.zowe/workspace/app-server/serverConfig/server.json
-    fallback_inst=${HOME}/.zowe  
-  elif [ -e "../deploy/instance/ZLUX/serverConfig/zluxserver.json" ]
-  then
-    echo "WARNING: Using old configuration present in ${dir}/../deploy\n\
-This configuration should be migrated for use with future versions. See documentation for more information.\n"
-    json_path="../deploy/instance/ZLUX/serverConfig/zluxserver.json"
+  elif [ -e "${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json" ]; then
+    json_path=${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json  
+  elif [ -d "${ZWE_zowe_workspaceDirectory}/app-server/plugins}" ]; then
+    plugin_dir="${ZWE_zowe_workspaceDirectory}/app-server/plugins}"
+  elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]; then
+    if [ -z "${ZWE_zowe_workspaceDirectory}" ]; then
+      ZWE_zowe_workspaceDirectory=${HOME}/.zowe/workspace
+    fi
+    json_path=${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json
   else
     json_path=$zlux_path/zlux-app-server/defaults/serverConfig/server.json
   fi
@@ -124,10 +104,10 @@ installNojs() {
     if [ "$ZLUX_CONTAINER_MODE" = "1" ]
     then
       # install script expected to copy the plugin into this location. could be done manually too.
-      app_path=$INSTANCE_DIR/workspace/app-server/pluginDirs/${id}
+      app_path=${ZWE_zowe_workspaceDirectory}/app-server/pluginDirs/${id}
     fi
 
-cat <<EOF >${fallback_inst}/workspace/app-server/plugins/${id}.json
+cat <<EOF >${ZWE_zowe_workspaceDirectory}/app-server/plugins/${id}.json
 {
   "identifier": "${id}",
   "pluginLocation": "${app_path}"
@@ -156,9 +136,9 @@ else
 # normal case follows
 if [ -z "$ZLUX_INSTALL_LOG_DIR" ]
 then
-  if [ -d "${INSTANCE_DIR}/logs" ]
+  if [ -d "${ZWE_zowe_logDirectory}" ]
   then
-    ZLUX_INSTALL_LOG_DIR="$INSTANCE_DIR/logs"
+    ZLUX_INSTALL_LOG_DIR="$ZWE_zowe_logDirectory"
   fi
 fi
 

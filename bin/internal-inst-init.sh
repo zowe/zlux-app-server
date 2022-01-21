@@ -7,41 +7,35 @@
 # 
 # Copyright Contributors to the Zowe Project.
 
-#ZLUX_CONFIG_FILE, WORKSPACE_DIR, and INSTANCE_DIR are for official Zowe environment use.
-#If none found, will assume dev environment and consider ~/.zowe as INSTANCE_DIR
+#ZLUX_CONFIG_FILE and ZWE_zowe_workspaceDirectory are for official Zowe environment use.
+#If none found, will assume dev environment and consider ~/.zowe/workspace as ZWE_zowe_workspaceDirectory
 
-
-if [ -n "${WORKSPACE_DIR}" ]
+if [ -n "${ZWE_zowe_workspaceDirectory}" ]
 then
-  if [ -e "${WORKSPACE_DIR}/app-server/serverConfig/zowe.yaml" ]
+  if [ -e "${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml" ]
   then
-    export CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/zowe.yaml"
+    export CONFIG_FILE="${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml"
   else
     cd ../lib
     __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
-    export CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/zowe.yaml"
-    cd ../bin
-  fi
-elif [ -n "${INSTANCE_DIR}" ]
-then
-  if [ -e "${INSTANCE_DIR}/workspace/app-server/serverConfig/zowe.yaml" ]
-  then
-    export CONFIG_FILE="${INSTANCE_DIR}/workspace/app-server/serverConfig/zowe.yaml"
-  else
-    cd ../lib
-    __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
-    export CONFIG_FILE="${INSTANCE_DIR}/workspace/app-server/serverConfig/zowe.yaml"
+    export CONFIG_FILE="${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml"
     cd ../bin
   fi
 elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/zowe.yaml" ]
 then
   export CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/zowe.yaml"
-  mkdir -p ${INSTANCE_DIR}/logs
-  export INSTANCE_DIR="${HOME}/.zowe"
+  if [ -z "${ZWE_zowe_logDirectory}" ]; then
+    export ZWE_zowe_logDirectory="${HOME}/.zowe/logs"
+  fi
+  mkdir -p ${ZWE_zowe_logDirectory}
+  export WORKSPACE_DIR="${HOME}/.zowe/workspace"
 else
   echo "No config file found, initializing..."
-  export INSTANCE_DIR="${HOME}/.zowe"
-  mkdir -p ${INSTANCE_DIR}/logs
+  export WORKSPACE_DIR="${HOME}/.zowe/workspace"
+  if [ -z "${ZWE_zowe_logDirectory}" ]; then
+    export ZWE_zowe_logDirectory="${HOME}/.zowe/logs"
+  fi
+  mkdir -p ${ZWE_zowe_logDirectory}
   cd ../lib
   __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
   export CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/zowe.yaml"

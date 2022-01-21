@@ -9,10 +9,10 @@
 
 
 # Required variables on shell:
-# - ROOT_DIR
+# - ZWE_zowe_runtimeDirectory
 # - WORKSPACE_DIR
 # - NODE_HOME
-COMPONENT_HOME=${ROOT_DIR}/components/app-server
+COMPONENT_HOME=${ZWE_zowe_runtimeDirectory}/components/app-server
 
 # containers only
 if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then

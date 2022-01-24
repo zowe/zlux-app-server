@@ -157,7 +157,7 @@ So, you can type in any username to get access to the desktop, which likely does
 Read the [Configuration](https://github.com/zowe/zlux/wiki/Configuration-for-zLUX-App-Server-&-ZSS) wiki page for a detailed explanation of the primary items that you'll want to configure for your server.
 
 In short, determine the location of your workspace directory (Environment variable `ZWE_zowe_workspaceDirectory`, or `~/.zowe/workspace` (Linux, Unix, z/OS) or `%USERPROFILE%/.zowe` when `ZWE_zowe_workspaceDirectory` is not defined)
-Within the workspace directory, edit **app-server/serverConfig/server.json** to change attributes such as the HTTPS port via **node.https.port**, or the location of plugins.
+Within the workspace directory, edit **app-server/serverConfig/zowe.yaml** to change attributes such as the HTTPS port via **components.app-server.node.https.port**, or the location of plugins.
 
 ## 6. Adding Plugins
 **Note when building, NPM is used. The version of NPM needed for the build to succeed should be at least 6.4. You can update NPM by executing `npm install -g npm`**
@@ -243,7 +243,7 @@ Finally, the ZSS Cross memory server must be installed and configured according 
 
 With ZSS built, you can now run it in one of two ways.
 * Run it independently of the App Server via `zlux-app-server/bin/zssServer.sh` or
-* Run the App Server and it will attempt to start `zssServer.sh` as a child process, due to it being defined as a child process in the server.json
+* Run the App Server and it will attempt to start `zssServer.sh` as a child process, due to it being defined as a child process in the zowe.yaml
 
 ### Configuring App Server to use ZSS
 In App Server terminology, ZSS is a **Agent**, where the Agent is responsible for fulfilling low-level & OS-specific APIs that the App Server delegates. In order to use the App Server and ZSS together, your App Server must be configured to use it as an Agent, and setup with a security plugin which uses ZSS as an App Server security provider.
@@ -253,54 +253,48 @@ To add ZSS as a security provider, add the **sso-auth** plugin to the App Server
 1. `./install-app.sh ~/my-zowe/zlux-server-framework/plugins/sso-auth`
 
 Then, you need set the configuration of the App Server to prefer that security provider.
-Locate and edit server.json (Within ZWE_zowe_workspaceDirectory/app-server/serverConfig/server.json, such as `~/.zowe/workspace/app-server/serverConfig/server.json`)
+Locate and edit zowe.yaml (Within ZWE_zowe_workspaceDirectory/app-server/serverConfig/zowe.yaml, such as `~/.zowe/workspace/app-server/serverConfig/zowe.yaml`)
 Within that file, set `dataserviceAuthentication.defaultAuthentication = "saf"`.
 
 Keep this file open to continue with agent setup.
  
 #### Agent Setup (App Server side)
-Within the server.json file, you need to define or set **agent.agent.host** to a hostname or ip address where ZSS is located that is also visible to the App Server. This could be '0.0.0.0' or the hostname of a z/OS system.
-You must also define or set **agent.https.port**. This is the TCP port which ZSS will listen on to be contacted by the App Server. Define this in the configuration file as a value between 1024-65535. See [zss configuration](https://github.com/zowe/zlux/wiki/Configuration-for-ZLUX-App-Server-&-ZSS#zss-configuration) for more information and an example.
+Within the zowe.yaml file, you need to define or set **components.zss.agent.agent.host** to a hostname or ip address where ZSS is located that is also visible to the App Server. This could be '0.0.0.0' or the hostname of a z/OS system.
+You must also define or set **components.zss.agent.agent.port**. This is the TCP port which ZSS will listen on to be contacted by the App Server. Define this in the configuration file as a value between 1024-65535. See [zss configuration](https://github.com/zowe/zlux/wiki/Configuration-for-ZLUX-App-Server-&-ZSS#zss-configuration) for more information and an example.
 
-As a result of the above edits to server.json, an example of what it may now look like is:
+As a result of the above edits to zowe.yaml, an example of what it may now look like is:
 
-```json
-{
-  "node": {
-    "https": {
-      "ipAddresses": ["0.0.0.0"],
-      "port": 7556,
-      "keys": ["../defaults/serverConfig/zlux.keystore.key"],
-      "certificates": ["../defaults/serverConfig/zlux.keystore.cer"],
-      "certificateAuthorities": ["../defaults/serverConfig/apiml-localca.cer"]
-    },
-    "childProcesses": [
-      {
-        "path": "../bin/zssServer.sh",
-        "once": true
-      }
-    ]
-  },
+```yaml
+components:
+  app-server:
+    node:
+      https:
+        ipAddresses:
+        - 0.0.0.0
+        port: 7556
+        keys:
+        - "../defaults/serverConfig/zlux.keystore.key"
+        certificates:
+        - "../defaults/serverConfig/zlux.keystore.cer"
+        certificateAuthorities:
+        - "../defaults/serverConfig/apiml-localca.cer"
+      childProcesses:
+      - path: "../bin/zssServer.sh"
+        once: true
+    productDir: "../defaults"
+    siteDir: "~/.zowe/workspace/app-server/site"
+    groupsDir: "~/.zowe/workspace/app-server/groups"
+    usersDir: "~/.zowe/workspace/app-server/users"
+    pluginsDir: "~/.zowe/workspace/app-server/plugins"
+    dataserviceAuthentication:
+      defaultAuthentication: saf
+      rbac: false
+  zss:
+    agent:
+      host: localhost
+      https:
+        port: 7557
 
-  "agent": {
-    "host": "localhost",
-    "https": {
-      "port": 7557
-    }
-  },
-
-  "productDir":"../defaults",
-  "siteDir":"~/.zowe/workspace/app-server/site",
-  "instanceDir":"~/.zowe/workspace/app-server",
-  "groupsDir":"~/.zowe/workspace/app-server/groups",
-  "usersDir":"~/.zowe/workspace/app-server/users",
-  "pluginsDir":"~/.zowe/workspace/app-server/plugins",
-
-  "dataserviceAuthentication": {
-    "defaultAuthentication": "saf",
-    "rbac": false
-  }
-}
 ```
 
 #### Agent Setup (ZSS side)

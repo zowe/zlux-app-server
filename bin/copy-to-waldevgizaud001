@@ -1,0 +1,4 @@
+#!/bin/sh
+home=/home/lchudinov
+target=$home/zowe-docker-new
+scp convert-env.sh ../zss.apiml_static_reg.yaml.template waldevgizaud001.dev.rocketsoftware.com:$target

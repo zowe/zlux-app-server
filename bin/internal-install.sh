@@ -79,5 +79,5 @@ mkdir -p zlux-app-server/defaults/ZLUX/pluginStorage/org.zowe.zlux.ng2desktop/ui
 cp -f ${ZWED_INSTALL_DIR}/files/zlux/config/pinnedPlugins.json zlux-app-server/defaults/ZLUX/pluginStorage/org.zowe.zlux.ng2desktop/ui/launchbar/plugins/
 mkdir -p zlux-app-server/defaults/ZLUX/pluginStorage/org.zowe.zlux.bootstrap/plugins
 cp -f ${ZWED_INSTALL_DIR}/files/zlux/config/allowedPlugins.json zlux-app-server/defaults/ZLUX/pluginStorage/org.zowe.zlux.bootstrap/plugins/
-#cp -f ${ZWED_INSTALL_DIR}/files/zlux/config/zluxserver.json zlux-app-server/defaults/serverConfig/server.json
+cp -f ${ZWED_INSTALL_DIR}/files/zlux/config/zowe.yaml zlux-app-server/defaults/serverConfig/zowe.yaml
 cp -f ${ZWED_INSTALL_DIR}/files/zlux/config/plugins/* zlux-app-server/defaults/plugins

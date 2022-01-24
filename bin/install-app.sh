@@ -67,17 +67,17 @@ shift
 if [ -z "$plugin_dir" ]; then
   if [ "$ZLUX_CONTAINER_MODE" = "1" ]; then
     #container, plugins folder in fixed location
-  elif [ -e "${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json" ]; then
-    json_path=${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json  
   elif [ -d "${ZWE_zowe_workspaceDirectory}/app-server/plugins}" ]; then
     plugin_dir="${ZWE_zowe_workspaceDirectory}/app-server/plugins}"
-  elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]; then
+  elif [ -e "${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml" ]; then
+    yaml_path=${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml  
+  elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/zowe.yaml" ]; then
     if [ -z "${ZWE_zowe_workspaceDirectory}" ]; then
       ZWE_zowe_workspaceDirectory=${HOME}/.zowe/workspace
     fi
-    json_path=${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json
+    yaml_path=${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml
   else
-    json_path=$zlux_path/zlux-app-server/defaults/serverConfig/server.json
+    yaml_path=$zlux_path/zlux-app-server/defaults/serverConfig/zowe.yaml
   fi
 fi
 
@@ -161,8 +161,8 @@ then
   echo "plugin_dir=${plugin_dir}"
 { __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee -a $PLUGIN_LOG_FILE
 else
-  echo "json_path=${json_path}"
-{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -c "$json_path" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee -a $PLUGIN_LOG_FILE
+  echo "yaml_path=${yaml_path}"
+{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -c "$yaml_path" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee -a $PLUGIN_LOG_FILE
 fi
 
 fi

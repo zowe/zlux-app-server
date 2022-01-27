@@ -378,3 +378,18 @@ if [ -n "$ZWE_zowe_logDirectory" ]; then
     export ZWES_LOG_DIR="$ZWE_zowe_logDirectory"
   fi
 fi
+
+if [ -n "$ZWE_zowe_workspaceDirectory" ]
+then
+  WORKSPACE_LOCATION=$ZWE_zowe_workspaceDirectory
+else
+  WORKSPACE_LOCATION="$HOME/.zowe/workspace"
+fi
+DESTINATION="$WORKSPACE_LOCATION/app-server"
+
+export ZWED_productDir=$(cd "$PWD/../defaults" && pwd)
+export ZWED_siteDir="$DESTINATION/site"
+export ZWED_groupsDir="$DESTINATION/groups"
+export ZWED_usersDir="$DESTINATION/users"
+export ZWED_pluginsDir="$DESTINATION/plugins"
+export ZWED_instanceDir="$DESTINATION"

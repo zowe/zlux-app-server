@@ -44,10 +44,14 @@ ZWED_agent_https_password ZWE_zowe_certificate_keystore_password
 ZWED_node_https_port ZWE_components_app_server_port
 ZWES_SERVER_PORT ZWE_components_zss_port
 ZWES_SERVER_TLS ZWE_components_zss_tls
+ZWES_ZIS_LOADLIB ZWE_zowe_setup_mvs_authLoadlib
+ZWES_ZIS_PLUGINLIB ZWE_zowe_setup_mvs_authPluginLib
+ZWES_ZIS_PARMLIB ZWE_zowe_setup_mvs_parmlib
 EOF
 }
 convert_v2_to_v1
 
+export ZWES_ZIS_PARMLIB_MEMBER="ZWESIP00"
 
 
 

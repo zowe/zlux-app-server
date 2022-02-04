@@ -1,0 +1,102 @@
+name: Build Core
+on:
+  push:
+    branches:
+      - staging, master, rc 
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+  workflow_dispatch:
+    inputs: 
+      ZLUX_APP_MANAGER:
+        description: 'zlux-app-manager PR number'
+        required: false
+      ZLUX_APP_SERVER:
+        description: 'zlux-app-server PR number'
+        required: false
+      ZLUX_BUILD:
+        description: 'zlux-build PR number'
+        required: false
+      ZLUX_PLATFORM:
+        description: 'zlux-platform PR number'
+        required: false
+        
+      ZLUX_SERVER_FRAMEWORK:
+        description: 'zlux-server-framework PR number'
+        required: false
+      ZLUX_SHARED:
+        description: 'zlux-shared PR number'
+        required: false
+      DEFAULT_BRANCH:
+        description: 'please enter the default branch you would like to build with, default will be v2.x/staging'
+        required: false
+        default: 'staging'
+
+jobs:
+  check-permission:
+    runs-on: ubuntu-latest
+    steps:
+      # this action will fail the whole workflow if permission check fails
+      - name: check permission
+        uses: zowe-actions/shared-actions/permission-check@main
+        with:
+          user: ${{ github.actor }}
+          github-repo: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    runs-on: ubuntu-latest
+    needs: check-permission
+    steps:
+
+      - name: '[Prep 1] Cache node modules'
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: |
+            ~/.npm
+            ~/.nvm/.cache
+            ~/.nvm/versions
+          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-cache-node-modules-
+      
+      - name: '[Prep 2] Setup Node'
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: '[Prep 3] Setup jFrog CLI'
+        uses: jfrog/setup-jfrog-cli@v2
+        env:
+          JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_TOKEN }}
+
+      - name: '[Prep 4] prepare workflow'
+        uses: zowe-actions/zlux-builds/core/prepare@main
+        with:
+          github-user: ${{ secrets.ZOWE_ROBOT_USER }}
+          github-password: ${{ secrets.ZOWE_ROBOT_TOKEN }}
+          github-email: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+          github-branch: ${{ github.event.inputs.BRANCH_NAME }}
+          default-base: ${{ github.event.inputs.DEFAULT_BRANCH }}
+
+      - name: '[Prep 5] build'
+        uses: zowe-actions/zlux-builds/core/build@main
+        with:
+          zlux-app-manager: ${{ github.event.inputs.ZLUX_APP_MANAGER }}
+          zlux-app-server: ${{ github.event.inputs.ZLUX_APP_SERVER }}
+          zlux-build: ${{ github.event.inputs.ZLUX_BUILD }}
+          zlux-platform: ${{ github.event.inputs.ZLUX_PLATFORM }}
+          zlux-server-framework: ${{ github.event.inputs.ZLUX_SERVER_FRAMEWORK }}
+          zlux-shared: ${{ github.event.inputs.ZLUX_SHARED }}
+
+      - name: '[Prep 6] packaging'
+        uses: zowe-actions/zlux-builds/core/package@main
+        with:
+          pax-ssh-username: ${{ secrets.SSH_MARIST_USERNAME }}
+          pax-ssh-password: ${{ secrets.SSH_MARIST_RACF_PASSWORD }}
+          pax-name: zlux-core
+          
+      - name: '[Prep 7] deploy'
+        uses: zowe-actions/zlux-builds/core/deploy@main
+        

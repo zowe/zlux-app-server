@@ -12,14 +12,14 @@ if [ $# -eq 0 ]
     exit 1
 fi
 
-. ./plugin-utils.sh
+. ./utils/plugin-utils.sh
 
 setVars() {
   export _CEE_RUNOPTS="FILETAG(AUTOCVT,AUTOTAG) POSIX(ON)"
   export _EDC_ADD_ERRNO2=1                        # show details on error
   unset ENV             # just in case, as it can cause unexpected output
   umask 0002                                       # similar to chmod 755
-  . ${zlux_path}/zlux-app-server/bin/internal-node-init.sh
+  . ${zlux_path}/zlux-app-server/bin/init/node-init.sh
 }
 
 dir=$(cd `dirname $0` && pwd)

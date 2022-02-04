@@ -12,7 +12,7 @@ if [ $# -eq 0 ]
   exit 1
 fi
 
-. ./plugin-utils.sh
+. ./utils/plugin-utils.sh
 
 export _CEE_RUNOPTS="FILETAG(AUTOCVT,AUTOTAG) POSIX(ON)"
 export _EDC_ADD_ERRNO2=1                        # show details on error

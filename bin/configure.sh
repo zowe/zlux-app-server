@@ -26,3 +26,5 @@ cd ${COMPONENT_HOME}/share/zlux-app-server/bin
 . ./internal-node-init.sh
 cd ${COMPONENT_HOME}/share/zlux-app-server/lib
 __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+
+. ./internal-plugins-init.sh

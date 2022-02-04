@@ -12,6 +12,8 @@ if [ $# -eq 0 ]
   exit 1
 fi
 
+. ./plugin-utils.sh
+
 export _CEE_RUNOPTS="FILETAG(AUTOCVT,AUTOTAG) POSIX(ON)"
 export _EDC_ADD_ERRNO2=1                        # show details on error
 unset ENV             # just in case, as it can cause unexpected output
@@ -26,30 +28,26 @@ else
   app_id="$1"
 fi
 
-if [ $# -gt 1 ]
-then
+if [ $# -gt 1 ]; then
   plugin_dir=$2
   shift
+else
+  getPluginsDir
+  plugin_dir=$?
 fi
 shift
 
 if [ -z "$plugin_dir" ]; then
-  if [ -e "${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json" ]; then
-    config_path="${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json"
-  elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]; then
-    config_path="${HOME}/.zowe/workspace/app-server/serverConfig/server.json"
-  else
-    echo "Error: could not find plugin directory"
-    echo "Ended with rc=1"
-    exit 1
-  fi
-  plugin_dir=`grep "\"pluginsDir\"" "${config_path}" |  sed -e 's/"//g' | sed -e 's/.*: *//g' | sed -e 's/,.*//g'`
+  echo "Error: could not find plugin directory"
+  echo "Ended with rc=1"
+  exit 1
 fi
 
 
 if [ "$arg_path" = "true" ]; then
-  id=`grep "identifier" ${app_path}/pluginDefinition.json |  sed -e 's/"//g' | sed -e 's/.*: *//g' | sed -e 's/,.*//g'`
-
+  getPluginID "${app_path}"
+  id=$?
+  
   if [ -n "${id}" ]; then
     echo "Found plugin=${id}"
     app_id=$id
@@ -75,4 +73,3 @@ else
   echo "Ended with rc=1"
   exit 1
 fi
-

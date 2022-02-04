@@ -12,6 +12,8 @@ if [ $# -eq 0 ]
     exit 1
 fi
 
+. ./plugin-utils.sh
+
 setVars() {
   export _CEE_RUNOPTS="FILETAG(AUTOCVT,AUTOTAG) POSIX(ON)"
   export _EDC_ADD_ERRNO2=1                        # show details on error
@@ -27,11 +29,9 @@ then
 
   # containers only
   if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
-    # these files may exist in other containers where this script is run from, rather than just zlux
     if [ -f "/component/manifest.yaml" -o -f "/component/manifest.json" -o -f "/component/manifest.yml" ]; then
       COMPONENT_HOME=/component
       ZLUX_CONTAINER_MODE=1  
-      INSTALL_NO_NODE=1  
     fi
   fi
 
@@ -59,60 +59,44 @@ app_path=$(cd "$1"; pwd)
 if [ $# -gt 1 ]
 then
   plugin_dir=$2
-  mkdir -p $plugin_dir
   shift
+else
+  getPluginsDir
+  plugin_dir=$?
 fi
 shift
 
 if [ -z "$plugin_dir" ]; then
-  if [ "$ZLUX_CONTAINER_MODE" = "1" ]; then
-    #container, plugins folder in fixed location
-  elif [ -d "${ZWE_zowe_workspaceDirectory}/app-server/plugins}" ]; then
-    plugin_dir="${ZWE_zowe_workspaceDirectory}/app-server/plugins}"
-  elif [ -e "${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml" ]; then
-    yaml_path=${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml  
-  elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/zowe.yaml" ]; then
-    if [ -z "${ZWE_zowe_workspaceDirectory}" ]; then
-      ZWE_zowe_workspaceDirectory=${HOME}/.zowe/workspace
-    fi
-    yaml_path=${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml
-  else
-    yaml_path=$zlux_path/zlux-app-server/defaults/serverConfig/zowe.yaml
-  fi
+  echo "Error: could not find plugin directory"
+  echo "Ended with rc=1"
+  exit 1
 fi
+mkdir -p $plugin_dir
 
-
+# Installs a zowe plugin by finding its ID and writing the locator json WITHOUT using install-app.js
+# This is to be used in cases where there are issues using JS, or nodejs is not found.
+# Input: relative or fully qualified path to a directory containing a plugindir=$(cd `dirname $0` && pwd)
 installNojs() {
- echo "NodeJS not found or not requested, attempting fallback plugin install behavior"
-  # Installs a zowe plugin by finding its ID and writing the locator json WITHOUT using install-app.js
-  # This is to be used in cases where there are issues using JS, or nodejs is not found.
-  # Input: relative or fully qualified path to a directory containing a plugindir=$(cd `dirname $0` && pwd)
-  #
-  # a little bit of node
-  # id=`node -e "const fs=require('fs'); const content=require('${app_path}/pluginDefinition.json'); console.log(content.identifier);"`
-  #
-  # works with gnu sed
-  # id=`sed -nE '/identifier/{s/.*:\s*"(.*)",/\1/p;q}' ${app_path}/pluginDefinition.json`
-  #
-  # works with posix sed
-  id=`grep "identifier" ${app_path}/pluginDefinition.json |  sed -e 's/"//g' | sed -e 's/.*: *//g' | sed -e 's/,.*//g'`
+  echo "Warning: Installing plugins in no nodejs mode does not install app2app data"
+    
+  pluginDefExists "${folder_path}"
+  if [ "$?" = "false" ]; then
+    exit 1
+  fi
 
+  getPluginID "${folder_path}"
+  id=$?
   if [ -n "${id}" ]
   then
     echo "Found plugin=${id}"
 
-    if [ "$ZLUX_CONTAINER_MODE" = "1" ]
-    then
-      # install script expected to copy the plugin into this location. could be done manually too.
-      app_path=${ZWE_zowe_workspaceDirectory}/app-server/pluginDirs/${id}
-    fi
-
-cat <<EOF >${ZWE_zowe_workspaceDirectory}/app-server/plugins/${id}.json
+cat <<EOF >${plugin_dir}/${id}.json
 {
   "identifier": "${id}",
   "pluginLocation": "${app_path}"
 }
 EOF
+
   echo "Ended with rc=$?"
   else
       echo "Error: could not find plugin id for path=${app_path}"
@@ -156,14 +140,7 @@ fi
 
 echo "Running app-server plugin installer. Log=$PLUGIN_LOG_FILE"
 echo "utils_path=${utils_path}\napp_path=${app_path}"
-if [ -d "$plugin_dir" ]
-then
-  echo "plugin_dir=${plugin_dir}"
+echo "plugin_dir=${plugin_dir}"
 { __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee -a $PLUGIN_LOG_FILE
-else
-  echo "yaml_path=${yaml_path}"
-{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -c "$yaml_path" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee -a $PLUGIN_LOG_FILE
-fi
-
 fi
 fi

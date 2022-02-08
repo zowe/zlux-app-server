@@ -9,7 +9,7 @@
 
 
 # Required variables on shell:
-# - ROOT_DIR
+# - ZWE_zowe_runtimeDirectory
 # - WORKSPACE_DIR
 # - NODE_HOME
 #
@@ -17,15 +17,15 @@
 # - APIML_ENABLE_SSO
 # - GATEWAY_PORT
 # - DISCOVERY_PORT
-# - ZOWE_ZLUX_SSH_PORT
-# - ZOWE_ZLUX_TELNET_PORT
-# - ZOWE_ZLUX_SECURITY_TYPE
+# - ZWED_SSH_PORT
+# - ZWED_TN3270_PORT
+# - ZWED_TN3270_SECURITY
 
-if [ -n "${ROOT_DIR}" ]
+if [ -n "${ZWE_zowe_runtimeDirectory}" ]
 then
   #not a dev env
 
-  COMPONENT_HOME=${ROOT_DIR}/components/app-server
+  COMPONENT_HOME=${ZWE_zowe_runtimeDirectory}/components/app-server
 
   # containers only
   if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then

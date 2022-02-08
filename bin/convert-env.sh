@@ -9,6 +9,49 @@
 
 OSNAME=$(uname)
 
+convert_v2_to_v1() {
+  while read old_name new_name; do
+    old_val=$(eval echo "\$${old_name}")
+    new_val=$(eval echo "\$${new_name}")
+    if [ -z "${old_val}" -a -n "${new_val}" ]; then
+      export "${old_name}=${new_val}"
+    fi
+  done <<EOF
+CATALOG_PORT ZWE_components_api_catalog_port 
+DISCOVERY_PORT ZWE_components_discovery_port
+GATEWAY_HOST ZWE_haInstance_hostname
+GATEWAY_PORT ZWE_components_gateway_port
+KEY_ALIAS ZWE_zowe_certificate_keystore_alias
+KEYSTORE ZWE_zowe_certificate_keystore_file
+KEYSTORE_CERTIFICATE ZWE_zowe_certificate_pem_certificate
+KEYSTORE_CERTIFICATE_AUTHORITY ZWE_zowe_certificate_pem_certificateAuthority
+KEYSTORE_CERTIFICATE_AUTHORITY ZWE_zowe_certificate_pem_certificateAuthorities
+KEYSTORE_DIRECTORY ZWE_zowe_setup_certificate_pkcs12_directory
+KEYSTORE_KEY ZWE_zowe_certificate_pem_key
+KEYSTORE_PASSWORD ZWE_zowe_certificate_keystore_password
+KEYSTORE_TYPE ZWE_zowe_certificate_keystore_type
+ROOT_DIR ZWE_zowe_runtimeDirectory
+TRUSTSTORE ZWE_zowe_certificate_truststore_file
+VERIFY_CERTIFICATES ZWE_zowe_verifyCertificates
+WORKSPACE_DIR ZWE_zowe_workspaceDirectory
+ZOWE_EXPLORER_HOST ZWE_haInstance_hostname
+ZOWE_PREFIX ZWE_zowe_job_prefix
+ZOWE_ZLUX_SERVER_HTTPS_PORT ZWE_components_app_server_port
+ZOWE_ZSS_XMEM_SERVER_NAME ZWE_components_zss_crossMemoryServerName
+ZWED_agent_https_keyring ZWE_zowe_certificate_keystore_file
+ZWED_agent_https_label ZWE_zowe_certificate_keystore_alias
+ZWED_agent_https_password ZWE_zowe_certificate_keystore_password
+ZWED_node_https_port ZWE_components_app_server_port
+ZWES_SERVER_PORT ZWE_components_zss_port
+ZWES_SERVER_TLS ZWE_components_zss_tls
+EOF
+}
+convert_v2_to_v1
+
+
+
+
+
 # For backwards compatible behavior, only set the instance ID if it is non-default
 if [ -n "$ZOWE_INSTANCE" ]
 then
@@ -45,12 +88,9 @@ if [ -z "$ZWED_node_mediationLayer_server_hostname" ]; then
 fi
 
 if [ -n "$ZWED_node_mediationLayer_server_port" -a -n "$ZWED_node_mediationLayer_server_hostname" ]; then
-  case "$LAUNCH_COMPONENT_GROUPS" in
-    *GATEWAY*)
-    #All conditions met for app-server behind gateway: hostname, port, and component
+  if [ "${ZWE_components_gateway_enabled}" = "true" ]; then
     export ZWED_node_mediationLayer_enabled="true"
-    ;;
-  esac
+  fi
 fi
 
 if [ -z "$ZWED_node_mediationLayer_enabled" ]; then
@@ -88,12 +128,8 @@ elif [ -z "$ZWED_agent_mediationLayer_enabled" ]; then
 fi
 
 # Check if Caching Service is enabled
-if [ "$ZWED_node_mediationLayer_enabled" = "true" ]; then
-  case "$LAUNCH_COMPONENTS" in
-    *caching-service*)
-      export ZWED_node_mediationLayer_cachingService_enabled="true"
-      ;;
-    esac
+if [ "$ZWED_node_mediationLayer_enabled" = "true" -a "${ZWE_components_caching_service_enabled}" = "true" ]; then
+  export ZWED_node_mediationLayer_cachingService_enabled="true"
 fi
 
 # eureka hostname handling
@@ -117,8 +153,16 @@ then
   export ZWED_node_loopbackAddress=$ZOWE_LOOPBACK_ADDRESS
 fi
 
+if [ -z "$ZWED_node_https_ipAddresses" ]
+then
+  if [ -n "$ZOWE_IP_ADDRESS" ]
+    then
+      export ZWED_node_https_ipAddresses="${ZOWE_IP_ADDRESS}",
+  fi
+fi
+
 # certificates
-if [ "$VERIFY_CERTIFICATES" = "false" ]; then
+if [ "$ZWE_zowe_verifyCertificates" = "DISABLED" ]; then
   export ZWED_node_allowInvalidTLSProxy=true
   export NODE_TLS_REJECT_UNAUTHORIZED=0
 fi
@@ -183,11 +227,15 @@ then
 fi
 
 # app server
+if [ -z "$ZWED_SERVER_HTTPS_PORT" -a -n "$ZOWE_ZLUX_SERVER_HTTPS_PORT" ]
+then
+  export ZWED_SERVER_HTTPS_PORT="${ZOWE_ZLUX_SERVER_HTTPS_PORT}"
+fi
 if [ -z "$ZWED_node_https_port" ] 
 then
-  if [ -n "$ZOWE_ZLUX_SERVER_HTTPS_PORT" ]
+  if [ -n "$ZWED_SERVER_HTTPS_PORT" ]
   then
-    export ZWED_node_https_port=$ZOWE_ZLUX_SERVER_HTTPS_PORT
+    export ZWED_node_https_port=$ZWED_SERVER_HTTPS_PORT
   fi
 fi
 if [ -z "$ZWED_productDir" ]
@@ -210,33 +258,105 @@ then
   fi
 fi
 
+# v2 alias mapping
+if [ -z "$ZWED_NODE_LOG_FILE" -a -n "$ZLUX_NODE_LOG_FILE" ]
+then
+  export ZWED_NODE_LOG_FILE="${ZLUX_NODE_LOG_FILE}"
+fi
+if [ -z "$ZWED_NODE_LOG_DIR" -a -n "$ZLUX_NODE_LOG_DIR" ]
+then
+  export ZWED_NODE_LOG_DIR="${ZLUX_NODE_LOG_DIR}"
+fi
+if [ -z "$ZWED_NODE_LOGS_TO_KEEP" -a -n "$ZLUX_NODE_LOGS_TO_KEEP" ]
+then
+  export ZWED_NODE_LOGS_TO_KEEP="${ZLUX_NODE_LOGS_TO_KEEP}"
+fi
+if [ -z "$ZWED_SSH_PORT" -a -n "$ZOWE_ZLUX_SSH_PORT" ]
+then
+  export ZWED_SSH_PORT="${ZOWE_ZLUX_SSH_PORT}"
+fi
+if [ -z "$ZWED_TN3270_PORT" -a -n "$ZOWE_ZLUX_TELNET_PORT" ]
+then
+  export ZWED_TN3270_PORT="${ZOWE_ZLUX_TELNET_PORT}"
+fi
+if [ -z "$ZWED_TN3270_SECURITY" -a -n "$ZOWE_ZLUX_SECURITY_TYPE" ]
+then
+  export ZWED_TN3270_SECURITY="${ZOWE_ZLUX_SECURITY_TYPE}"
+fi
+if [ -z "$ZWED_SSH_HOST" -a -n "$ZOWE_ZLUX_SSH_HOST" ]
+then
+  export ZWED_SSH_HOST="${ZOWE_ZLUX_SSH_HOST}"
+fi
+if [ -z "$ZWED_TN3270_HOST" -a -n "$ZOWE_ZLUX_TELNET_HOST" ]
+then
+  export ZWED_TN3270_HOST="${ZOWE_ZLUX_TELNET_HOST}"
+fi
+if [ -z "$ZWED_TN3270_ROW" -a -n "$ZOWE_ZLUX_TN3270_ROW" ]
+then
+  export ZWED_TN3270_ROW="${ZOWE_ZLUX_TN3270_ROW}"
+fi
+if [ -z "$ZWED_TN3270_COL" -a -n "$ZOWE_ZLUX_TN3270_COL" ]
+then
+  export ZWED_TN3270_COL="${ZOWE_ZLUX_TN3270_COL}"
+fi
+if [ -z "$ZWED_TN3270_MOD" -a -n "$ZOWE_ZLUX_TN3270_MOD" ]
+then
+  export ZWED_TN3270_MOD="${ZOWE_ZLUX_TN3270_MOD}"
+fi
+if [ -z "$ZWED_TN3270_CODEPAGE" -a -n "$ZOWE_ZLUX_TN3270_CODEPAGE" ]
+then
+  export ZWED_TN3270_CODEPAGE="${ZOWE_ZLUX_TN3270_CODEPAGE}"
+fi
 # zss
-if [ "$ZOWE_ZSS_SERVER_TLS" = "false" ]
+if [ -z "$ZWES_SERVER_PORT" -a -n "$ZOWE_ZSS_SERVER_PORT" ]
+then
+  export ZWES_SERVER_PORT="${ZOWE_ZSS_SERVER_PORT}"
+fi
+if [ -z "$ZWES_SERVER_TLS" -a -n "$ZOWE_ZSS_SERVER_TLS" ]
+then
+  export ZWES_SERVER_TLS="${ZOWE_ZSS_SERVER_TLS}"
+fi
+if [ "$ZWES_SERVER_TLS" = "false" ]
 then
   # HTTP
-  if [ -z "$ZWED_agent_http_port" -a -n "$ZOWE_ZSS_SERVER_PORT" ]
+  if [ -z "$ZWED_agent_http_port" -a -n "$ZWES_SERVER_PORT" ]
   then
-    export ZWED_agent_http_port="${ZOWE_ZSS_SERVER_PORT}"
+    export ZWED_agent_http_port="${ZWES_SERVER_PORT}"
   fi
 else
   # HTTPS
-  if [ -z "$ZWED_agent_https_port" -a -n "$ZOWE_ZSS_SERVER_PORT" ]
+  if [ -z "$ZWED_agent_https_port" -a -n "$ZWES_SERVER_PORT" ]
   then
-    export ZWED_agent_https_port="${ZOWE_ZSS_SERVER_PORT}"
+    export ZWED_agent_https_port="${ZWES_SERVER_PORT}"
   fi
   if [ -z "$ZWED_agent_host" -a -n "$ZOWE_EXPLORER_HOST" ]
   then
     export ZWED_agent_host="${ZOWE_EXPLORER_HOST}"
   fi
 fi
+if [ -z "$ZWES_XMEM_SERVER_NAME" -a -n "$ZOWE_ZSS_XMEM_SERVER_NAME" ]
+then
+  export ZWES_XMEM_SERVER_NAME="${ZOWE_ZSS_XMEM_SERVER_NAME}"
+fi
 if [ -z "$ZWED_privilegedServerName" ]
 then
-  if [ -n "$ZOWE_ZSS_XMEM_SERVER_NAME" ]
+  if [ -n "$ZWES_XMEM_SERVER_NAME" ]
   then
-    export ZWED_privilegedServerName=$ZOWE_ZSS_XMEM_SERVER_NAME
+    export ZWED_privilegedServerName=$ZWES_XMEM_SERVER_NAME
   fi 
 fi
-
+if [ -z "$ZWES_LOG_FILE" -a -n "$ZSS_LOG_FILE" ]
+then
+  export ZWES_LOG_FILE="${ZSS_LOG_FILE}"
+fi
+if [ -z "$ZWES_LOG_DIR" -a -n "$ZSS_LOG_DIR" ]
+then
+  export ZWES_LOG_DIR="${ZSS_LOG_DIR}"
+fi
+if [ -z "$ZWES_LOGS_TO_KEEP" -a -n "$ZSS_LOGS_TO_KEEP" ]
+then
+  export ZWES_LOGS_TO_KEEP="${ZSS_LOGS_TO_KEEP}"
+fi
 # cert verification
 if [ -z "$ZWED_node_allowInvalidTLSProxy" -a -n "$VERIFY_CERTIFICATES" ]; then
   if [ "$VERIFY_CERTIFICATES" = "false" ]; then
@@ -247,4 +367,14 @@ fi
 # set production mode if applicable
 if [ -n "$ROOT_DIR" -a -z "$NODE_ENV" ]; then
   export NODE_ENV=production
+fi
+
+# v2 logging
+if [ -n "$ZWE_zowe_logDirectory" ]; then
+  if [ -z "$ZWED_NODE_LOG_DIR" ]; then
+    export ZWED_NODE_LOG_DIR="$ZWE_zowe_logDirectory"
+  fi
+  if [ -z "$ZWES_LOG_DIR" ]; then
+    export ZWES_LOG_DIR="$ZWE_zowe_logDirectory"
+  fi
 fi

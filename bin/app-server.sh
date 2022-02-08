@@ -9,19 +9,19 @@
 
 
 # Required variables on shell:
-# - ROOT_DIR
-# - WORKSPACE_DIR
+# - ZWE_zowe_runtimeDirectory
+# - ZWE_zowe_workspaceDirectory
 # - NODE_HOME
 #
 # Optional variables on shell:
 # - APIML_ENABLE_SSO
 # - GATEWAY_PORT
 # - DISCOVERY_PORT
-# - ZOWE_ZLUX_SSH_PORT
-# - ZOWE_ZLUX_TELNET_PORT
-# - ZOWE_ZLUX_SECURITY_TYPE
+# - ZWED_SSH_PORT
+# - ZWED_TN3270_PORT
+# - ZWED_TN3270_SECURITY
 
-if [ -z "${ROOT_DIR}" ]
+if [ -z "${ZWE_zowe_runtimeDirectory}" ]
 then
  #this may be a dev environment, or backward compat, so stay in current dir and check node
  . ./validate.sh
@@ -42,61 +42,61 @@ fi
 if [ -e "$ZLUX_CONFIG_FILE" ]
 then
     CONFIG_FILE=$ZLUX_CONFIG_FILE
-elif [ -z "${ROOT_DIR}" ]
+elif [ -z "${ZWE_zowe_runtimeDirectory}" ]
 then
   #dev env or backwards compat, do late configure
   . ./internal-inst-init.sh
 else
-  CONFIG_FILE="${WORKSPACE_DIR}/app-server/serverConfig/server.json"
+  CONFIG_FILE="${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json"
 fi
 
-if [ -n "$ZLUX_NODE_LOG_FILE" ]
+if [ -n "$ZWED_NODE_LOG_FILE" ]
 then
-  if [ -n "$ZLUX_NODE_LOG_DIR" ]
+  if [ -n "$ZWED_NODE_LOG_DIR" ]
   then
-    echo "ZLUX_NODE_LOG_FILE set (value $ZLUX_NODE_LOG_FILE).  Ignoring ZLUX_NODE_LOG_DIR."
+    echo "ZWED_NODE_LOG_FILE set (value $ZWED_NODE_LOG_FILE).  Ignoring ZWED_NODE_LOG_DIR."
   fi
 else
   # _FILE was not specified; default filename, and check and maybe default _DIR
-  if [ -z "$ZLUX_NODE_LOG_DIR" ]
+  if [ -z "$ZWED_NODE_LOG_DIR" ]
   then
-    if [ -d "$INSTANCE_DIR" ]
+    if [ -d "$ZWE_zowe_logDirectory" ]
     then
-      ZLUX_NODE_LOG_DIR=${INSTANCE_DIR}/logs
+      ZWED_NODE_LOG_DIR=${ZWE_zowe_logDirectory}
     else
-      ZLUX_NODE_LOG_DIR="../log"
+      ZWED_NODE_LOG_DIR="../log"
     fi
   fi
   
-  if [ -f "$ZLUX_NODE_LOG_DIR" ]
+  if [ -f "$ZWED_NODE_LOG_DIR" ]
   then
-    ZLUX_NODE_LOG_FILE=$ZLUX_NODE_LOG_DIR
-  elif [ ! -d "$ZLUX_NODE_LOG_DIR" ]
+    ZWED_NODE_LOG_FILE=$ZWED_NODE_LOG_DIR
+  elif [ ! -d "$ZWED_NODE_LOG_DIR" ]
   then
-    echo "Will make log directory $ZLUX_NODE_LOG_DIR"
-    mkdir -p $ZLUX_NODE_LOG_DIR
+    echo "Will make log directory $ZWED_NODE_LOG_DIR"
+    mkdir -p $ZWED_NODE_LOG_DIR
     if [ $? -ne 0 ]
     then
       echo "Cannot make log directory.  Logging disabled."
-      ZLUX_NODE_LOG_FILE=/dev/null
+      ZWED_NODE_LOG_FILE=/dev/null
     fi
   fi
   
   ZLUX_ROTATE_LOGS=0
-  if [ -d "$ZLUX_NODE_LOG_DIR" ] && [ -z "$ZLUX_NODE_LOG_FILE" ]
+  if [ -d "$ZWED_NODE_LOG_DIR" ] && [ -z "$ZWED_NODE_LOG_FILE" ]
   then
-    ZLUX_NODE_LOG_FILE="$ZLUX_NODE_LOG_DIR/appServer-`date +%Y-%m-%d-%H-%M`.log"
-    if [ -z "$ZLUX_NODE_LOGS_TO_KEEP" ]
+    ZWED_NODE_LOG_FILE="$ZWED_NODE_LOG_DIR/appServer-`date +%Y-%m-%d-%H-%M`.log"
+    if [ -z "$ZWED_NODE_LOGS_TO_KEEP" ]
     then
-      ZLUX_NODE_LOGS_TO_KEEP=5
+      ZWED_NODE_LOGS_TO_KEEP=5
     fi
-    echo $ZLUX_NODE_LOGS_TO_KEEP|egrep '^\-?[0-9]+$' >/dev/null
+    echo $ZWED_NODE_LOGS_TO_KEEP|egrep '^\-?[0-9]+$' >/dev/null
     if [ $? -ne 0 ]
     then
-      echo "ZLUX_NODE_LOGS_TO_KEEP not a number.  Defaulting to 5."
-      ZLUX_NODE_LOGS_TO_KEEP=5
+      echo "ZWED_NODE_LOGS_TO_KEEP not a number.  Defaulting to 5."
+      ZWED_NODE_LOGS_TO_KEEP=5
     fi
-    if [ $ZLUX_NODE_LOGS_TO_KEEP -ge 0 ]
+    if [ $ZWED_NODE_LOGS_TO_KEEP -ge 0 ]
     then
       ZLUX_ROTATE_LOGS=1
     fi 
@@ -105,7 +105,7 @@ else
   #Clean up excess logs, if appropriate.
   if [ $ZLUX_ROTATE_LOGS -ne 0 ]
   then
-    for f in `ls -r -1 $ZLUX_NODE_LOG_DIR/appServer-*.log 2>/dev/null | tail +$ZLUX_NODE_LOGS_TO_KEEP`
+    for f in `ls -r -1 $ZWED_NODE_LOG_DIR/appServer-*.log 2>/dev/null | tail +$ZWED_NODE_LOGS_TO_KEEP`
     do
       echo nodeServer.sh removing $f
       rm -f $f
@@ -113,48 +113,48 @@ else
   fi
 fi
 
-ZLUX_NODE_CHECK_DIR="$(dirname "$ZLUX_NODE_LOG_FILE")"
+ZLUX_NODE_CHECK_DIR="$(dirname "$ZWED_NODE_LOG_FILE")"
 if [ ! -d "$ZLUX_NODE_CHECK_DIR" ]
 then
-  echo "ZLUX_NODE_LOG_FILE contains nonexistent directories.  Creating $ZLUX_NODE_CHECK_DIR"
+  echo "ZWED_NODE_LOG_FILE contains nonexistent directories.  Creating $ZLUX_NODE_CHECK_DIR"
   mkdir -p $ZLUX_NODE_CHECK_DIR
   if [ $? -ne 0 ]
   then
     echo "Cannot make log directory.  Logging disabled."
-    ZLUX_NODE_LOG_FILE=/dev/null
+    ZWED_NODE_LOG_FILE=/dev/null
   fi
 fi
 #Now sanitize final log filename: if it is relative, make it absolute before cd to js
-if [ "$ZLUX_NODE_LOG_FILE" != "/dev/null" ]
+if [ "$ZWED_NODE_LOG_FILE" != "/dev/null" ]
 then
-  ZLUX_NODE_CHECK_DIR=$(cd "$(dirname "$ZLUX_NODE_LOG_FILE")"; pwd)
-  ZLUX_NODE_LOG_FILE=$ZLUX_NODE_CHECK_DIR/$(basename "$ZLUX_NODE_LOG_FILE")
+  ZLUX_NODE_CHECK_DIR=$(cd "$(dirname "$ZWED_NODE_LOG_FILE")"; pwd)
+  ZWED_NODE_LOG_FILE=$ZLUX_NODE_CHECK_DIR/$(basename "$ZWED_NODE_LOG_FILE")
 fi
 
 
-echo ZLUX_NODE_LOG_FILE=${ZLUX_NODE_LOG_FILE}
-export ZLUX_LOG_PATH=$ZLUX_NODE_LOG_FILE
+echo ZWED_NODE_LOG_FILE=${ZWED_NODE_LOG_FILE}
+export ZLUX_LOG_PATH=$ZWED_NODE_LOG_FILE
 
-if [ ! -e $ZLUX_NODE_LOG_FILE ]
+if [ ! -e $ZWED_NODE_LOG_FILE ]
 then
-  touch $ZLUX_NODE_LOG_FILE
+  touch $ZWED_NODE_LOG_FILE
   if [ $? -ne 0 ]
   then
     echo "Cannot make log file.  Logging disabled."
-    ZLUX_NODE_LOG_FILE=/dev/null
+    ZWED_NODE_LOG_FILE=/dev/null
   fi
 else
-  if [ -d $ZLUX_NODE_LOG_FILE ]
+  if [ -d $ZWED_NODE_LOG_FILE ]
   then
-    echo "ZLUX_NODE_LOG_FILE is a directory.  Must be a file.  Logging disabled."
-    ZLUX_NODE_LOG_FILE=/dev/null
+    echo "ZWED_NODE_LOG_FILE is a directory.  Must be a file.  Logging disabled."
+    ZWED_NODE_LOG_FILE=/dev/null
   fi
 fi
 
-if [ ! -w "$ZLUX_NODE_LOG_FILE" ]
+if [ ! -w "$ZWED_NODE_LOG_FILE" ]
 then
-  echo file "$ZLUX_NODE_LOG_FILE" is not writable. Logging disabled.
-  ZLUX_NODE_LOG_FILE=/dev/null
+  echo file "$ZWED_NODE_LOG_FILE" is not writable. Logging disabled.
+  ZWED_NODE_LOG_FILE=/dev/null
 fi
 
 #Determined log file.  Run node appropriately.
@@ -188,5 +188,5 @@ then
 else
   ZLUX_SERVER_FILE=zluxServer.js
 fi
-{ __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 ; echo "Ended with rc=$?" ; } | tee $ZLUX_NODE_LOG_FILE
+{ __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 ; echo "Ended with rc=$?" ; } | tee $ZWED_NODE_LOG_FILE
 

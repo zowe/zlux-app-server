@@ -2,6 +2,12 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v2.0.0
+
+- Enhancement: Renamed ZLUX_ environment variables to ZWED_ for consistency. Backwards compatible with old environment variables.
+- Enhancement: Support new logDirectory variable specification in zowe.yaml
+- Enhancement: Support reading from zowe.yaml instead of server.json
+
 ## v1.27.0
 
 - Bugfix: Fix development environment case in which app-server would crash without agent config being fully defined.

@@ -115,7 +115,7 @@ if errorlevel 1 (
   !NODE_BIN! --harmony !ZOWE_LIB_DIR!\!ZLUX_SERVER_FILE! --config="!CONFIG_FILE!" %* > "!ZLUX_LOG_PATH!" 2>&1
 ) ELSE (
   echo Server startup. Logging to terminal...
-  !NODE_BIN! --harmony !ZOWE_LIB_DIR!\!ZLUX_SERVER_FILE! --config="!CONFIG_FILE!" %* > "C:\\Users\\lchudinov\\.zowe\\logs\\appServer.log" 2>&1
+  !NODE_BIN! --harmony !ZOWE_LIB_DIR!\!ZLUX_SERVER_FILE! --config="!CONFIG_FILE!" %*
 )
 set rc=%ERRORLEVEL%
 echo Ended with rc=%rc%

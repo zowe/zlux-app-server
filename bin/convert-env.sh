@@ -391,9 +391,21 @@ else
 fi
 DESTINATION="$WORKSPACE_LOCATION/app-server"
 
-export ZWED_productDir=$(cd "$PWD/../defaults" && pwd)
-export ZWED_siteDir="$DESTINATION/site"
-export ZWED_groupsDir="$DESTINATION/groups"
-export ZWED_usersDir="$DESTINATION/users"
-export ZWED_pluginsDir="$DESTINATION/plugins"
-export ZWED_instanceDir="$DESTINATION"
+if [ -z "$ZWE_components_app_server_productDir" ]; then
+  export ZWED_productDir=$(cd "$PWD/../defaults" && pwd)
+fi
+if [ -z "$ZWE_components_app_server_siteDir" ]; then
+  export ZWED_siteDir="$DESTINATION/site"
+fi
+if [ -z "$ZWE_components_app_server_groupsDir" ]; then
+  export ZWED_groupsDir="$DESTINATION/groups"
+fi
+if [ -z "$ZWE_components_app_server_usersDir" ]; then
+  export ZWED_usersDir="$DESTINATION/users"
+fi
+if [ -z "$ZWE_components_app_server_pluginsDir" ]; then
+  export ZWED_pluginsDir="$DESTINATION/plugins"
+fi
+if [ -z "$ZWE_components_app_server_instanceDir" ]; then
+  export ZWED_instanceDir="$DESTINATION"
+fi

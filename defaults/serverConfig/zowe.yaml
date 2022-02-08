@@ -25,12 +25,12 @@ components:
           value: sameorigin
     # All paths relative to zlux-app-server/bin
     # In real installations, these values will be configured during the install.
-    productDir: "../defaults"
-    siteDir: "../deploy/site"
-    instanceDir: "../deploy/instance"
-    groupsDir: "../deploy/instance/groups"
-    usersDir: "../deploy/instance/users"
-    pluginsDir: "../defaults/plugins"
+    # productDir: "../defaults"
+    # siteDir: "../deploy/site"
+    # instanceDir: "../deploy/instance"
+    # groupsDir: "../deploy/instance/groups"
+    # usersDir: "../deploy/instance/users"
+    # pluginsDir: "../defaults/plugins"
     dataserviceAuthentication:
       # this specifies the default authentication type for dataservices that didn't specify which type to use. These dataservices therefore should not expect a particular type of authentication to be used.
       defaultAuthentication: fallback

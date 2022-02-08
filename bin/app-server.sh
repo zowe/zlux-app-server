@@ -49,8 +49,9 @@ elif [ -z "${ZWE_zowe_runtimeDirectory}" ]
 then
   #dev env or backwards compat, do late configure
   . ./internal-inst-init.sh
-else
-  CONFIG_FILE="${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml"
+  CONFIG_FILE=~/.zowe/zowe.yaml
+  # should we also export ZWE_zowe_workspaceDirectory=~/.zowe/zowe.yaml?
+  # potentially zowe.yaml in there could point workspaceDirectory elsewhere to cause further confusion
 fi
 
 if [ -n "$ZWED_NODE_LOG_FILE" ]

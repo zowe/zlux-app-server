@@ -42,12 +42,16 @@ fi
 if [ -e "$ZLUX_CONFIG_FILE" ]
 then
     CONFIG_FILE=$ZLUX_CONFIG_FILE
+elif [ -e "$ZWE_CLI_PARAMETER_CONFIG" ]
+then
+  CONFIG_FILE="$ZWE_CLI_PARAMETER_CONFIG"
 elif [ -z "${ZWE_zowe_runtimeDirectory}" ]
 then
   #dev env or backwards compat, do late configure
   . ./internal-inst-init.sh
-else
-  CONFIG_FILE="${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json"
+  CONFIG_FILE=~/.zowe/zowe.yaml
+  # should we also export ZWE_zowe_workspaceDirectory=~/.zowe/zowe.yaml?
+  # potentially zowe.yaml in there could point workspaceDirectory elsewhere to cause further confusion
 fi
 
 if [ -n "$ZWED_NODE_LOG_FILE" ]

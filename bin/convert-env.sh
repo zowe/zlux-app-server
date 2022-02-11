@@ -44,10 +44,14 @@ ZWED_agent_https_password ZWE_zowe_certificate_keystore_password
 ZWED_node_https_port ZWE_components_app_server_port
 ZWES_SERVER_PORT ZWE_components_zss_port
 ZWES_SERVER_TLS ZWE_components_zss_tls
+ZWES_ZIS_LOADLIB ZWE_zowe_setup_mvs_authLoadlib
+ZWES_ZIS_PLUGINLIB ZWE_zowe_setup_mvs_authPluginLib
+ZWES_ZIS_PARMLIB ZWE_zowe_setup_mvs_parmlib
 EOF
 }
 convert_v2_to_v1
 
+export ZWES_ZIS_PARMLIB_MEMBER="ZWESIP00"
 
 
 
@@ -377,4 +381,31 @@ if [ -n "$ZWE_zowe_logDirectory" ]; then
   if [ -z "$ZWES_LOG_DIR" ]; then
     export ZWES_LOG_DIR="$ZWE_zowe_logDirectory"
   fi
+fi
+
+if [ -n "$ZWE_zowe_workspaceDirectory" ]
+then
+  WORKSPACE_LOCATION=$ZWE_zowe_workspaceDirectory
+else
+  WORKSPACE_LOCATION="$HOME/.zowe/workspace"
+fi
+DESTINATION="$WORKSPACE_LOCATION/app-server"
+
+if [ -z "$ZWE_components_app_server_productDir" ]; then
+  export ZWED_productDir=$(cd "$PWD/../defaults" && pwd)
+fi
+if [ -z "$ZWE_components_app_server_siteDir" ]; then
+  export ZWED_siteDir="$DESTINATION/site"
+fi
+if [ -z "$ZWE_components_app_server_groupsDir" ]; then
+  export ZWED_groupsDir="$DESTINATION/groups"
+fi
+if [ -z "$ZWE_components_app_server_usersDir" ]; then
+  export ZWED_usersDir="$DESTINATION/users"
+fi
+if [ -z "$ZWE_components_app_server_pluginsDir" ]; then
+  export ZWED_pluginsDir="$DESTINATION/plugins"
+fi
+if [ -z "$ZWE_components_app_server_instanceDir" ]; then
+  export ZWED_instanceDir="$DESTINATION"
 fi

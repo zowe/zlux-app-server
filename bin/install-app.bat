@@ -29,18 +29,13 @@ for %%I in (.) do set ZLUX_LOG_PATH="%%~dpfI\install-app.log"
 
 cd %temp_cd%
 
-if exist "%INSTANCE_DIR%\workspace\app-server\serverConfig\server.json" (
-  set ZLUX_CONFIG_FILE="%INSTANCE_DIR%\workspace\app-server\serverConfig\server.json"
+if exist "%ZWE_zowe_workspaceDirectory%\app-server\serverConfig\zowe.yaml" (
+  set ZLUX_CONFIG_FILE="%ZWE_zowe_workspaceDirectory%\app-server\serverConfig\zowe.yaml"
 ) else (
-  if exist "%USERPROFILE%\.zowe\workspace\app-server\serverConfig\server.json" (
-    set ZLUX_CONFIG_FILE="%USERPROFILE%\.zowe\workspace\app-server\serverConfig\server.json"
+  if exist "%USERPROFILE%\.zowe\workspace\app-server\serverConfig\zowe.yaml" (
+    set ZLUX_CONFIG_FILE="%USERPROFILE%\.zowe\workspace\app-server\serverConfig\zowe.yaml"
   ) else (
-    if exist "!zlux_path!\zlux-app-server\deploy\instance\ZLUX\serverConfig\zluxserver.json" (
-      echo WARNING: Using old configuration present in "!zlux_path!\zlux-app-server\deploy"
-      echo This configuration should be migrated for use with future versions. See documentation for more information.\n
-      set ZLUX_CONFIG_FILE="!zlux_path!\zlux-app-server\deploy\instance\ZLUX\serverConfig\zluxserver.json"
-    ) else (
-      set ZLUX_CONFIG_FILE="!zlux_path!\zlux-app-server\defaults\serverConfig\server.json"
+      set ZLUX_CONFIG_FILE="!zlux_path!\zlux-app-server\defaults\serverConfig\zowe.yaml"
     )
   )
 )

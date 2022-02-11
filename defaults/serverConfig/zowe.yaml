@@ -1,0 +1,54 @@
+components:
+  app-server:
+    node:
+      https:
+        ipAddresses:
+        - 0.0.0.0
+        port: 7556
+        # pfx (string), keys, certificates, certificateAuthorities, and certificateRevocationLists are all valid here.
+        keys:
+        - "../defaults/serverConfig/zlux.keystore.key"
+        certificates:
+        - "../defaults/serverConfig/zlux.keystore.cer"
+        certificateAuthorities:
+        - "../defaults/serverConfig/apiml-localca.cer"
+      mediationLayer:
+        server:
+          hostname: localhost
+          port: 10011
+          gatewayPort: 10012
+          isHttps: true
+        enabled: false
+      headers:
+        X-frame-Options:
+          override: true
+          value: sameorigin
+    # All paths relative to zlux-app-server/bin
+    # In real installations, these values will be configured during the install.
+    # productDir: "../defaults"
+    # siteDir: "../deploy/site"
+    # instanceDir: "../deploy/instance"
+    # groupsDir: "../deploy/instance/groups"
+    # usersDir: "../deploy/instance/users"
+    # pluginsDir: "../defaults/plugins"
+    dataserviceAuthentication:
+      # this specifies the default authentication type for dataservices that didn't specify which type to use. These dataservices therefore should not expect a particular type of authentication to be used.
+      defaultAuthentication: fallback
+      rbac: false
+    # Specifies the default language for the server framework logging
+    logLanguage: en
+  zss:
+    # section used to define a connection to a server that can handle native or high privilege commands that the app server cannot
+    # agent:
+    #   # for the app server to know, not the agent
+    #   host: localhost
+    #   # used by the agent
+    #   http:
+    #     ipAddresses:
+    #     - 127.0.0.1
+    #     port: 7557
+    #     attls: false
+    #   gateway:
+    #     name: zss
+    #     prefix: "/api/v1"
+    #     enabled: false

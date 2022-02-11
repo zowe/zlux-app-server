@@ -12,18 +12,18 @@
 
 if [ -n "${ZWE_zowe_workspaceDirectory}" ]
 then
-  if [ -e "${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json" ]
+  if [ -e "${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml" ]
   then
-    export CONFIG_FILE="${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json"
+    export CONFIG_FILE="${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml"
   else
     cd ../lib
     __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
-    export CONFIG_FILE="${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/server.json"
+    export CONFIG_FILE="${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml"
     cd ../bin
   fi
-elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/server.json" ]
+elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/zowe.yaml" ]
 then
-  export CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/server.json"
+  export CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/zowe.yaml"
   if [ -z "${ZWE_zowe_logDirectory}" ]; then
     export ZWE_zowe_logDirectory="${HOME}/.zowe/logs"
   fi
@@ -38,6 +38,6 @@ else
   mkdir -p ${ZWE_zowe_logDirectory}
   cd ../lib
   __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
-  export CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/server.json"
+  export CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/zowe.yaml"
   cd ../bin
 fi

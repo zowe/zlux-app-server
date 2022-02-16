@@ -94,7 +94,7 @@ jobs:
           zlux-shared: ${{ github.event.inputs.ZLUX_SHARED }}
 
       - name: '[Prep 6] packaging'
-        uses: zowe-actions/zlux-builds/core/package@v2.x/main
+        uses: zowe-actions/zlux-builds/core/package@bugfix/missing_node_modules
         with:
           pax-ssh-username: ${{ secrets.SSH_MARIST_USERNAME }}
           pax-ssh-password: ${{ secrets.SSH_MARIST_RACF_PASSWORD }}

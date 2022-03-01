@@ -12,13 +12,12 @@ if [ $# -eq 0 ]
   exit 1
 fi
 
-. ./utils/plugin-utils.sh
-
 export _CEE_RUNOPTS="FILETAG(AUTOCVT,AUTOTAG) POSIX(ON)"
 export _EDC_ADD_ERRNO2=1                        # show details on error
 unset ENV             # just in case, as it can cause unexpected output
 
 dir=$(cd `dirname $0` && pwd)
+. $dir/utils/plugin-utils.sh
 
 if [ -d "$1" ]; then
   arg_path="true"
@@ -39,37 +38,38 @@ shift
 
 if [ -z "$plugin_dir" ]; then
   echo "Error: could not find plugin directory"
-  echo "Ended with rc=1"
+  echo "Plugin deregistration ended with rc=1"
   exit 1
 fi
 
 
 if [ "$arg_path" = "true" ]; then
-  getPluginID "${app_path}"
-  id=$?
+  id=$(getPluginID "${app_path}")
   
   if [ -n "${id}" ]; then
     echo "Found plugin=${id}"
     app_id=$id
   else
     echo "Error: could not find plugin id for path=${app_path}"
-    echo "Ended with rc=1"
+    echo "Plugin deregistration ended with rc=1"
     exit 1
   fi
 fi
 
 if [ -n "${plugin_dir}" ]; then
-  echo "Removing plugin ${app_id} from ${plugin_dir}"
+  echo "Deregistering plugin ${app_id} from ${plugin_dir}"
   if [ ! -d "${plugin_dir}" ]; then
     echo "Plugins directory does not exist or is not a directory"
     exit 1
   fi
-  rm "${plugin_dir}/${app_id}.json"
+  if [ -e "${plugin_dir}/${app_id}.json" ]; then
+    rm "${plugin_dir}/${app_id}.json"
+  fi
   result=$?
-  echo "Ended with rc=$result"
+  echo "Plugin deregistration ended with rc=$result"
   exit $result
 else
   echo "Could not find plugins directory"
-  echo "Ended with rc=1"
+  echo "Plugin deregistration ended with rc=1"
   exit 1
 fi

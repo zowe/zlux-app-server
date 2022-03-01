@@ -6,13 +6,12 @@
 # SPDX-License-Identifier: EPL-2.0
 # 
 # Copyright Contributors to the Zowe Project.
+
 if [ $# -eq 0 ]
     then
     echo "Usage: $0 AppPath [PluginsDir]"
     exit 1
 fi
-
-. ./utils/plugin-utils.sh
 
 setVars() {
   export _CEE_RUNOPTS="FILETAG(AUTOCVT,AUTOTAG) POSIX(ON)"
@@ -23,6 +22,9 @@ setVars() {
 }
 
 dir=$(cd `dirname $0` && pwd)
+. ${dir}/utils/plugin-utils.sh
+. ${dir}/utils/convert-env.sh
+
 if [ -n "${ZWE_zowe_workspaceDirectory}" -a -n "${ZWE_zowe_runtimeDirectory}" ]
 then
   COMPONENT_HOME=${ZWE_zowe_runtimeDirectory}/components/app-server
@@ -68,7 +70,7 @@ shift
 
 if [ -z "$plugin_dir" ]; then
   echo "Error: could not find plugin directory"
-  echo "Ended with rc=1"
+  echo "Plugin registration ended with rc=1"
   exit 1
 fi
 mkdir -p $plugin_dir
@@ -77,15 +79,7 @@ mkdir -p $plugin_dir
 # This is to be used in cases where there are issues using JS, or nodejs is not found.
 # Input: relative or fully qualified path to a directory containing a plugindir=$(cd `dirname $0` && pwd)
 installNojs() {
-  echo "Warning: Installing plugins in no nodejs mode does not install app2app data"
-    
-  pluginDefExists "${folder_path}"
-  if [ "$?" = "false" ]; then
-    exit 1
-  fi
-
-  getPluginID "${folder_path}"
-  id=$?
+  id=$(getPluginID "${app_path}")
   if [ -n "${id}" ]
   then
     echo "Found plugin=${id}"
@@ -97,7 +91,7 @@ cat <<EOF >${plugin_dir}/${id}.json
 }
 EOF
 
-  echo "Ended with rc=$?"
+  echo "Plugin registration ended with rc=$?"
   else
       echo "Error: could not find plugin id for path=${app_path}"
       exit 1
@@ -138,9 +132,9 @@ then
 fi
 
 
-echo "Running app-server plugin installer. Log=$PLUGIN_LOG_FILE"
+echo "Running app-server plugin registration. Log=$PLUGIN_LOG_FILE"
 echo "utils_path=${utils_path}\napp_path=${app_path}"
 echo "plugin_dir=${plugin_dir}"
-{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 ; echo "Ended with rc=$?" ; } | tee -a $PLUGIN_LOG_FILE
+{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 ; echo "Plugin registration ended with rc=$?" ; } | tee -a $PLUGIN_LOG_FILE
 fi
 fi

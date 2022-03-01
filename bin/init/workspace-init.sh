@@ -16,10 +16,9 @@ then
   then
     export CONFIG_FILE="${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml"
   else
-    cd ../lib
+    cd ../../lib
     __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
     export CONFIG_FILE="${ZWE_zowe_workspaceDirectory}/app-server/serverConfig/zowe.yaml"
-    cd ../bin
   fi
 elif [ -e "${HOME}/.zowe/workspace/app-server/serverConfig/zowe.yaml" ]
 then
@@ -36,8 +35,7 @@ else
     export ZWE_zowe_logDirectory="${HOME}/.zowe/logs"
   fi
   mkdir -p ${ZWE_zowe_logDirectory}
-  cd ../lib
+  cd ../../lib
   __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
   export CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/zowe.yaml"
-  cd ../bin
 fi

@@ -1,21 +1,22 @@
+# $1=whether to use nodejs or not for installing (affects app2app installation)
+# $2=whether to check pc bit of zss services
+
 # ZWE_zowe_runtimeDirectory
 # ZWE_zowe_extensionDirectory
 # ZWE_INSTALLED_COMPONENTS=api-catalog,apiml-common-lib,app-server,caching-service,common-java-lib,discovery,explorer-jes,explorer-mvs,explorer-uss,files-api,gateway,jobs-api,launcher,metrics-service,zss,process-manager
 # ZWE_ENABLED_COMPONENTS=api-catalog,app-server,caching-service,discovery,explorer-jes,explorer-mvs,explorer-uss,gateway,zss
 
-#INSTALL_NO_NODE=$1
-
-echo "Using runtime=${ZWE_zowe_runtimeDirectory and extensions=${ZWE_zowe_extensionDirectory}"
+echo "Using runtime=${ZWE_zowe_runtimeDirectory} and extensions=${ZWE_zowe_extensionDirectory}"
 echo "Checking installed=${ZWE_INSTALLED_COMPONENTS}"
 echo "Checking enabled=${ZWE_ENABLED_COMPONENTS}"
 
-. ./plugin_utils.sh
+. ../utils/plugin-utils.sh
 
-plugins_dir=getPluginsDir
+plugins_dir=$(getPluginsDir)
 
 for installed_component in $(echo "${ZWE_INSTALLED_COMPONENTS}" | sed "s/,/ /g"); do
-  extension_location="${ZWE_zowe_extensionDirectory}/${installed_component}"
-  if [ -d "${extension_location}" ]; then
+  extension_path=$(find_component_directory ${installed_component})
+  if [ -d "${extension_path}" ]; then
     is_enabled=false
     for enabled_component in $(echo "${ZWE_ENABLED_COMPONENTS}" | sed "s/,/ /g"); do
       if [ "${enabled_component}" = "${installed_component}" ]; then
@@ -26,18 +27,26 @@ for installed_component in $(echo "${ZWE_INSTALLED_COMPONENTS}" | sed "s/,/ /g")
     echo "Checking plugins for component=${installed_component}, enabled=${is_enabled}"
     
     # HERE: can we do this without any nodejs? probably no, but lets use the zowe install packaging utils.
-    # init-plugins.js $is_enabled "${extension_location}"
-    plugin_folders=getPluginsInComponent "${extension_location}"
+    # init-plugins.js $is_enabled "${extension_path}"
     
-    for folder in $(echo "${plugin_folders}" | sed "s/,/ /g"); do
-      folder_path="${extension_location}/${folder}"
+    iterator=0
+    plugin_folder=$(read_component_manifest "${extension_path}" .appfwPlugins.[${iterator}].path)
+    while [ -n "${plugin_folder}" ]; do
+      fullpath="$extension_path/${plugin_folder}"
       if [ "$is_enabled" = "true" ]; then
-        echo "Registering plugin ${folder_path}"
-        INSTALL_NO_NODE=$1 ./install-app.sh "${folder_path}" "${plugin_dir}"
+        echo "Registering plugin ${fullpath}"
+        # NOTE: relativeTo does not need to be handled here because this process occurs every start so the results should be "portable" by update on restart
+
+        INSTALL_NO_NODE=$1 ../install-app.sh "$fullpath" "${plugins_dir}"
+        if [ -n $2 ]; then
+          check_zss_pc_bit "$fullpath"
+        fi
       else
-        echo "Deregistering plugin ${folder_path}"
-        ./uninstall-app.sh "${folder_path}" "${plugin_dir}"
+        echo "Deregistering plugin ${fullpath}"
+        ../uninstall-app.sh "$fullpath" "${plugins_dir}"
       fi
+      iterator=`expr $iterator + 1`
+      plugin_folder=$(read_component_manifest "${extension_path}" .appfwPlugins.[${iterator}].path)
     done
   else
     echo "Warning: Could not remove app framework plugins for extension ${installed_component} because its directory could not be found within ${ZWE_zowe_extensionDirectory}"

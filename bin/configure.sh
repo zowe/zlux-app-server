@@ -24,7 +24,8 @@ fi
 cd ${COMPONENT_HOME}/share/zlux-app-server/bin
 . ./utils/convert-env.sh
 . ./init/node-init.sh
-cd ${COMPONENT_HOME}/share/zlux-app-server/lib
+cd ../lib
 __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
 
-. ./init/plugins-init.sh
+cd ${COMPONENT_HOME}/share/zlux-app-server/bin/init
+. ./plugins-init.sh

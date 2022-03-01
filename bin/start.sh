@@ -10,7 +10,7 @@
 
 # Required variables on shell:
 # - ZWE_zowe_runtimeDirectory
-# - WORKSPACE_DIR
+# - ZWE_zowe_workspaceDirectory
 # - NODE_HOME
 #
 # Optional variables on shell:

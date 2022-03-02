@@ -395,7 +395,11 @@ fi
 DESTINATION="$WORKSPACE_LOCATION/app-server"
 
 if [ -z "$ZWE_components_app_server_productDir" ]; then
-  export ZWED_productDir=$(cd "../../defaults" && pwd)
+  if [ -n "${ZWE_zowe_runtimeDirectory}" ]; then
+    export ZWED_productDir=$(cd "$ZWE_zowe_runtimeDirectory/components/app-server/share/zlux-app-server/defaults" && pwd)
+  else
+    export ZWED_productDir=$(cd "$PWD/../defaults" && pwd)
+  fi
 fi
 if [ -z "$ZWE_components_app_server_siteDir" ]; then
   export ZWED_siteDir="$DESTINATION/site"

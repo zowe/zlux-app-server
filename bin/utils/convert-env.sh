@@ -171,65 +171,57 @@ if [ "$ZWE_zowe_verifyCertificates" = "DISABLED" ]; then
   export NODE_TLS_REJECT_UNAUTHORIZED=0
 fi
 
-keystore_type="PEM"
-if [ -n "$KEYSTORE_TYPE" ]; then
-  keystore_type=$KEYSTORE_TYPE
-elif [ -n "$ZWE_zowe_certificate_keystore_type" ]; then
-  keystore_type=$ZWE_zowe_certificate_keystore_type
-fi
-
-truststore_type="PEM"
-if [ -n "$TRUSTSTORE_TYPE" ]; then
-  truststore_type=$TRUSTSTORE_TYPE
-elif [ -n "$ZWE_zowe_certificate_truststore_type" ]; then
-  truststore_type=$ZWE_zowe_certificate_truststore_type
-fi
-
-
-if [ -z "$ZWED_node_https_certificates" ]; then
-#ZWE_zowe_certificate_keystore_file
-# TODO users have already complained in confusion about "alias" being used here when "label" is used in keyring.
-#ZWE_zowe_certificate_keystore_alias
-#ZWE_zowe_certificate_pem_key
-#ZWE_zowe_certificate_pem_certificate
-
-#  if [ "$keystore_type" = "JCERACFKS" ]; then
-#    # comma at the end because its an array. we don't know if the ZWE entries are already arrays, and that would cause bugs.
-#    export ZWED_node_https_certificates="${ZWE_zowe_certificate_keystore_file}&${ZWE_zowe_certificate_keystore_alias}",
-#  elif [ "$keystore_type" = "PKCS12" ]; then
-#    export ZWED_node_https_certificates="$ZWE_zowe_certificate_keystore_file",
-#  elif [ -n "$ZWE_zowe_certificate_pem_certificate" ]; then
-    export ZWED_node_https_certificates="$ZWE_zowe_certificate_pem_certificate",
-#  fi
-fi
-
-if [ -z "$ZWED_node_https_certificateAuthorities" ]; then
-#ZWE_zowe_certificate_truststore_file
-#ZWE_zowe_certificate_pem_certificateAuthorities
-
-  if [ "$truststore_type" = "JCERACFKS" ]; then
+if [ -z "$ZWED_node_https_certificates" ]
+then
+  if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
+  then
     #, at end turns it into an array
-    export ZWED_node_https_certificateAuthorities="$ZWE_zowe_certificate_truststore_file",
-    # TODO BUG CA alias is not recorded anywhere
-  elif [ "$truststore_type" = "PKCS12" ]; then
-    export ZWED_node_https_certificateAuthorities="$ZWE_zowe_certificate_truststore_file",
-  elif [ -n "$ZWE_zowe_certificate_pem_certificate" ]; then
-    export ZWED_node_https_certificateAuthorities="$ZWE_zowe_certificate_pem_certificateAuthorities",
+    export ZWED_node_https_certificates="${KEYSTORE}&${KEY_ALIAS}",
+  elif [ -n "$KEYSTORE_CERTIFICATE" ]
+  then
+    #, at end turns it into an array
+    export ZWED_node_https_certificates=$KEYSTORE_CERTIFICATE,
   fi
 fi
 
-if [ -z "$ZWED_node_https_keys" ]; then
-#ZWE_zowe_certificate_keystore_file
-#ZWE_zowe_certificate_pem_key
+if [ -z "$ZWED_node_https_certificateAuthorities" ]
+then
+  if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
+  then
+    if [ -z "$LOCAL_CA" ]
+    then
+      LOCAL_CA=localca
+    fi
+    #, at end turns it into an array
+    if [ -n "$EXTERNAL_ROOT_CA" ]
+    then
+      export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&${LOCAL_CA}","${TRUSTSTORE}&${EXTERNAL_ROOT_CA}"
+    else
+      export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&${LOCAL_CA}",
+    fi
+  elif [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
+  then
+    #, at end turns it into an array
+    if [ -n "$EXTERNAL_CERTIFICATE_AUTHORITIES" ]
+    then
+      export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA},$(echo "$EXTERNAL_CERTIFICATE_AUTHORITIES" | tr " " ",")
+    else
+      export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA},
+    fi
+  fi
+fi
 
-#  if [ "$keystore_type" = "JCERACFKS" ]; then
-#    # comma at the end because its an array. we don't know if the ZWE entries are already arrays, and that would cause bugs.
-#    export ZWED_node_https_keys="${ZWE_zowe_certificate_keystore_file}&${ZWE_zowe_certificate_keystore_alias}",
-#  elif [ "$keystore_type" = "PKCS12" ]; then
-#    export ZWED_node_https_keys="$ZWE_zowe_certificate_keystore_file",
-#  elif [ -n "$ZWE_zowe_certificate_pem_key" ]; then
-    export ZWED_node_https_keys="$ZWE_zowe_certificate_pem_key",
-#  fi
+if [ -z "$ZWED_node_https_keys" ]
+then
+  if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
+  then
+    #, at end turns it into an array
+    export ZWED_node_https_keys="${KEYSTORE}&${KEY_ALIAS}",
+  elif [ -n "$KEYSTORE_KEY" ]
+  then
+    #, at end turns it into an array
+    export ZWED_node_https_keys=$KEYSTORE_KEY,
+  fi
 fi
 
 #SSO

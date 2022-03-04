@@ -12,8 +12,11 @@
 #                                                                                       #
 #########################################################################################
 
-# This script borrowed from zowe-configure-container.sh
-LOG_DIR=${ZWE_zowe_logDirectory}
+if [ -n "${ZWE_zowe_logDirectory}" ]; then
+  LOG_DIR="${ZWE_zowe_logDirectory}"
+else
+  LOG_DIR="${ZWED_INSTALL_DIR}/logs"
+fi
 mkdir -p ${LOG_DIR}
 chmod 777 ${LOG_DIR}
 export LOG_FILE=${LOG_DIR}/"configure-app-server`date +%Y-%m-%d-%H-%M-%S`.log"

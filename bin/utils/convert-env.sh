@@ -170,6 +170,7 @@ if [ "$ZWE_zowe_verifyCertificates" = "DISABLED" ]; then
   export ZWED_node_allowInvalidTLSProxy=true
   export NODE_TLS_REJECT_UNAUTHORIZED=0
 fi
+
 if [ -z "$ZWED_node_https_certificates" ]
 then
   if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
@@ -182,6 +183,7 @@ then
     export ZWED_node_https_certificates=$KEYSTORE_CERTIFICATE,
   fi
 fi
+
 if [ -z "$ZWED_node_https_certificateAuthorities" ]
 then
   if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
@@ -208,6 +210,7 @@ then
     fi
   fi
 fi
+
 if [ -z "$ZWED_node_https_keys" ]
 then
   if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
@@ -391,8 +394,13 @@ else
 fi
 DESTINATION="$WORKSPACE_LOCATION/app-server"
 
+
 if [ -z "$ZWE_components_app_server_productDir" ]; then
-  export ZWED_productDir=$(cd "$PWD/../defaults" && pwd)
+  if [ -n "${ZWE_zowe_runtimeDirectory}" ]; then
+    export ZWED_productDir=$(cd "$ZWE_zowe_runtimeDirectory/components/app-server/share/zlux-app-server/defaults" && pwd)
+  else
+    export ZWED_productDir=$(cd "$PWD/../defaults" && pwd)
+  fi
 fi
 if [ -z "$ZWE_components_app_server_siteDir" ]; then
   export ZWED_siteDir="$DESTINATION/site"

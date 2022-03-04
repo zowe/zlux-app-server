@@ -22,7 +22,10 @@ if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
 fi
 
 cd ${COMPONENT_HOME}/share/zlux-app-server/bin
-. ./convert-env.sh
-. ./internal-node-init.sh
-cd ${COMPONENT_HOME}/share/zlux-app-server/lib
+. ./utils/convert-env.sh
+. ./init/node-init.sh
+cd ../lib
 __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+
+cd ${COMPONENT_HOME}/share/zlux-app-server/bin/init
+. ./plugins-init.sh

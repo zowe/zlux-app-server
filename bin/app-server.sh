@@ -27,7 +27,7 @@ then
  . ./validate.sh
 fi
 
-if [ ! -e "${dir}/convert-env.sh" ]
+if [ ! -e "${dir}/utils/convert-env.sh" ]
 then
   if [ -n "$CONDA_PREFIX" ]
   then
@@ -36,8 +36,8 @@ then
   fi
 fi
 
-. ./convert-env.sh
-. ./internal-node-init.sh
+. ./utils/convert-env.sh
+. ./init/node-init.sh
 
 if [ -e "$ZLUX_CONFIG_FILE" ]
 then
@@ -48,10 +48,10 @@ then
 elif [ -z "${ZWE_zowe_runtimeDirectory}" ]
 then
   #dev env or backwards compat, do late configure
-  . ./internal-inst-init.sh
-  CONFIG_FILE=~/.zowe/zowe.yaml
   # should we also export ZWE_zowe_workspaceDirectory=~/.zowe/zowe.yaml?
   # potentially zowe.yaml in there could point workspaceDirectory elsewhere to cause further confusion
+  . ./init/workspace-init.sh
+  CONFIG_FILE=~/.zowe/zowe.yaml
 fi
 
 if [ -n "$ZWED_NODE_LOG_FILE" ]
@@ -193,4 +193,9 @@ else
   ZLUX_SERVER_FILE=zluxServer.js
 fi
 { __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 ; echo "Ended with rc=$?" ; } | tee $ZWED_NODE_LOG_FILE
+
+
+
+
+
 

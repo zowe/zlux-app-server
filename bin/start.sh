@@ -36,4 +36,10 @@ then
 
   cd ${COMPONENT_HOME}/share/zlux-app-server/bin
 fi
-./app-server.sh
+
+. ./utils/setup-logs.sh
+
+# Done to prevent app-server from making a logfile since we will be making one here instead.
+export ZLUX_NO_LOGFILE=1
+
+./app-server.sh 2>&1 | tee $ZWED_NODE_LOG_FILE

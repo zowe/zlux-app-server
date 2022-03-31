@@ -2,7 +2,9 @@ name: Build Core
 on:
   push:
     branches:
-      - staging, master, rc 
+      - staging 
+      - master
+      - rc 
   pull_request:
     types: [opened, reopened, synchronize]
 
@@ -30,7 +32,7 @@ on:
       DEFAULT_BRANCH:
         description: 'please enter the default branch you would like to build with, default will be v2.x/staging'
         required: false
-        default: 'staging'
+        default: 'v1.x/staging'
 
 jobs:
   check-permission:

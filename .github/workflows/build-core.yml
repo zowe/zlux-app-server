@@ -2,7 +2,7 @@ name: Build Core
 on:
   push:
     branches:
-      - staging 
+      - v1.x/staging 
       - master
       - rc 
   pull_request:

@@ -66,11 +66,12 @@ echo "**** utils_path=$utils_path app_path=$app_path" >&2
 
 if [ $# -gt 1 ]
 then
+  echo "**** plugin_dir 1" >&2
   plugin_dir=$2
   shift
 else
-  getPluginsDir
-  plugin_dir=$?
+  echo "**** plugin_dir 2" >&2
+  plugin_dir=$(getPluginsDir)
 fi
 shift
 
@@ -108,6 +109,8 @@ EOF
       exit 1
   fi
 }
+
+INSTALL_NO_NODE=1
 
 if [ -n "$INSTALL_NO_NODE" ]
 then

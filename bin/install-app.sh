@@ -34,8 +34,9 @@ then
   # containers only
   if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
     if [ -f "/component/manifest.yaml" -o -f "/component/manifest.json" -o -f "/component/manifest.yml" ]; then
-      #COMPONENT_HOME=/component
-      ZLUX_CONTAINER_MODE=1  
+      COMPONENT_HOME=/component
+      ZLUX_CONTAINER_MODE=1
+      INSTALL_NO_NODE=1  
     fi
   fi
 
@@ -109,8 +110,6 @@ EOF
       exit 1
   fi
 }
-
-INSTALL_NO_NODE=1
 
 if [ -n "$INSTALL_NO_NODE" ]
 then

@@ -32,7 +32,7 @@ then
   # containers only
   if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
     if [ -f "/component/manifest.yaml" -o -f "/component/manifest.json" -o -f "/component/manifest.yml" ]; then
-      COMPONENT_HOME=/component
+      #COMPONENT_HOME=/component
       ZLUX_CONTAINER_MODE=1  
     fi
   fi

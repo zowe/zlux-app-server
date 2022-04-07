@@ -95,16 +95,17 @@ installNojs() {
   if [ -n "${id}" ]
   then
     echo "Found plugin=${id}"
-echo "**** id=$id" >&2
-
+    echo "**** id=$id" >&2
+    rm "${plugin_dir}/${id}.json"
+    ls ${plugin_dir} >&2
 cat <<EOF >${plugin_dir}/${id}.json
 {
   "identifier": "${id}",
   "pluginLocation": "${app_path}"
 }
 EOF
-
-  echo "Plugin registration ended with rc=$?"
+    echo "Plugin registration ended with rc=$?" >&2
+    chmod 0750 "${plugin_dir}/${id}.json"
   else
       echo "Error: could not find plugin id for path=${app_path}"
       exit 1

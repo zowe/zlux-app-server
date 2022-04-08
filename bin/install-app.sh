@@ -36,7 +36,7 @@ then
     if [ -f "/component/manifest.yaml" -o -f "/component/manifest.json" -o -f "/component/manifest.yml" ]; then
       COMPONENT_HOME=/component
       ZLUX_CONTAINER_MODE=1
-      #INSTALL_NO_NODE=1  
+      INSTALL_NO_NODE=1  
     fi
   fi
 

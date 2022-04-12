@@ -1,10 +1,8 @@
 ---
 name: app-server
-# Component identifier. This identifier matches artifact path in Zowe Artifactory https://zowe.jfrog.io/.
 id: org.zowe.zlux.app-server
 # Without the v
 version: "{{build.version}}"
-# Component version is defined in gradle.properties for Gradle project
 # Human readable component name
 title: Application Server
 # Human readable component description

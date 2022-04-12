@@ -38,9 +38,6 @@ for installed_component in $(echo "${ZWE_INSTALLED_COMPONENTS}" | sed "s/,/ /g")
         # NOTE: relativeTo does not need to be handled here because this process occurs every start so the results should be "portable" by update on restart
 
         INSTALL_NO_NODE=$1 ../install-app.sh "$fullpath" "${plugins_dir}"
-        if [ -n $2 ]; then
-          check_zss_pc_bit "$fullpath"
-        fi
       else
         echo "Deregistering plugin ${fullpath}"
         ../uninstall-app.sh "$fullpath" "${plugins_dir}"

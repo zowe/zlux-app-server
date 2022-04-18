@@ -15,7 +15,7 @@
 COMPONENT_HOME=${ZWE_zowe_runtimeDirectory}/components/app-server
 
 # containers only
-if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
+if [ "${ZWE_RUN_ON_ZOS}" != "true" ]; then
   if [ -f "/component/manifest.yaml" ]; then
     COMPONENT_HOME=/component
   fi

@@ -30,10 +30,11 @@ then
   COMPONENT_HOME=${ZWE_zowe_runtimeDirectory}/components/app-server
 
   # containers only
-  if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
+  if [ "${ZWE_RUN_ON_ZOS}" != "true" ]; then
     if [ -f "/component/manifest.yaml" -o -f "/component/manifest.json" -o -f "/component/manifest.yml" ]; then
       COMPONENT_HOME=/component
       ZLUX_CONTAINER_MODE=1  
+      INSTALL_NO_NODE=1  
     fi
   fi
 
@@ -64,7 +65,7 @@ then
   shift
 else
   getPluginsDir
-  plugin_dir=$?
+  plugin_dir=$(getPluginsDir)
 fi
 shift
 
@@ -91,7 +92,11 @@ cat <<EOF >${plugin_dir}/${id}.json
 }
 EOF
 
-  echo "Plugin registration ended with rc=$?"
+    echo "Plugin registration ended with rc=$?"
+    if [ -f "${plugin_dir}/${id}.json" ]
+    then
+      chmod 0750 "${plugin_dir}/${id}.json"
+    fi
   else
       echo "Error: could not find plugin id for path=${app_path}"
       exit 1

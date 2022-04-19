@@ -56,13 +56,10 @@ export ZWES_ZIS_PARMLIB_MEMBER="ZWESIP00"
 
 
 
-# For backwards compatible behavior, only set the instance ID if it is non-default
-if [ -n "$ZOWE_INSTANCE" ]
+# For backwards compatible behavior
+if [ -n "$ZWE_zowe_rbacProfileIdentifier" ]
 then
-    if [ "$ZOWE_INSTANCE" != "1" ]
-    then
-        export ZWED_instanceID=$ZOWE_INSTANCE
-    fi
+  export ZWED_instanceID=$ZWE_zowe_rbacProfileIdentifier
 fi
 
 # shape old env vars into app-server compatible ones

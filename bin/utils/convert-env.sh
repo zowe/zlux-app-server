@@ -62,6 +62,11 @@ then
   export ZWED_instanceID=$ZWE_zowe_rbacProfileIdentifier
 fi
 
+if [ -n "$ZWE_zowe_cookieIdentifier" ]
+then
+  export ZWED_cookieIdentifier=$ZWE_zowe_cookieIdentifier
+fi
+
 # shape old env vars into app-server compatible ones
 # mediation layer
 if [ -z "$ZWED_node_mediationLayer_server_gatewayPort" ]

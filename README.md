@@ -47,7 +47,7 @@ Follow each step and you'll be on your way to your first App Server instance!
 ### Building & Developing
 To build the App Server and Apps, the following is required:
 
-* **NodeJS** - v12.x minimum. The App Server and server plugins must support minimum v8.16.x at runtime, but v12.x is used for building.
+* **NodeJS** - v14.x minimum. The App Server and server plugins must support minimum v12.x at runtime, but v14.x is used for building.
 
 * **npm** - v6.4 minimum
 
@@ -80,7 +80,7 @@ To use the App Server, the following is required:
 
 * **NodeJS** - v8.16.x minimum up to v12.x is officially supported by the Zowe community.
 
-Plugins may depend upon other technologies, such as Java or ZSS. An plugin's [pluginDefinition](https://github.com/zowe/zlux/wiki/Zlux-Plugin-Definition-&-Structure) or README will help you to understand if additional prerequisites are needed for that plugin.
+Plugins may depend upon other technologies, such as Java or ZSS. An plugin's [pluginDefinition](https://docs.zowe.org/stable/extend/extend-desktop/mvd-plugindefandstruct) or README will help you to understand if additional prerequisites are needed for that plugin.
 
 
 ## 1. Acquire the source code
@@ -90,7 +90,7 @@ If using git, the following commands should be used:
 ```
 git clone --recursive git@github.com:zowe/zlux.git
 cd zlux
-git submodule foreach "git checkout master"
+git submodule foreach "git checkout v2.x/master"
 ```
 
 For the initial setup, the default authentication is the "trivial authentication" plugin, which allows login to the App Server without valid credentials. At the end of this guide, you can customize the environment to switch to a secure authentication plugin instead, such as the ZSS authentication plugin, covered in [Section 7](#7-adding-zss-to-the-environment).
@@ -102,7 +102,7 @@ The App Server framework & core plugins contain server and/or web components.
 Since these web components use webpack for packaging optimization, and server components may use typescript or other software that requires compiling, it is necessary to build the code before using the server and plugins.
 
 There are utilities within the zlux-build folder for initializing & building core plugins and the framework itself, which will be used.
-However, those tools are not needed when building individual plugins, as it is faster to build them each as needed when [following this documentation.](https://github.com/zowe/zlux/wiki/Building-Plugins)
+However, those tools are not needed when building individual plugins, as it is faster to build them each as needed when [following this documentation.](https://docs.zowe.org/stable/extend/extend-desktop/mvd-buildingplugins)
 
 On the host running the App Server, run the script that will automatically build all included Apps:
 
@@ -141,7 +141,7 @@ When the App Server has started, one of the messages you will see as bootstrappi
 
 ### Server Logs
 When the server starts, it writes logs to a text file. On z/OS, Unix, and Linux, the server also logs to the terminal via stdout.
-To view the entire logs, you can find the log file within `<ZWE_zowe_logDirectory>`, which will default to `~/.zowe/logs` or `%USERPROFILE%/.zowe/logs` (Windows) if ZWE_zowe_logDirectory is not specified. The log file starts with "appServer" and the filename may also include a timestamp.
+To view the entire logs, you can find the log file within the location specified by the zowe server configuration parameter `zowe.logDirectory`, but will default to `~/.zowe/logs` or `%USERPROFILE%/.zowe/logs` (Windows) if not specified. The log file starts with "appServer" and the filename may also include a timestamp.
 
 ## 4. Connect in a browser
 With the App Server started, you can access Apps and the Zowe Desktop from it in a web browser.
@@ -150,11 +150,15 @@ The URL for this is:
 
 https://\<App Server\>:7556/ZLUX/plugins/org.zowe.zlux.bootstrap/web/index.html
 
+**Note: If you are using the API Mediation Layer, which is not covered here, it is preferred to access the app server through it. That URL would be https://\<Gateway server\>:\<Gateway Port\>/zlux/ui/v1/ZLUX/plugins/org.zowe.zlux.bootstrap/web/index.html**
+
 Once here, you should be greeted with a Login screen. By default trivial authentication is used which allows to login with arbitrary credentials.
 So, you can type in any username to get access to the desktop, which likely does not yet have any Apps. Next, the server should be configured, Apps added, and authentication set up.
 
 ## 5. Customizing configuration
-Read the [Configuration](https://github.com/zowe/zlux/wiki/Configuration-for-zLUX-App-Server-&-ZSS) wiki page for a detailed explanation of the primary items that you'll want to configure for your server.
+A default configuration file is present in zlux-app-server/defaults/serverConfig/zowe.yaml. In a development environment, you should move this somewhere and customize it and use it to start the server.
+
+Read the [Configuration](https://docs.zowe.org/stable/user-guide/mvd-configuration) page for anexplanation of interesting items that you'll want to configure for your server, as well as [the json-schema document for the app-server](https://github.com/zowe/zlux/blob/v2.x/staging/schemas/zlux-config-schema.json) which describes every possible value.
 
 In short, determine the location of your workspace directory (Environment variable `ZWE_zowe_workspaceDirectory`, or `~/.zowe/workspace` (Linux, Unix, z/OS) or `%USERPROFILE%/.zowe` when `ZWE_zowe_workspaceDirectory` is not defined)
 Within the workspace directory, create **app-server/serverConfig/zowe.yaml** by copying **zlux-app-server/defaults/serverConfig/zowe.yaml**, and edit it to change attributes such as the HTTPS port via **components.app-server.node.https.port**, or the location of plugins.
@@ -166,9 +170,9 @@ Plugins, like the framework, can contain server and/or web components, either of
 The Plugins which have web components are also called "Apps" within the UI.
 To add a plugin to the server, it must first be built. Plugins that you download may already be pre-built.
 
-[Click here to read about building plugins](https://github.com/zowe/zlux/wiki/Building-Plugins)
+[Click here to read about building plugins](https://docs.zowe.org/stable/extend/extend-desktop/mvd-buildingplugins)
 
-[Click here to read about installing plugins](https://github.com/zowe/zlux/wiki/Installing-Plugins)
+[Click here to read about installing plugins](https://docs.zowe.org/stable/extend/extend-desktop/mvd-installplugins)
 
 ### Plugin Build & Add Example
 Following the references above, this is how you can add a TN3270 terminal emulator app to your App Server, for an App server installed in `~/my-zowe`
@@ -235,15 +239,13 @@ A successful build will result in the ZSS binary being placed at `zss/bin/zssSer
 Before running, you must set also set program control attribute on the ZSS binary. It is needed to make the APIs run under the authenticated user's permissions. 
 
 ```
-cp zssServer ../../zlux-app-server/bin
-extattr +p ../../zlux-app-server/bin/zssServer
+cp zssServer64 ../../zlux-app-server/bin
+extattr +p ../../zlux-app-server/bin/zssServer64
 ```
 
 Finally, the ZSS Cross memory server must be installed and configured according to [This Install Guide](https://github.com/zowe/docs-site/blob/master/docs/user-guide/install-zos.md#manually-installing-the-zowe-cross-memory-server)
 
-With ZSS built, you can now run it in one of two ways.
-* Run it independently of the App Server via `zlux-app-server/bin/zssServer.sh` or
-* Run the App Server and it will attempt to start `zssServer.sh` as a child process, due to it being defined as a child process in the zowe.yaml
+With ZSS built, you can now run it in via `zss/bin/zssServer.sh`
 
 ### Configuring App Server to use ZSS
 In App Server terminology, ZSS is a **Agent**, where the Agent is responsible for fulfilling low-level & OS-specific APIs that the App Server delegates. In order to use the App Server and ZSS together, your App Server must be configured to use it as an Agent, and setup with a security plugin which uses ZSS as an App Server security provider.
@@ -253,97 +255,128 @@ To add ZSS as a security provider, add the **sso-auth** plugin to the App Server
 1. `./install-app.sh ~/my-zowe/zlux-server-framework/plugins/sso-auth`
 
 Then, you need set the configuration of the App Server to prefer that security provider.
-Locate and edit zowe.yaml (Within ZWE_zowe_workspaceDirectory/app-server/serverConfig/zowe.yaml, such as `~/.zowe/workspace/app-server/serverConfig/zowe.yaml`)
-Within that file, set `dataserviceAuthentication.defaultAuthentication = "saf"`.
+Locate and edit the zowe configuration file such as zowe.yaml (such as ~/.zowe/workspace/app-server/ServerConfig/zowe.yaml) and within that file, set `components.app-server.dataserviceAuthentication.defaultAuthentication = "saf"`.
 
 Keep this file open to continue with agent setup.
  
 #### Agent Setup (App Server side)
-Within the zowe.yaml file, you need to define or set **components.zss.agent.agent.host** to a hostname or ip address where ZSS is located that is also visible to the App Server. This could be '0.0.0.0' or the hostname of a z/OS system.
-You must also define or set **components.zss.agent.agent.port**. This is the TCP port which ZSS will listen on to be contacted by the App Server. Define this in the configuration file as a value between 1024-65535. See [zss configuration](https://github.com/zowe/zlux/wiki/Configuration-for-ZLUX-App-Server-&-ZSS#zss-configuration) for more information and an example.
+Within the Zowe configuration file, you need to define or set **components.zss.agent.host** to a hostname or ip address where ZSS is located that is also visible to the App Server. This should be the hostname of a z/OS system.
+You must also define or set **component.zss..port**. This is the TCP port which ZSS will listen on to be contacted by the App Server. Define this in the configuration file as a value between 1024-65535. See [zss configuration](https://docs.zowe.org/stable/user-guide/mvd-configuration) for more information and an example.
 
-As a result of the above edits to zowe.yaml, an example of what it may now look like is:
+An example of a zowe configuration file that works for app-server when zss is available on a different system:
 
 ```yaml
 components:
-  app-server:
-    node:
-      https:
-        ipAddresses:
-        - 0.0.0.0
+    app-server:
         port: 7556
-        keys:
-        - "../defaults/serverConfig/zlux.keystore.key"
-        certificates:
-        - "../defaults/serverConfig/zlux.keystore.cer"
-        certificateAuthorities:
-        - "../defaults/serverConfig/apiml-localca.cer"
-      childProcesses:
-      - path: "../bin/zssServer.sh"
-        once: true
-    productDir: "../defaults"
-    siteDir: "~/.zowe/workspace/app-server/site"
-    groupsDir: "~/.zowe/workspace/app-server/groups"
-    usersDir: "~/.zowe/workspace/app-server/users"
-    pluginsDir: "~/.zowe/workspace/app-server/plugins"
-    dataserviceAuthentication:
-      defaultAuthentication: saf
-      rbac: false
-  zss:
-    agent:
-      host: localhost
-      https:
-        port: 7557
-
+        enabled: true
+        productDir: ../defaults
+        siteDir: ~/.zowe/workspace/app-server/site
+        instanceDir: ~/.zowe/workspace/app-server
+        groupsDir: ~/.zowe/workspace/app-server/groups
+        usersDir: ~/.zowe/workspace/app-server/users
+        pluginsDir: ~/.zowe/workspace/app-server/plugins
+        node:
+            https:
+                ipAddresses: 
+                    - 0.0.0.0
+                keys: 
+                    - "../defaults/serverConfig/zlux.keystore.key"
+                certificates: 
+                    - "../defaults/serverConfig/zlux.keystore.cer"
+                certificateAuthorities: 
+                    - "../defaults/serverConfig/apiml-localca.cer"
+        agent:
+            host: "localhost"
+            https:
+                port: 7557
+        dataserviceAuthentication:
+            defaultAuthentication: "saf"
+            rbac: false
 ```
 
 #### Agent Setup (ZSS side)
 On z/OS, ZSS must be set to have the correct port, IP, and HTTP(S) configuration so that the app-server can reach it.
 
-On a release install (not covered here, but described on docs.zowe.org), ZSS is already set up for use over HTTPS. You can update `ZWES_SERVER_PORT` in a Zowe zowe.yaml file to set which port it should use, to match the value you have on your dev install for `agent.https.port`.
+On a release install (not covered here, but described on docs.zowe.org), ZSS is already set up for use over HTTPS. You can update `components.zss.port` in a Zowe configuration file to set which port it should use, to match the value you have on your dev install for `components.app-server.agent.https.port`.
 
-On a dev install of ZSS, instead of zowe.yaml, server.json is used just like the dev install of the app-server. In fact if App Server and ZSS are on the same system, then this can be the same file. Otherwise, you must edit the server.json file where ZSS is and keep it in sync with the App Server one with regards to the **agent** settings. In a dev install, it is recommended to use a GSKIT compatible keyring or p12 file for using ZSS over HTTPS, or HTTPS via ATTLS, but HTTP is also possible. In that case, you simply configure `agent.http.port` instead of `agent.https.port`, and `agent.http.ipAddresses` instead of `agent.https.ipAddresses`. So, use server.json to set the port and IPs you need to make ZSS visible to the system where app-server runs.
+On a dev install, app-server and zss may be on different systems, but the zowe configuration files for each must match so that app-server can reach zss.
 
 **Note: It is highly recommended to have HTTPS for ZSS. This is the default on a release install, but it is also possible to use AT-TLS to do this such as by following [configuring AT-TLS](https://zowe.github.io/docs-site/latest/user-guide/mvd-configuration.html#configuring-zss-for-https). It is most important when using ZSS externally, as the session security is essential for all but trivial development environments**
 
+Below is an example of a configuration file just for zss, for when app-server is elsewhere.
+
+```yaml
+components:
+    zss:
+        port: 7557
+        enabled: true
+        tls: true
+        productDir: ../defaults
+        pluginsDir: ~/.zowe/workspace/app-server/plugins
+        agent:
+            https:
+                ipAddresses:
+                    - 0.0.0.0
+                keyring: "/path/to/keystore.p12"
+                password: "keyringpassword"
+                label: "keylabel"
+        dataserviceAuthentication:
+            rbac: false
+```
+
+Below is an example of a unified configuration file for when app-server and zss are on the same system.
+
+```yaml
+components:
+    app-server:
+        port: 7556
+        enabled: true
+        productDir: ../defaults
+        siteDir: ~/.zowe/workspace/app-server/site
+        instanceDir: ~/.zowe/workspace/app-server
+        groupsDir: ~/.zowe/workspace/app-server/groups
+        usersDir: ~/.zowe/workspace/app-server/users
+        pluginsDir: ~/.zowe/workspace/app-server/plugins
+        node:
+            https:
+                ipAddresses: 
+                    - 0.0.0.0
+                keys: 
+                    - "../defaults/serverConfig/zlux.keystore.key"
+                certificates: 
+                    - "../defaults/serverConfig/zlux.keystore.cer"
+                certificateAuthorities: 
+                    - "../defaults/serverConfig/apiml-localca.cer"
+        agent:
+            host: "localhost"
+            https:
+                port: 7557
+        dataserviceAuthentication:
+            defaultAuthentication: "saf"
+            rbac: false
+
+    zss:
+        port: 7557
+        enabled: true
+        tls: true
+        productDir: ../defaults
+        pluginsDir: ~/.zowe/workspace/app-server/plugins
+        agent:
+            https:
+                ipAddresses:
+                    - 0.0.0.0
+                keyring: "/path/to/keystore.p12"
+                password: "keyringpassword"
+                label: "keylabel"
+        dataserviceAuthentication:
+            rbac: false
+```
+
 #### Agent swagger installation
-If you intend to use the API Catalog as well, you will want to [install the plugin](https://github.com/zowe/zlux/wiki/Installing-Plugins) "zlux-agent", found in `zlux-server-framework/plugins/zlux-agent`.
+If you intend to use the API Catalog as well, you will want to [install the plugin](https://docs.zowe.org/stable/extend/extend-desktop/mvd-installplugins) "zlux-agent", found in `zlux-server-framework/plugins/zlux-agent`.
 This allows the app-server to serve agent swagger definitions, which are then visible in the API catalog.
 
 
 ### Starting App Server when using ZSS
-When running the App Server with an Agent such as ZSS, you can either set the `server.json` with all info to connect to the Agent, or set that info via environment variable or command line arguments. The above sections detail `server.json` configuration, but the other ways to set the IP and port of the Agent are:
-
-1. Environment variable configuration
-Items in server.json can be substitued by environment variables that have a name that corresponds to each item. The pattern is 
-
-`ZWED_json_key=value` where `ZWED_` is the prefix, and `json_key` is the name of the key. For example,
-
-```
-ZWED_agent_http_port=9999
-ZWED_node_https_ipAddresses=127.0.0.1,192.168.1.100
-``` 
-
-This would override the `server.json` value of `agent.http.port` to be 9999, and `node.https.ipAddresses` to be ['127.0.0.1','192.168.1.100'].
-
-2. CLI argument configuration
-Items in server.json can also be substituded by arguments and flags. The pattern for arguments is
-
-`-Djson.key=value`, where `-D` denotes an argument, and `json.key` is the name of the key. For example,
-
-`-Dagent.http.port=9999 -Dnode.https.ipAddresses=127.0.0.1,192.168.1.100` Would set `agent.http.port` to be 9999, and `node.https.ipAddresses` to be ['127.0.0.1,'192.168.1.100'].
-
-There are also specific flags used for well-known configuration items, such as:
-- *-h*: Declares the host where ZSS can be found. Use as "-h \<hostname\>"
-- *-P*: Declares the port at which ZSS is listening.
-- *-s*: Declares the https port the App Server will listen on.
-
-
-
-This program and the accompanying materials are
-made available under the terms of the Eclipse Public License v2.0 which accompanies
-this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html
-
-SPDX-License-Identifier: EPL-2.0
-
-Copyright Contributors to the Zowe Project.
+When running the App Server with an Agent such as ZSS, you may need to start each independently. They both consume a standardized configuration file as shown in the above examples, but if you're using a development environment instead of a production install, you may need to start app-server and zss by running zlux-app-server/bin/app-server.sh and zss/bin/zssServer.sh respectively.

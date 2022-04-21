@@ -64,7 +64,6 @@ then
   plugin_dir=$2
   shift
 else
-  getPluginsDir
   plugin_dir=$(getPluginsDir)
 fi
 shift

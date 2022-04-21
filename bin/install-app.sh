@@ -95,7 +95,7 @@ EOF
     echo "Plugin registration ended with rc=$?"
     if [ -f "${plugin_dir}/${id}.json" ]
     then
-      chmod 0750 "${plugin_dir}/${id}.json"
+      chmod 0771 "${plugin_dir}/${id}.json"
     fi
   else
       echo "Error: could not find plugin id for path=${app_path}"

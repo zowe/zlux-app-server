@@ -164,7 +164,7 @@ fi
 #Determined log file.  Run zssServer.
 export dir=`dirname "$0"`
 cd $ZSS_SCRIPT_DIR
-_BPX_SHAREAS=NO _BPX_JOBNAME=${ZOWE_PREFIX}SZ1 ./zssServer "${CONFIG_FILE}" 2>&1 | tee $ZWES_LOG_FILE
+_BPX_SHAREAS=NO _BPX_JOBNAME=${ZOWE_PREFIX}SZ ./zssServer "${CONFIG_FILE}" 2>&1 | tee $ZWES_LOG_FILE
 # This program and the accompanying materials are
 # made available under the terms of the Eclipse Public License v2.0 which accompanies
 # this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html

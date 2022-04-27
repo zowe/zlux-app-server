@@ -38,9 +38,6 @@ ZOWE_EXPLORER_HOST ZWE_haInstance_hostname
 ZOWE_PREFIX ZWE_zowe_job_prefix
 ZOWE_ZLUX_SERVER_HTTPS_PORT ZWE_components_app_server_port
 ZOWE_ZSS_XMEM_SERVER_NAME ZWE_components_zss_crossMemoryServerName
-ZWED_agent_https_keyring ZWE_zowe_certificate_keystore_file
-ZWED_agent_https_label ZWE_zowe_certificate_keystore_alias
-ZWED_agent_https_password ZWE_zowe_certificate_keystore_password
 ZWED_node_https_port ZWE_components_app_server_port
 ZWES_SERVER_PORT ZWE_components_zss_port
 ZWES_SERVER_TLS ZWE_components_zss_tls
@@ -56,13 +53,15 @@ export ZWES_ZIS_PARMLIB_MEMBER="ZWESIP00"
 
 
 
-# For backwards compatible behavior, only set the instance ID if it is non-default
-if [ -n "$ZOWE_INSTANCE" ]
+# For backwards compatible behavior
+if [ -n "$ZWE_zowe_rbacProfileIdentifier" ]
 then
-    if [ "$ZOWE_INSTANCE" != "1" ]
-    then
-        export ZWED_instanceID=$ZOWE_INSTANCE
-    fi
+  export ZWED_instanceID=$ZWE_zowe_rbacProfileIdentifier
+fi
+
+if [ -n "$ZWE_zowe_cookieIdentifier" ]
+then
+  export ZWED_cookieIdentifier=$ZWE_zowe_cookieIdentifier
 fi
 
 # shape old env vars into app-server compatible ones

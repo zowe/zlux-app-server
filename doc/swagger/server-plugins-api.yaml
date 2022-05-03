@@ -157,7 +157,9 @@ paths:
         506:
           description: "Set dataserviceAuthentication.rbac to true in server configuration"
 
-
+# Temporarily disabled in v2.0 due to it relying upon server.json which no longer exists
+# Needs to be upgraded to somehow use zowe.yaml-style config
+#
 #  /server/config/attrib:
 #    post:
 #      tags:
@@ -270,9 +272,7 @@ paths:
         506:
           description: "Set dataserviceAuthentication.rbac to true in server configuration"
           
-  # Temporarily disabled in v2.0 due to it relying upon server.json which no longer exists
-  # Needs to be upgraded to somehow use zowe.yaml-style config
-  #
+
   # /server/logLevels/pattern/:componentPattern/level/:level:
   #   post:
   #     tags:

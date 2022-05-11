@@ -12,7 +12,7 @@ services:
     apiInfo:
       - apiId: org.zowe.zss
         gatewayUrl: api/v1
-        swaggerUrl: ${ZSS_PROTOCOL}://${ZWED_agent_host}:${ZSS_PORT}/api-docs/agent
+        swaggerUrl: https://${ZOWE_EXPLORER_HOST}:${ZOWE_ZLUX_SERVER_HTTPS_PORT:-8544}/api-docs/agent
         # documentationUrl: TODO
 catalogUiTiles:
   zss:

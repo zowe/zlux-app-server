@@ -2,6 +2,10 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v1.28.0
+
+- Bugfix: App-server had a jobname prefix regression for several releases when it recieved an incorrect value for ZOWE_PREFIX when LAUNCH_COMPONENT_GROUPS included GATEWAY
+
 ## v1.27.0
 
 - Bugfix: Fix development environment case in which app-server would crash without agent config being fully defined.

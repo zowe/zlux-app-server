@@ -10,7 +10,11 @@
     "test": "echo \"Warning: no test specified\" && exit 0"
   },
   "dependencies": {
-    "zlux-server-framework": "file:../zlux-server-framework",
-    "mkdirp": "~0.5.1"
+    "@opentelemetry/api": "^1.0.4",
+    "@opentelemetry/auto-instrumentations-node": "^0.28.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.28.0",
+    "@opentelemetry/sdk-node": "^0.28.0",
+    "mkdirp": "~0.5.1",
+    "zlux-server-framework": "file:../zlux-server-framework"
   }
 }

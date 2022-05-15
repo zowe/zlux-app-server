@@ -254,7 +254,7 @@ then
     COMPONENT_HOME=${ROOT_DIR}/components/app-server
 
     # containers only
-    if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
+    if [ "${ZWE_RUN_ON_ZOS}" != "true" ]; then
       if [ -f "/component/manifest.yaml" ]; then
         COMPONENT_HOME=/component
         if [ -z "$ZWED_node_pluginScanIntervalSec" ]; then  

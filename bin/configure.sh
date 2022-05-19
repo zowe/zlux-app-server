@@ -28,4 +28,8 @@ cd ../lib
 __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
 
 cd ${COMPONENT_HOME}/share/zlux-app-server/bin/init
-. ./plugins-init.sh
+if [ "${ZWE_components_app_server_useConfigmgr}" = "true" ]; then
+  _CEE_RUNOPTS="XPLINK(ON),HEAPPOOLS(OFF)" ${ZWE_zowe_runtimeDirectory}/bin/utils/configmgr -script "${ZWE_zowe_runtimeDirectory}/components/app-server/share/zlux-app-server/bin/init/plugins-init.js"
+else
+  . ./plugins-init.sh
+fi

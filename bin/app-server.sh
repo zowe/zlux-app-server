@@ -188,5 +188,15 @@ then
 else
   ZLUX_SERVER_FILE=zluxServer.js
 fi
+
+# Weird bug in recent releases has app-server not having the same jobname prefix as other services.
+# This only happens when LAUNCH_COMPONENT_GROUPS includes GATEWAY.
+# Possibly due to hacks elsewhere that we weren't notified of https://github.com/zowe/zowe-install-packaging/commit/0ccb77afca8f6dd8e2782c25490283739ab2791c
+if [ -n "${ZOWE_INSTANCE}" ]; then
+  if [[ "${ZOWE_PREFIX}" != *"${ZOWE_INSTANCE}" ]]; then
+    export ZOWE_PREFIX=${ZOWE_PREFIX}${ZOWE_INSTANCE}
+  fi
+fi
+
 { __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 ; echo "Ended with rc=$?" ; } | tee $ZLUX_NODE_LOG_FILE
 

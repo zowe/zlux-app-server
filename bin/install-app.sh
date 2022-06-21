@@ -126,7 +126,7 @@ installNojs() {
       # install script expected to copy the plugin into this location. could be done manually too.
       app_path=$INSTANCE_DIR/workspace/app-server/pluginDirs/${id}
     fi
-
+mkdir -p ${fallback_inst}/workspace/app-server/plugins
 cat <<EOF >${fallback_inst}/workspace/app-server/plugins/${id}.json
 {
   "identifier": "${id}",

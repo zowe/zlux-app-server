@@ -33,7 +33,7 @@ if [ -z $ZWED_INSTALL_DIR ]; then
 fi
 
 # containers only
-if [ ! -f "${COMPONENT_HOME}/manifest.yaml" ]; then
+if [ "${ZWE_RUN_ON_ZOS}" != "true" ]; then
   if [ -f "/component/manifest.yaml" ]; then
     COMPONENT_HOME=/component
   fi

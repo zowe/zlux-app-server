@@ -2,7 +2,7 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
-## v2.1.0
+## v2.2.0
 
 - Enhancement: app-server can now be configured by using configmgr. This increases startup time and validation of components and their plugins to increase automatic detection of plugin compatibility issues. This mode can be enabled or disabled with zowe configuration property 'components.app-server.useConfigmgr=true/false'
 

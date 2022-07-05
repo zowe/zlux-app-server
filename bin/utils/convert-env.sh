@@ -189,7 +189,7 @@ then
   then
     if [ -z "$LOCAL_CA" ]
     then
-      LOCAL_CA=localca
+      LOCAL_CA=$ZWE_zowe_certificate_pem_certificateAuthorities
     fi
     #, at end turns it into an array
     if [ -n "$EXTERNAL_ROOT_CA" ]

@@ -187,16 +187,12 @@ if [ -z "$ZWED_node_https_certificateAuthorities" ]
 then
   if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
   then
-    if [ -z "$LOCAL_CA" ]
-    then
-      LOCAL_CA=$ZWE_zowe_certificate_pem_certificateAuthorities
-    fi
     #, at end turns it into an array
     if [ -n "$EXTERNAL_ROOT_CA" ]
     then
-      export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&${LOCAL_CA}","${TRUSTSTORE}&${EXTERNAL_ROOT_CA}"
+      export ZWED_node_https_certificateAuthorities="${ZWE_zowe_certificate_pem_certificateAuthorities}","${TRUSTSTORE}&${EXTERNAL_ROOT_CA}"
     else
-      export ZWED_node_https_certificateAuthorities="${TRUSTSTORE}&${LOCAL_CA}",
+      export ZWED_node_https_certificateAuthorities="${ZWE_zowe_certificate_pem_certificateAuthorities}",
     fi
   elif [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
   then

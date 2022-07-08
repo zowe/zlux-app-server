@@ -55,7 +55,7 @@ then
 fi
 
 # Will skip log trimming if ZWED_NODE_LOG_FILE already defined (such as by start.sh)
-.. ./utils/setup-logs.sh
+. ../bin/utils/setup-logs.sh
 
 #Determined log file.  Run node appropriately.
 cd ../lib

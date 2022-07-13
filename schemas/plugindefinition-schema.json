@@ -14,12 +14,12 @@
   "$defs": {
     "reverseDomainNotation": {
       "type": "string",
-      "pattern": "^[A-Za-z]{2,6}((?!-)\\.[A-Za-z0-9-]{1,63}(?<!-))+$"
+      "pattern": "^[A-Za-z]{2,6}(\\.[A-Za-z0-9-]{1,62}[A-Za-z0-9])+$"
     },
     "semverVersion": {
       "type": "string",
       "description": "A semantic version, see https://semver.org/",
-      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-*[a-zA-Z][0-9a-zA-Z\\-\\.]*)?(\\+[0-9a-zA-Z\\-\\.]*)?$"
     },
     "semverRange": {
       "type": "string",
@@ -29,7 +29,7 @@
     "appFwPlugin": {
       "type": "object",
       "required": ["identifier", "apiVersion", "pluginVersion", "pluginType"],
-      "propeties": {
+      "properties": {
         "identifier": {
           "$ref": "#/$defs/reverseDomainNotation",
           "description": "Each plugin must have a zowe-wide unique ID in reverse domain name notation"
@@ -61,7 +61,6 @@
         "requirements": {
           "type": "object",
           "description": "Defining a list of requirements lets the app-server decide if your plugin should or should not be loaded according to if requirements are met in the environment.",
-          "additionalProperties": false,
           "properties": {
             "components": {
               "type": "object",
@@ -126,10 +125,10 @@
       }
     },
     "libraryPlugin": {
-      "$ref": "#/$defs/appFwPlugin",
+      "allOf": [ { "$ref": "#/$defs/appFwPlugin" } ],
       "description": "Library plugins are used for hosting static web content",
       "deprecated": true,
-      "additionalProperties": false,
+      "unevaluatedProperties": false,
       "properties": {
         "pluginType": {
           "const": "library"
@@ -138,14 +137,14 @@
           "type": "string"
         },
         "libraryVersion": {
-          "$ref": "#/$devs/semverVersion"
+          "$ref": "#/$defs/semverVersion"
         }        
       }
     },
     "bootstrapPlugin": {
-      "$ref": "#/$defs/appFwPlugin",
+      "allOf": [ { "$ref": "#/$defs/appFwPlugin" } ],
       "description": "Only one bootstrap plugin per server is intended, and its role is to bootstrap Desktop-type plugins for browser use",
-      "additionalProperties": false,
+      "unevaluatedProperties": false,
       "properties": {
         "pluginType": {
           "const": "bootstrap"
@@ -156,9 +155,9 @@
       }
     },
     "desktopPlugin": {
-      "$ref": "#/$defs/appFwPlugin",
+      "allOf": [ { "$ref": "#/$defs/appFwPlugin" } ],
       "description": "Desktop plugins are webcontent which embeds application-type plugins within a web browser, regardless of if resembles a 'desktop' or not.",
-      "additionalProperties": false,
+      "unevaluatedProperties": false,
       "properties": {
         "pluginType": {
           "const": "desktop"
@@ -169,9 +168,9 @@
       }
     },
     "applicationPlugin": {
-      "$ref": "#/$defs/appFwPlugin",
+      "allOf": [ { "$ref": "#/$defs/appFwPlugin" } ],
       "description": "Application plugins contain web content and/or network APIs which are compatible with embedding in a Desktop plugin web page, but may also be used by themselves",
-      "additionalProperties": false,
+      "unevaluatedProperties": false,
       "properties": {
         "pluginType": {
           "const": "application"
@@ -192,10 +191,10 @@
       }
     },
     "nodeAuthenticationPlugin": {
-      "$ref": "#/$defs/appFwPlugin",
+      "allOf": [ { "$ref": "#/$defs/appFwPlugin" } ],
       "description": "The app-server delegates to these plugins for user permission management tasks such as authentication and authorization",
       "required": [ "filename" ],
-      "additionalProperties": false,
+      "unevaluatedProperties": false,
       "properties": {
         "filename": {
           "type": "string",
@@ -222,9 +221,9 @@
       "description": "A webcontent object without the attributes of an application, such as framework, can be used to just serve a plugin's /web folder from the app-server"
     },
     "nativeWebContent": {
-      "$ref": "#/$defs/appWebContent",
+      "allOf": [ { "$ref": "#/$defs/appWebContent" } ],
       "description": "A Native application is one that provides a /web/main.js file which can be run within the Zowe Desktop when the user clicks its icon",
-      "additionalProperties": false,
+      "unevaluatedProperties": false,
       "properties": {
         "framework": {
           "type": "string",
@@ -233,23 +232,42 @@
       }
     },
     "iframeWebContent": {
-      "$ref": "#/$defs/appWebContent",
+      "oneOf": [
+        { "$ref": "#/$defs/localIframeWebContent" },
+        { "$ref": "#/$defs/remoteIframeWebContent" }
+      ]
+    },
+    "localIframeWebContent": {
+      "allOf": [ { "$ref": "#/$defs/appWebContent" } ],
       "description": "An iframe application is one that provides some html file either within the /web folder or found on another server at runtime, which can be embedded within the Zowe Desktop when the user clicks its icon",
-      "additionalProperties": false,
+      "unevaluatedProperties": false,
       "properties": {
         "framework": {
           "const": "iframe"
         },
-        "oneOf": [
-          "destination": {
-            "type": "string",
-            "description": "A URL with shell-style ${} subtitutions allowed which states which address the iframe should load."
-          },
-          "startingPage": {
-            "type": "string",
-            "description": "A filename within the /web folder of the plugin, which the iframe should load."
-          }
-        ],
+        "startingPage": {
+          "type": "string",
+          "description": "A filename within the /web folder of the plugin, which the iframe should load."
+        },
+        "standaloneUseFramework": {
+          "type": "boolean",
+          "default": false,
+          "description": "When true, iframe apps will be launched within the desktop framework so that features like notifications and app2app communication will function identically to the Desktop. When false, opening the iframe app in a standalone page will have it function like an independent website."
+        }
+      }
+    },
+    "remoteIframeWebContent": {
+      "allOf": [ { "$ref": "#/$defs/appWebContent" } ],
+      "description": "An iframe application is one that provides some html file either within the /web folder or found on another server at runtime, which can be embedded within the Zowe Desktop when the user clicks its icon",
+      "unevaluatedProperties": false,
+      "properties": {
+        "framework": {
+          "const": "iframe"
+        },
+        "destination": {
+          "type": "string",
+          "description": "A URL with shell-style ${} subtitutions allowed which states which address the iframe should load."
+        },
         "standaloneUseFramework": {
           "type": "boolean",
           "default": false,
@@ -261,7 +279,6 @@
       "type": "object",
       "description": "A description of an application which can be run within the Zowe Desktop",
       "required": [ "framework", "launchDefinition", "descriptionKey", "descriptionDefault", "defaultWindowStyle" ],
-      "additionalProperties": false,
       "properties": {
         "framework": {
           "type": "string",
@@ -334,9 +351,9 @@
       }
     },
     "externalService": {
-      "$ref": "#/$defs/service",
+      "allOf": [ { "$ref": "#/$defs/service" } ],
       "description": "A proxy service which is hosted from the app-server",
-      "additionalProperties": false,
+      "unevaluatedProperties": false,
       "properties": {
         "type": {
           "const": "external"
@@ -363,10 +380,10 @@
       }
     },
     "routerService": {
-      "$ref": "#/$defs/service",
+      "allOf": [ { "$ref": "#/$defs/service" } ],
       "description": "An ExpressJS router service hosted from the app-server",
       "required": ["type", "version", "name", "fileName", "routerFactory"],
-      "additionalProperties": false,
+      "unevaluatedProperties": false,
       "properties": {
         "type": {
           "const": "router"
@@ -402,11 +419,11 @@
       }
     },
     "nodeService": {
-      "$ref": "#/$defs/service",
+      "allOf": [ { "$ref": "#/$defs/service" } ],
       "description": "A nodejs callback service that acts upon expressjs request and response objects. It runs within the app-server",
       "required": ["type", "version", "name", "fileName", "methods", "handlerInstaller"],
       "deprecated": true,
-      "additionalProperties": false,
+      "unevaluatedProperties": false,
       "properties": {
         "type": {
           "const": "nodeService"
@@ -440,10 +457,10 @@
       }
     },
     "serviceService": {
-      "$ref": "#/$defs/service",
+      "allOf": [ { "$ref": "#/$defs/service" } ],
       "description": "A service that runs within ZSS. It uses a callback written in C that recieves a request and response struct",
       "required": ["type", "version", "name", "methods", "initializerName"],
-      "additionalProperties": false,
+      "unevaluatedProperties": false,
       "properties": {
         "type": {
           "const": "service"

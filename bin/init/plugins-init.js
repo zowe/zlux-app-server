@@ -20,8 +20,12 @@ const extensionDirectory=std.getenv('ZWE_zowe_extensionDirectory');
 const workspaceDirectory=std.getenv('ZWE_zowe_workspaceDirectory');
 
 
+// This can be used to load useful js libraries present within zowe
+// But it's not recommended for extenders because this is internal, undocumented code
+// Which could have a change in behavior between versions of zowe
+// It is being used here because app-server is shipped within zowe, so behavior is kept in sync
 let fs, componentlib;
-async function importModule(path) {
+async function importModule() {
   try {
     fs = await import(`${runtimeDirectory}/bin/libs/fs`);
     componentlib = await import(`${runtimeDirectory}/bin/libs/component`);
@@ -31,7 +35,7 @@ async function importModule(path) {
   }
 }
 
-importModule(`${runtimeDirectory}/bin/libs/fs`).then(()=> {
+importModule().then(()=> {
   const installedComponentsEnv=std.getenv('ZWE_INSTALLED_COMPONENTS');
   const installedComponents = installedComponentsEnv ? installedComponentsEnv.split(',') : null;
 
@@ -42,17 +46,6 @@ importModule(`${runtimeDirectory}/bin/libs/fs`).then(()=> {
 
   function deleteFile(path) {
     return os.remove(path);
-  }
-
-  function showExceptions(e, depth) {
-    let blanks = "                                                                 ";
-    let subs = e.subExceptions;
-    console.log(blanks.substring(0, depth * 2) + e.message);
-    if (subs) {
-      for (const sub of subs) {
-        showExceptions(sub, depth + 1);
-      }
-    }
   }
 
   function registerPlugin(path, pluginDefinition) {

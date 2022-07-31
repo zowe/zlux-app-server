@@ -382,7 +382,7 @@
     "routerService": {
       "allOf": [ { "$ref": "#/$defs/service" } ],
       "description": "An ExpressJS router service hosted from the app-server",
-      "required": ["type", "version", "name", "fileName", "routerFactory"],
+      "required": ["type", "version", "name", "routerFactory"],
       "unevaluatedProperties": false,
       "properties": {
         "type": {
@@ -398,9 +398,13 @@
           "default": true,
           "deprecated": true
         },
-        "fileName": {
+        "filename": {
           "type": "string",
           "description": "A javascript file located within the plugin's 'lib' folder which contains the router factory. The router is for a REST or Websocket API that the app-server will include."
+        },
+        "fileName": {
+          "type": "string",
+          "description": "Alias of 'filename'."
         },
         "routerFactory": {
           "type": "string",

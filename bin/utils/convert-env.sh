@@ -98,31 +98,31 @@ fi
 
 if [ -z "$ZWED_node_mediationLayer_enabled" ]; then
   export ZWED_node_mediationLayer_enabled="false"
-  echo "step1" > Step1.txt
+  echo "step1"
 elif [ -z "$ZWED_agent_mediationLayer_enabled" ]; then
-  echo "im here step 2" > Step2.txt
+  echo "AAAAAAAAZWED_agent_mediationLayer_enabled does not exists"
   if [[ "${OSNAME}" == "OS/390" ]]; then
     export ZWED_agent_mediationLayer_enabled="true";
-    echo "step 3" > Step33.txt
+    echo "AAAAAAAAstep 3"
   else
     zss_def_template="zss.apiml_static_reg.yaml.template"
-    echo "values of ZWED_agent_https_port is ${ZWED_agent_https_port}" > ./Step4.txt
-    echo "values of ZWED_agent_http_port is ${ZWED_agent_http_port}" > ./Step14.txt
+    echo "AAAAAAAAvalues of ZWED_agent_https_port is ${ZWED_agent_https_port}"
+    echo "AAAAAAAAvalues of ZWED_agent_http_port is ${ZWED_agent_http_port}"
 
     zss_configured=false
     if [ -n "${ZWED_agent_https_port}" ]; then
       export ZSS_PORT="${ZWED_agent_https_port}"
       export ZSS_PROTOCOL=https
       zss_configured=true
-      echo "values of ZSS_PORT is ${ZSS_PORT} values of ZSS_PROTOCOL is ${ZSS_PROTOCOL}" > ./Step5.txt
+      echo "AAAAAAAAvalues of ZSS_PORT is ${ZSS_PORT} values of ZSS_PROTOCOL is ${ZSS_PROTOCOL}"
     elif [ -n "${ZWED_agent_http_port}" ]; then 
       export ZSS_PORT="${ZWED_agent_http_port}"
       export ZSS_PROTOCOL=http
       zss_configured=true
-      echo "values of ZSS_PORT is ${ZSS_PORT} values of ZSS_PROTOCOL is ${ZSS_PROTOCOL}" > ./Step6.txt
+      echo "AAAAAAAAvalues of ZSS_PORT is ${ZSS_PORT} values of ZSS_PROTOCOL is ${ZSS_PROTOCOL}"
     fi
-      echo "values of zss_configured is ${zss_configured}, values of STATIC_DEF_CONFIG_DIR is ${STATIC_DEF_CONFIG_DIR}" > ./Step16.txt
-      echo "values of pwd  is $(pwd)" > ./Steppwd.txt
+      echo "AAAAAAAAvalues of zss_configured is ${zss_configured}, values of STATIC_DEF_CONFIG_DIR is ${STATIC_DEF_CONFIG_DIR}"
+      echo "AAAAAAAAvalues of pwd  is $(pwd)"
 
     if [ "${zss_configured}" = "true" ] && [ -n "${STATIC_DEF_CONFIG_DIR}" ]; then
       zss_registration_yaml=${STATIC_DEF_CONFIG_DIR}/zss.apiml_static_reg_yaml_template.${ZWELS_HA_INSTANCE_ID}.yml
@@ -131,11 +131,11 @@ elif [ -z "$ZWED_agent_mediationLayer_enabled" ]; then
       echo "${zss_parsed_def}" > "${zss_registration_yaml}"
       chmod 770 "${zss_registration_yaml}"
       export ZWED_agent_mediationLayer_enabled="true"
-      echo "values of zss_registration_yaml is ${zss_registration_yaml} values of zss_def is ${zss_def}" > ./Step7.txt
-      echo "values of zss_parsed_def is ${zss_parsed_def} " > ./Step8.txt
+      echo "AAAAAAAAvalues of zss_registration_yaml is ${zss_registration_yaml} values of zss_def is ${zss_def}" > ./Step7.txt
+      echo "AAAAAAAAvalues of zss_parsed_def is ${zss_parsed_def} "
     else
       export ZWED_agent_mediationLayer_enabled="false"
-      echo "ZWED_agent_mediationLayer_enabled is ${ZWED_agent_mediationLayer_enabled}" > ./Step8.txt
+      echo "echoZWED_agent_mediationLayer_enabled is ${ZWED_agent_mediationLayer_enabled}"
     fi
 
   

@@ -105,7 +105,7 @@ elif [ -z "$ZWED_agent_mediationLayer_enabled" ]; then
     export ZWED_agent_mediationLayer_enabled="true";
     echo "step 3" > Step33.txt
   else
-     zss_def_template="zss.apiml_static_reg.yaml.template"
+    zss_def_template="zss.apiml_static_reg.yaml.template"
     echo "values of ZWED_agent_https_port is ${ZWED_agent_https_port}" > ./Step4.txt
     echo "values of ZWED_agent_http_port is ${ZWED_agent_http_port}" > ./Step14.txt
 

@@ -120,10 +120,10 @@ elif [ -z "$ZWED_agent_mediationLayer_enabled" ]; then
       zss_configured=true
       export TESTVALUE= "${TESTVALUE};AAAAAAAAvalues of ZSS_PORT is ${ZSS_PORT} values of ZSS_PROTOCOL is ${ZSS_PROTOCOL}"
     fi
-      export TESTVALUE= "${TESTVALUE};values of zss_configured is ${zss_configured}, values of STATIC_DEF_CONFIG_DIR is ${STATIC_DEF_CONFIG_DIR}"
+      export TESTVALUE= "${TESTVALUE};values of zss_configured is ${zss_configured}, values of ZWE_STATIC_DEFINITIONS_DIR is ${ZWE_STATIC_DEFINITIONS_DIR}"
       export TESTVALUE= "${TESTVALUE};AAAAAAAAvalues of pwd  is $(pwd)"
 
-    if [ "${zss_configured}" = "true" ] && [ -n "${STATIC_DEF_CONFIG_DIR}" ]; then
+    if [ "${zss_configured}" = "true" ] && [ -n "${ZWE_STATIC_DEFINITIONS_DIR}" ]; then
       zss_registration_yaml=${STATIC_DEF_CONFIG_DIR}/zss.apiml_static_reg_yaml_template.${ZWELS_HA_INSTANCE_ID}.yml
       zss_def="../${zss_def_template}"
       zss_parsed_def=$( ( echo "cat <<EOF" ; cat "${zss_def}" ; echo ; echo EOF ) | sh 2>&1)

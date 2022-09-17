@@ -98,45 +98,32 @@ fi
 
 if [ -z "$ZWED_node_mediationLayer_enabled" ]; then
   export ZWED_node_mediationLayer_enabled="false"
-  echo "step1"
 elif [ -z "$ZWED_agent_mediationLayer_enabled" ]; then
-  export TESTVALUE = "AAAAAAAAZ ${ZWED_agent_mediationLayer_enabled} does not exists;"
   if [[ "${OSNAME}" == "OS/390" ]]; then
     export ZWED_agent_mediationLayer_enabled="true";
-    echo "AAAAAAAAstep 3"
   else
     zss_def_template="zss.apiml_static_reg.yaml.template"
-    export TESTVALUE= "${TESTVALUE};AAAAAAAAvalues of ZWED_agent_https_port is ${ZWED_agent_https_port};AAAAAAAAvalues of ZWED_agent_http_port is ${ZWED_agent_http_port}"
-
     zss_configured=false
     if [ -n "${ZWED_agent_https_port}" ]; then
       export ZSS_PORT="${ZWED_agent_https_port}"
       export ZSS_PROTOCOL=https
       zss_configured=true
-      export TESTVALUE= "${TESTVALUE};AAAAAAAAvalues of ZSS_PORT is ${ZSS_PORT} values of ZSS_PROTOCOL is ${ZSS_PROTOCOL}"
     elif [ -n "${ZWED_agent_http_port}" ]; then 
       export ZSS_PORT="${ZWED_agent_http_port}"
       export ZSS_PROTOCOL=http
       zss_configured=true
-      export TESTVALUE= "${TESTVALUE};AAAAAAAAvalues of ZSS_PORT is ${ZSS_PORT} values of ZSS_PROTOCOL is ${ZSS_PROTOCOL}"
     fi
-      export TESTVALUE= "${TESTVALUE};values of zss_configured is ${zss_configured}, values of ZWE_STATIC_DEFINITIONS_DIR is ${ZWE_STATIC_DEFINITIONS_DIR}"
-      export TESTVALUE= "${TESTVALUE};AAAAAAAAvalues of pwd  is $(pwd)"
 
     if [ "${zss_configured}" = "true" ] && [ -n "${ZWE_STATIC_DEFINITIONS_DIR}" ]; then
-      zss_registration_yaml=${ZWE_STATIC_DEFINITIONS_DIR}/zss.apiml_static_reg_yaml_template.${ZWE_CLI_PARAMETER_HA_INSTANCE}.yml
+      zss_registration_yaml=${STATIC_DEF_CONFIG_DIR}/zss.apiml_static_reg_yaml_template.${ZWE_CLI_PARAMETER_HA_INSTANCE}.yml
       zss_def="../${zss_def_template}"
       zss_parsed_def=$( ( echo "cat <<EOF" ; cat "${zss_def}" ; echo ; echo EOF ) | sh 2>&1)
       echo "${zss_parsed_def}" > "${zss_registration_yaml}"
       chmod 770 "${zss_registration_yaml}"
       export ZWED_agent_mediationLayer_enabled="true"
-      export TESTVALUE= "${TESTVALUE};AAvalues of zss_registration_yaml is ${zss_registration_yaml} values of zss_def is ${zss_def}" > ./Step7.txt
-      export TESTVALUE= "${TESTVALUE};values of zss_parsed_def is ${zss_parsed_def} "
     else
       export ZWED_agent_mediationLayer_enabled="false"
-      export TESTVALUE= "${TESTVALUE};echoZWED_agent_mediationLayer_enabled is ${ZWED_agent_mediationLayer_enabled}"
     fi
-
   
     unset ZSS_PORT
     unset ZSS_PROTOCOL

@@ -49,6 +49,3 @@ for installed_component in $(echo "${ZWE_INSTALLED_COMPONENTS}" | sed "s/,/ /g")
     echo "Warning: Could not remove app framework plugins for extension ${installed_component} because its directory could not be found within ${ZWE_zowe_extensionDirectory}"
   fi
 done
-
-
-

@@ -2,6 +2,11 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v2.3.0
+
+- Enhancement: app-server can now be configured by using configmgr. This increases startup time and validation of components and their plugins to increase automatic detection of plugin compatibility issues. This mode can be enabled or disabled with zowe configuration property 'zowe.useConfigmgr=true/false'
+- Bugfix: Schema regex pattern for semver range was not working in configmgr, and has been corrected
+
 ## v2.0.0
 
 - Enhancement: Renamed ZLUX_ environment variables to ZWED_ for consistency. Backwards compatible with old environment variables.

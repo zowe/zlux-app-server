@@ -80,11 +80,11 @@ To use the App Server, the following is required:
 
 * **NodeJS** - v8.16.x minimum up to v12.x is officially supported by the Zowe community.
 
-Plugins may depend upon other technologies, such as Java or ZSS. An plugin's [pluginDefinition](https://docs.zowe.org/stable/extend/extend-desktop/mvd-plugindefandstruct) or README will help you to understand if additional prerequisites are needed for that plugin.
+Plugins may depend upon other technologies, such as Java or ZSS. A plugin's [pluginDefinition](https://docs.zowe.org/stable/extend/extend-desktop/mvd-plugindefandstruct) or README will help you to understand if additional prerequisites are needed for that plugin.
 
 
 ## 1. Acquire the source code
-Afterwards, clone (or download) the github capstone repository, https://github.com/zowe/zlux
+Afterwards, clone (or download) the github capstone repository, https://github.com/zowe/zlux.
 As we'll be configuring ZSS on z/OS's USS, and the zLUX App Server on a LUW host, you'll need to put the contents on both systems.
 If using git, the following commands should be used:
 ```
@@ -152,15 +152,15 @@ https://\<App Server\>:7556/ZLUX/plugins/org.zowe.zlux.bootstrap/web/index.html
 
 **Note: If you are using the API Mediation Layer, which is not covered here, it is preferred to access the app server through it. That URL would be https://\<Gateway server\>:\<Gateway Port\>/zlux/ui/v1/ZLUX/plugins/org.zowe.zlux.bootstrap/web/index.html**
 
-Once here, you should be greeted with a Login screen. By default trivial authentication is used which allows to login with arbitrary credentials.
+Once here, you should be greeted with a Login screen. By default, trivial authentication is used which allows to login with arbitrary credentials.
 So, you can type in any username to get access to the desktop, which likely does not yet have any Apps. Next, the server should be configured, Apps added, and authentication set up.
 
 ## 5. Customizing configuration
 A default configuration file is present in zlux-app-server/defaults/serverConfig/zowe.yaml. In a development environment, you should move this somewhere and customize it and use it to start the server.
 
-Read the [Configuration](https://docs.zowe.org/stable/user-guide/mvd-configuration) page for anexplanation of interesting items that you'll want to configure for your server, as well as [the json-schema document for the app-server](https://github.com/zowe/zlux/blob/v2.x/staging/schemas/zlux-config-schema.json) which describes every possible value.
+Read the [Configuration](https://docs.zowe.org/stable/user-guide/mvd-configuration) page for an explanation of interesting items that you'll want to configure for your server, as well as [the json-schema document for the app-server](https://github.com/zowe/zlux/blob/v2.x/staging/schemas/zlux-config-schema.json) which describes every possible value.
 
-In short, determine the location of your workspace directory (Environment variable `ZWE_zowe_workspaceDirectory`, or `~/.zowe/workspace` (Linux, Unix, z/OS) or `%USERPROFILE%/.zowe` when `ZWE_zowe_workspaceDirectory` is not defined)
+In short, determine the location of your workspace directory (environment variable `ZWE_zowe_workspaceDirectory`, or `~/.zowe/workspace` (Linux, Unix, z/OS) or `%USERPROFILE%/.zowe` when `ZWE_zowe_workspaceDirectory` is not defined).
 Within the workspace directory, create **app-server/serverConfig/zowe.yaml** by copying **zlux-app-server/defaults/serverConfig/zowe.yaml**, and edit it to change attributes such as the HTTPS port via **components.app-server.node.https.port**, or the location of plugins.
 
 ## 6. Adding Plugins
@@ -212,7 +212,7 @@ git clone git@github.com:zowe/sample-iframe-app.git
 
 ## 7. Adding ZSS to the environment
 Like the App Server, ZSS is an HTTP(S) server component of Zowe. 
-However unlike the App Server, ZSS is a z/OS specific component which exists to provide core low-level & security APIs, as well as a place to attach lower-level plugins than could be built with the App Server. The configuration, directories, and network-level API structures are similar, as these servers work together to support Apps.
+However unlike the App Server, ZSS is a z/OS specific component which exists to provide core low-level & security APIs, as well as a place to attach lower-level plugins that could be built with the App Server. The configuration, directories, and network-level API structures are similar, as these servers work together to support Apps.
 Also, some of the low-level APIs are made possibly by ZSS working in concert with the Zowe Cross Memory Server, which is not an HTTP(S) server, but ZSS provides any needed HTTP(S) access. So, if you need the APIs provided by ZSS, or want to build & use low-level plugins, then you must add ZSS and the Cross Memory Server to your Zowe environment.
 
 Since ZSS adheres to the same configuration & directory structure as the App server, the easiest way to set up ZSS is to clone all of the App Server repos ([Step 1](#1-acquire-the-source-code)) onto z/OS if you have not already done so. However, strictly speaking the only non-ZSS repo needed is the `zlux-app-server` repo because it contains the scripts that are used to start the servers.

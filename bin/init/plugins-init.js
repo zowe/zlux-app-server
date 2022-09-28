@@ -85,7 +85,7 @@ function deregisterPlugin(pluginDefinition) {
 }
 
 function deregisterApp2App(appId) {
-  const actionPath = path.join(actionsDirectory, appId);
+  const actionPath = pathoid.join(actionsDirectory, appId);
   if (fs.fileExists(actionPath, true)) {
     const rc = deleteFile(actionPath);
     if (rc !== 0) {
@@ -106,7 +106,7 @@ function copyRecognizers(appDir, appId, appVers) {
   if (fs.directoryExists(pluginRecognizersLocation)) { // Get recognizers in a plugin's appDir/config/xxx location
     fs.getFilesInDirectory(pluginRecognizersLocation).forEach(filename => {
       const filepath = pathoid.resolve(pluginRecognizersLocation, filename);
-      const filepathConfig = path.resolve(path.join(recognizerDirectory, filename));
+      const filepathConfig = pathoid.resolve(pathoid.join(recognizerDirectory, filename));
       
       recognizers = JSON.parse(xplatform.loadFileUTF8(filepath, xplatform.AUTO_DETECT)).recognizers;
       recognizersKeys = Object.keys(recognizers)
@@ -128,7 +128,7 @@ function copyRecognizers(appDir, appId, appVers) {
         }
         recognizers = Object.assign(configRecognizers, recognizers); // // If found, combine the ones found in config with ones found in plugin
       } catch (e) {
-        logger.debug("No existing recognizers were found in config for '" + appId + "'");
+        console.log(`Error: Invalid JSON for ${filepathConfig}`);
       }
       
       if (recognizers) { // Attempt to copy recognizers over to config location for Desktop access later

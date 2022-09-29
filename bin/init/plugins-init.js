@@ -13,10 +13,11 @@ import * as zos from 'zos';
 import * as std from 'std';
 import * as xplatform from 'xplatform';
 import * as fs from '../../../../../../bin/libs/fs';
+import * as common from '../../../../../../bin/libs/common';
 import * as componentlib from '../../../../../../bin/libs/component';
 import { PathAPI as pathoid } from '../../../../../../bin/libs/pathoid';
 
-console.log(`Started plugins-init.js, platform=${os.platform}`);
+common.printFormattedDebug("ZWED", "plugins-init", `Started plugins-init.js, platform=${os.platform}`);
 
 const runtimeDirectory=std.getenv('ZWE_zowe_runtimeDirectory');
 const extensionDirectory=std.getenv('ZWE_zowe_extensionDirectory');
@@ -39,6 +40,8 @@ function deleteFile(path) {
 function registerPlugin(pluginPath, pluginDefinition) {
   const pointerPath = `${pluginPointerDirectory}/${pluginDefinition.identifier}.json`;
   if (fs.fileExists(pointerPath)) {
+    //in case of upgrade
+    registerApp2App(pluginPath, pluginDefinition.identifier, pluginDefinition.pluginVersion);
     return true;
   } else {
     let location, relativeTo;
@@ -67,6 +70,7 @@ function registerPlugin(pluginPath, pluginDefinition) {
 
 
 function registerApp2App(pluginDirectory, pluginId, pluginVersion) {
+  common.printFormattedDebug("ZWED", "plugins-init", `app2app for ${pluginId}`);
   copyRecognizers(pluginDirectory, pluginId, pluginVersion);
   copyActions(pluginDirectory, pluginId, pluginVersion);
 }
@@ -76,7 +80,7 @@ function deregisterPlugin(pluginDefinition) {
   if (fs.fileExists(filePath, true)) {
     const rc = deleteFile(filePath);
     if (rc !== 0) {
-      console.log(`Could not deregister plugin ${pluginDefinition.identifier}, delete ${filePath} failed, error=${rc}`);
+      common.printFormattedError("ZWED", "plugins-init", `Could not deregister plugin ${pluginDefinition.identifier}, delete ${filePath} failed, error=${rc}`);
     }
     return rc !== 0;
   } else {
@@ -89,7 +93,7 @@ function deregisterApp2App(appId) {
   if (fs.fileExists(actionPath, true)) {
     const rc = deleteFile(actionPath);
     if (rc !== 0) {
-      console.log(`Could not deregister plugin ${appId}, delete ${actionPath} failed, error=${rc}`);
+      common.printFormattedError("ZWED", "plugins-init", `Could not deregister plugin ${appId}, delete ${actionPath} failed, error=${rc}`);
     }
     return rc === 0;
   }
@@ -104,6 +108,7 @@ function copyRecognizers(appDir, appId, appVers) {
 
 
   if (fs.directoryExists(pluginRecognizersLocation)) { // Get recognizers in a plugin's appDir/config/xxx location
+    common.printFormattedDebug("ZWED", "plugins-init", `rec ${pluginRecognizersLocation} exists`);
     fs.getFilesInDirectory(pluginRecognizersLocation).forEach(filename => {
       const filepath = pathoid.resolve(pluginRecognizersLocation, filename);
       const filepathConfig = pathoid.resolve(pathoid.join(recognizerDirectory, filename));
@@ -115,9 +120,10 @@ function copyRecognizers(appDir, appId, appVers) {
         recognizers[key].pluginIdentifier = appId;
         recognizers[key].key = appId + ":" + key + ":" + recognizers[key].id; // pluginid_that_provided_it:index(or_name)_in_that_provider:actionid
       }
-      console.log(`ZWED0301I Found ${recognizers} in config for '${appId}'`);
+      common.printFormattedDebug("ZWED", "plugins-init", `ZWED0301I Found ${filepath} in config for '${appId}'`);
+      common.printFormattedDebug("ZWED", "plugins-init", `Going to merge into ${filepathConfig}`);
       try { // Get pre-existing recognizers in config, if any
-        configRecognizers = JSON.parse(xplatform.loadFileUTF8(filepathConfig, xplatform.AUTO_DETECT)).recognizers;
+        configRecognizers = fs.fileExists(filepathConfig) ? JSON.parse(xplatform.loadFileUTF8(filepathConfig, xplatform.AUTO_DETECT)).recognizers : {};
         const configRecognizersKeys = Object.keys(configRecognizers);
         for (const configKey of configRecognizersKeys) { // Traverse config recognizers
           for (const key of recognizerKeys) { // Traverse plugin recognizers
@@ -126,22 +132,23 @@ function copyRecognizers(appDir, appId, appVers) {
             }
           }
         }
-        recognizers = Object.assign(configRecognizers, recognizers); // // If found, combine the ones found in config with ones found in plugin
+        recognizers = Object.assign(configRecognizers, recognizers); // If found, combine the ones found in config with ones found in plugin
       } catch (e) {
-        console.log(`Error: Invalid JSON for ${filepathConfig}`);
+        common.printFormattedError("ZWED", "plugins-init", `Error: Invalid JSON for ${filepathConfig}`);
       }
       
       if (recognizers) { // Attempt to copy recognizers over to config location for Desktop access later
         try { //TODO: Doing recognizers.recognizers is redundant. We may want to consider refactoring in the future
           xplatform.storeFileUTF8(filepathConfig, xplatform.AUTO_DETECT,  '{ "recognizers":' + JSON.stringify(recognizers) + '}');
-          console.log("ZWED0294I Successfully loaded " + recognizers.length + " recognizers for '" + appId + "' into config");
+          common.printFormattedInfo("ZWED", "plugins-init", "ZWED0294I Successfully loaded " + Object.keys(recognizers).length + " recognizers for '" + appId + "' into config at "+filepathConfig);
         } catch (e) {
-          console.log(`ZWED0177W Unable to load ${recognizers} for '${appId}' into config`);
+          common.printFormattedError("ZWED", "plugins-init", `ZWED0177W Unable to load ${recognizers} for '${appId}' into config`);
         }
       }
       
     });
   }
+  common.printFormattedDebug("ZWED", "plugins-init", `Done rec`);
 }
 
 function copyActions(appDir, appId, appVers) {
@@ -150,6 +157,7 @@ function copyActions(appDir, appId, appVers) {
   const pluginActionsLocation = pathoid.join(appDir, "config", "actions", appId);
 
   if (fs.fileExists(pluginActionsLocation)) {
+    common.printFormattedDebug("ZWED", "plugins-init", `act ${pluginActionsLocation} exists`);
     try { // Get actions in a plugin's appDir/config/xxx location
       actions = JSON.parse(xplatform.loadFileUTF8(pluginActionsLocation, xplatform.AUTO_DETECT)).actions;
       actionsKeys = Object.keys(actions)
@@ -157,32 +165,33 @@ function copyActions(appDir, appId, appVers) {
         actions[key].pluginVersion = appVers;
         actions[key].pluginIdentifier = appId;
       }
-      console.log(`ZWED0301I Found ${actions} in config for '${appId}'`);
+      common.printFormattedDebug("ZWED", "plugins-init", `ZWED0301I Found ${actions} in config for '${appId}'`);
     } catch (e) {
-      console.log(`Error: Malformed JSON in ${pluginActionsLocation}`);
+      common.printFormattedError("ZWED", "plugins-init", `Error: Malformed JSON in ${pluginActionsLocation}`);
     }
 
     if (actions) { // Attempt to copy actions over to config location for Desktop access later
       try { //TODO: Doing actions.actions is redundant. We may want to consider refactoring in the future
         xplatform.storeFileUTF8(pathoid.join(actionsDirectory, appId), xplatform.AUTO_DETECT,  '{ "actions":' + JSON.stringify(actions) + '}');
-        console.log("ZWED0295I Successfully loaded " + actions.length + " actions for '" + appId + "' into config");
+        common.printFormattedInfo("ZWED", "plugins-init", "ZWED0295I Successfully loaded " + actions.length + " actions for '" + appId + "' into config at "+pathoid.join(actionsDirectory, appId));
       } catch (e) {
-        console.log(`ZWED0177W Unable to load ${actions} for '${appId}' into config`);
+        common.printFormattedError("ZWED", "plugins-init", `ZWED0177W Unable to load ${actions} for '${appId}' into config`);
       }
     }
   }
+  common.printFormattedDebug("ZWED", "plugins-init", `done act`);
 }
 
 
 if (!fs.directoryExists(pluginPointerDirectory, true)) {
   const rc = os.mkdir(pluginPointerDirectory, 0o770);
   if (rc < 0) {
-    console.log(`Could not create pluginsDir=${pluginPointerDirectory}, err=${rc}`);
+    common.printFormattedError("ZWED", "plugins-init", `Could not create pluginsDir=${pluginPointerDirectory}, err=${rc}`);
     std.exit(2);
   }
 }
 
-console.log("Start iteration");
+common.printFormattedDebug("ZWED", "plugins-init", "Start iteration");
 
 //A port of https://github.com/zowe/zlux-app-server/blob/v2.x/staging/bin/init/plugins-init.sh
 
@@ -190,7 +199,7 @@ installedComponents.forEach(function(installedComponent) {
   const componentDirectory = componentlib.findComponentDirectory(installedComponent);
   if (componentDirectory) {
     const enabled = enabledComponents.includes(installedComponent);
-    console.log(`Checking plugins for component=${installedComponent}, enabled=${enabled}`);
+    common.printFormattedDebug("ZWED", "plugins-init", `Checking plugins for component=${installedComponent}, enabled=${enabled}`);
 
     const manifest = componentlib.getManifest(componentDirectory);
     if (manifest.appfwPlugins) {
@@ -200,19 +209,19 @@ installedComponents.forEach(function(installedComponent) {
         const pluginDefinition = componentlib.getPluginDefinition(fullPath);
         if (pluginDefinition) {
           if (enabled) {
-            console.log(`Registering plugin ${fullPath}`);
+            common.printFormattedInfo("ZWED", "plugins-init", `Registering plugin ${fullPath}`);
             registerPlugin(fullPath, pluginDefinition);
           } else {
-            console.log(`Deregistering plugin ${fullPath}`);
+            common.printFormattedDebug("ZWED", "plugins-init", `Deregistering plugin ${fullPath}`);
             deregisterPlugin(pluginDefinition);
           }
         } else {
-          console.log(`Skipping plugin at ${fullPath} due to pluginDefinition missing or invalid`);
+          common.printFormattedError("ZWED", "plugins-init", `Skipping plugin at ${fullPath} due to pluginDefinition missing or invalid`);
         }
       });
     }
   } else {
-    console.log(`Warning: Could not remove app framework plugins for extension ${installedComponent} because its directory could not be found within ${extensionDirectory}`);
+    common.printFormattedError("ZWED", "plugins-init", `Warning: Could not remove app framework plugins for extension ${installedComponent} because its directory could not be found within ${extensionDirectory}`);
   }
 });
 

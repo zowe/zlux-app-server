@@ -24,7 +24,6 @@ GATEWAY_PORT ZWE_components_gateway_port
 KEY_ALIAS ZWE_zowe_certificate_keystore_alias
 KEYSTORE ZWE_zowe_certificate_keystore_file
 KEYSTORE_CERTIFICATE ZWE_zowe_certificate_pem_certificate
-KEYSTORE_CERTIFICATE_AUTHORITY ZWE_zowe_certificate_pem_certificateAuthority
 KEYSTORE_CERTIFICATE_AUTHORITY ZWE_zowe_certificate_pem_certificateAuthorities
 KEYSTORE_DIRECTORY ZWE_zowe_setup_certificate_pkcs12_directory
 KEYSTORE_KEY ZWE_zowe_certificate_pem_key
@@ -183,26 +182,12 @@ then
   fi
 fi
 
-if [ -z "$ZWED_node_https_certificateAuthorities" ]
-then
-  if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]
-  then
+if [ -z "$ZWED_node_https_certificateAuthorities" ]; then
+  if [ "$KEYSTORE_TYPE" = "JCERACFKS" ]; then
+    # don't touch this, zsf knows how to handle it.
+  elif [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]; then
     #, at end turns it into an array
-    if [ -n "$EXTERNAL_ROOT_CA" ]
-    then
-      export ZWED_node_https_certificateAuthorities="${ZWE_zowe_certificate_pem_certificateAuthorities}","${TRUSTSTORE}&${EXTERNAL_ROOT_CA}"
-    else
-      export ZWED_node_https_certificateAuthorities="${ZWE_zowe_certificate_pem_certificateAuthorities}",
-    fi
-  elif [ -n "$KEYSTORE_CERTIFICATE_AUTHORITY" ]
-  then
-    #, at end turns it into an array
-    if [ -n "$EXTERNAL_CERTIFICATE_AUTHORITIES" ]
-    then
-      export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA},$(echo "$EXTERNAL_CERTIFICATE_AUTHORITIES" | tr " " ",")
-    else
-      export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},${EXTERNAL_ROOT_CA},
-    fi
+      export ZWED_node_https_certificateAuthorities=${KEYSTORE_CERTIFICATE_AUTHORITY},
   fi
 fi
 

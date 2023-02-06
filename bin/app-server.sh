@@ -92,9 +92,9 @@ else
 fi
 
 if [ -z "$ZLUX_NO_LOGFILE" ]; then
-    __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS ${NODE_BIN} --harmony ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZWED_NODE_LOG_FILE
+    __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS ${NODE_BIN} --harmony --dns-result-order=ipv4first ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZWED_NODE_LOG_FILE
 else
-    __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS ${NODE_BIN} --harmony ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@"
+    __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS ${NODE_BIN} --harmony --dns-result-order=ipv4first ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@"
     echo "Ended with rc=$?"
 fi
 

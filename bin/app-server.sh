@@ -91,10 +91,27 @@ else
   ZLUX_SERVER_FILE=zluxServer.js
 fi
 
+ZLUX_DNS_ORDER="--dns-result-order=ipv4first"
+if [ "$ZWE_components_app_server_dns_lookupOrder" = "ipv6" ]; then
+  ZLUX_DNS_ORDER="--dns-result-order=verbatim"
+fi
+
 if [ -z "$ZLUX_NO_LOGFILE" ]; then
-    __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS ${NODE_BIN} --harmony ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZWED_NODE_LOG_FILE
+    __UNTAGGED_READ_MODE=V6 \
+    _BPX_JOBNAME=${ZOWE_PREFIX}DS \
+    ${NODE_BIN} \
+    --harmony \
+    ${ZLUX_DNS_ORDER} \
+    ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} \
+    --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZWED_NODE_LOG_FILE
 else
-    __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS ${NODE_BIN} --harmony ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@"
+    __UNTAGGED_READ_MODE=V6 \
+    _BPX_JOBNAME=${ZOWE_PREFIX}DS \
+    ${NODE_BIN} \
+    --harmony \
+    ${ZLUX_DNS_ORDER} \
+    ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} \
+    --config="${CONFIG_FILE}" "$@"
     echo "Ended with rc=$?"
 fi
 

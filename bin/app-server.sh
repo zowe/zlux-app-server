@@ -91,11 +91,9 @@ else
   ZLUX_SERVER_FILE=zluxServer.js
 fi
 
-ZLUX_DNS_ORDER=
+ZLUX_DNS_ORDER="--dns-result-order=ipv4first"
 if [ "$ZWE_components_app_server_dns_lookupOrder" = "ipv6" ]; then
   ZLUX_DNS_ORDER="--dns-result-order=verbatim"
-else
-  ZLUX_DNS_ORDER="--dns-result-order=ipv4first"
 fi
 
 if [ -z "$ZLUX_NO_LOGFILE" ]; then

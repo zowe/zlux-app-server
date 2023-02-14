@@ -198,11 +198,9 @@ if [ -n "${ZOWE_INSTANCE}" ]; then
   fi
 fi
 
-ZLUX_DNS_ORDER=
+ZLUX_DNS_ORDER="--dns-result-order=ipv4first"
 if [ "$ZWE_components_app_server_dns_lookupOrder" = "ipv6" ]; then
   ZLUX_DNS_ORDER="--dns-result-order=verbatim"
-else
-  ZLUX_DNS_ORDER="--dns-result-order=ipv4first"
 fi
 
 { __UNTAGGED_READ_MODE=V6 _BPX_JOBNAME=${ZOWE_PREFIX}DS1 ${NODE_BIN} --harmony ${ZLUX_DNS_ORDER} ${ZOWE_LIB_DIR}/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 ; echo "Ended with rc=$?" ; } | tee $ZLUX_NODE_LOG_FILE

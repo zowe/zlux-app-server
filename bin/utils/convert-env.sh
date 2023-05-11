@@ -412,3 +412,9 @@ fi
 if [ -z "$ZWE_components_app_server_instanceDir" ]; then
   export ZWED_instanceDir="$DESTINATION"
 fi
+
+if [ -z "$ZWE_components_app_server_dataserviceAuthentication_defaultAuthentication" ]; then
+  if [ -n "${ZWED_node_mediationLayer_enabled}" -o -n "${ZWED_agent_https_port}" -o -n "${ZWED_agent_http_port}" ]; then
+    ZWE_components_app_server_dataserviceAuthentication_defaultAuthentication="saf"
+  fi
+fi

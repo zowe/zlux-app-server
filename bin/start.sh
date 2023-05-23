@@ -84,9 +84,32 @@ env
 cd ${ZLUX_APP_SERVER_DIR}/lib
 echo Starting node
 
+# Tells node whether to prefer ipv4 or ipv6 results to DNS lookups
+ZLUX_DNS_ORDER="--dns-result-order=ipv4first"
+if [ "$ZWE_components_app_server_dns_lookupOrder" = "ipv6" ]; then
+  ZLUX_DNS_ORDER="--dns-result-order=verbatim"
+fi
+
+# not all versions of node support the above (14.18+ generally) so we can just try it to see what happens.
+v4_check=$(${NODE_BIN} ${ZLUX_DNS_ORDER} -e "console.log('success');")
+if [ "${v4_check}" != "success" ]; then
+  ZLUX_DNS_ORDER=
+fi
+
+if [ -z "${ZWED_FLAGS}" ]; then
+  ZWED_FLAGS="${ZLUX_DNS_ORDER} --harmony "
+
 if [ -z "$ZLUX_NO_LOGFILE" ]; then
-    _BPX_JOBNAME=${ZWE_zowe_job_prefix}DS ${NODE_BIN} ${ZWED_FLAGS} ${ZLUX_APP_SERVER_DIR}/lib/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZWED_NODE_LOG_FILE
+    _BPX_JOBNAME=${ZWE_zowe_job_prefix}DS \
+    ${NODE_BIN} \
+    ${ZWED_FLAGS} \
+    ${ZLUX_APP_SERVER_DIR}/lib/${ZLUX_SERVER_FILE} \
+    --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZWED_NODE_LOG_FILE
 else
-    _BPX_JOBNAME=${ZWE_zowe_job_prefix}DS ${NODE_BIN} ${ZWED_FLAGS} ${ZLUX_APP_SERVER_DIR}/lib/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@"
+    _BPX_JOBNAME=${ZWE_zowe_job_prefix}DS \
+    ${NODE_BIN} \
+    ${ZWED_FLAGS} \
+    ${ZLUX_APP_SERVER_DIR}/lib/${ZLUX_SERVER_FILE} \
+    --config="${CONFIG_FILE}" "$@"
     echo "Ended with rc=$?"
 fi

@@ -579,6 +579,18 @@
     "privilegedServerName": {
       "type": "string",
       "description": "The nickname of the ZIS server to be used"
+    },
+    "dns": {
+      "type": "object",
+      "description": "Parameters used to customize DNS query behavior",
+      "properties": {
+        "lookupOrder": {
+          "type": "string",
+          "enum": [ "ipv4", "ipv6" ],
+          "default": "ipv4",
+          "description": "Used to specify to nodejs whether DNS lookups should return ipv4 or ipv6 IPs"
+        }
+      }
     }
   },
   "$defs": {

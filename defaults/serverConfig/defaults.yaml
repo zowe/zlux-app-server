@@ -130,6 +130,8 @@ components:
         method: '*'
       - url: '/datasetMetadata'
         method: '*'
+      - url: '/datasetCopy'
+        method: '*'
       - url: '/omvs'
         method: '*'
       - url: '/ras'

@@ -12,19 +12,9 @@
 # - ZWE_zowe_runtimeDirectory
 # - ZWE_zowe_workspaceDirectory
 # - NODE_HOME
-#
-# Optional variables on shell:
-# - APIML_ENABLE_SSO
-# - GATEWAY_PORT
-# - DISCOVERY_PORT
-# - ZWED_SSH_PORT
-# - ZWED_TN3270_PORT
-# - ZWED_TN3270_SECURITY
 
-if [ -n "${ZWE_zowe_runtimeDirectory}" ]
-then
-  #not a dev env
-
+if [ -n "${ZWE_zowe_runtimeDirectory}" ]; then
+  # not a dev env
   COMPONENT_HOME=${ZWE_zowe_runtimeDirectory}/components/app-server
 
   # containers only
@@ -35,11 +25,68 @@ then
   fi
 
   cd ${COMPONENT_HOME}/share/zlux-app-server/bin
+  ZLUX_APP_SERVER_DIR=$COMPONENT_HOME/share/zlux-app-server
+else
+ # dev env
+ . ./validate.sh
+ COMPONENT_HOME=$(cd ../..; pwd)
+ ZLUX_APP_SERVER_DIR=$COMPONENT_HOME/zlux-app-server
 fi
+# used for relativeTo plugins
+export ZLUX_ROOT_DIR=$COMPONENT_HOME
 
+. ./init/node-init.sh
 . ./utils/setup-logs.sh
 
-# Done to prevent app-server from making a logfile since we will be making one here instead.
-export ZLUX_NO_LOGFILE=1
+# Get config path or fail
+if [ -z "${ZWE_CLI_PARAMETER_CONFIG}" ]; then
+  echo "ZWE_CLI_PARAMETER_CONFIG is not defined. Only defaults will be used."
+  echo "To customize, rerun script with it defined to a list of paths to zowe.yaml files such as FILE(/yaml1.yaml):FILE(/path/to/yaml2.yaml)"
+  if [ -e "${HOME}/.zowe/zowe.yaml" ]; then
+    echo "Found and using ${HOME}/.zowe/zowe.yaml"
+  else
+    mkdir -p ${HOME}/.zowe
+    cp ${ZLUX_APP_SERVER_DIR}/defaults/serverConfig/defaults.yaml ${HOME}/.zowe/zowe.yaml
+  fi
+  CONFIG_FILE="FILE(${HOME}/.zowe/zowe.yaml):FILE(${ZLUX_APP_SERVER_DIR}/defaults/serverConfig/defaults.yaml)"
+else
+  CONFIG_FILE="FILE(${ZWE_CLI_PARAMETER_CONFIG}):FILE(${ZLUX_APP_SERVER_DIR}/defaults/serverConfig/defaults.yaml)"
+fi
 
-./app-server.sh 2>&1 | tee $ZWED_NODE_LOG_FILE
+if [ -z "${ZWE_zowe_runtimeDirectory}" ]; then
+  # dev env or backwards compat, do late configure
+  if [ -z "${ZWE_zowe_workspaceDirectory}" ]; then
+    export ZWE_zowe_workspaceDirectory="${HOME}/.zowe/workspace"
+  fi
+  if [ ! -e "${ZWE_zowe_workspaceDirectory}/app-server/plugins/org.zowe.zlux.json}" ]; then
+    cd ${ZLUX_APP_SERVER_DIR}/lib
+    $NODE_BIN initInstance.js
+  fi
+fi
+
+if [ -z "$ZLUX_NO_CLUSTER" ]; then
+  ZLUX_SERVER_FILE=zluxCluster.js
+  export ZLUX_MIN_WORKERS=${ZLUX_MIN_WORKERS:-2}
+else
+  ZLUX_SERVER_FILE=zluxServer.js
+fi
+
+if [ "$ZWE_zowe_verifyCertificates" = "DISABLED" ]; then
+  export NODE_TLS_REJECT_UNAUTHORIZED=0
+fi
+
+# set production mode if applicable
+export NODE_ENV=${NODE_ENV:-production}
+
+echo Show Environment
+env
+
+cd ${ZLUX_APP_SERVER_DIR}/lib
+echo Starting node
+
+if [ -z "$ZLUX_NO_LOGFILE" ]; then
+    _BPX_JOBNAME=${ZWE_zowe_job_prefix}DS ${NODE_BIN} ${ZWED_FLAGS} ${ZLUX_APP_SERVER_DIR}/lib/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@" 2>&1 | tee $ZWED_NODE_LOG_FILE
+else
+    _BPX_JOBNAME=${ZWE_zowe_job_prefix}DS ${NODE_BIN} ${ZWED_FLAGS} ${ZLUX_APP_SERVER_DIR}/lib/${ZLUX_SERVER_FILE} --config="${CONFIG_FILE}" "$@"
+    echo "Ended with rc=$?"
+fi

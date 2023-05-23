@@ -7,10 +7,9 @@
 # 
 # Copyright Contributors to the Zowe Project.
 
-if [ $# -eq 0 ]
-    then
-    echo "Usage: $0 AppPath [PluginsDir]"
-    exit 1
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 AppPath [PluginsDir]"
+  exit 1
 fi
 
 setVars() {
@@ -21,12 +20,7 @@ setVars() {
   . ${zlux_path}/zlux-app-server/bin/init/node-init.sh
 }
 
-dir=$(cd `dirname $0` && pwd)
-. ${dir}/utils/plugin-utils.sh
-. ${dir}/utils/convert-env.sh
-
-if [ -n "${ZWE_zowe_workspaceDirectory}" -a -n "${ZWE_zowe_runtimeDirectory}" ]
-then
+if [ -n "${ZWE_zowe_workspaceDirectory}" -a -n "${ZWE_zowe_runtimeDirectory}" ]; then
   COMPONENT_HOME=${ZWE_zowe_runtimeDirectory}/components/app-server
 
   # containers only
@@ -41,26 +35,24 @@ then
   if [ -z "$INSTALL_NO_NODE" ]; then
     zlux_path="$COMPONENT_HOME/share"
     setVars
-    if [ ! -d "${ZWE_zowe_workspaceDirectory}/app-server" ]
-    then
+    if [ ! -e "${ZWE_zowe_workspaceDirectory}/app-server/plugins/org.zowe.zlux.json" ]; then
       cd ${zlux_path}/zlux-app-server/lib
-      __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+      CONFIG_FILE=$ZWE_CLI_PARAMETER_CONFIG $NODE_BIN initInstance.js
     fi
   fi
-elif [ -d "${dir}/../../zlux-server-framework" ]
-then
+else
   zlux_path=$(cd $(dirname "$0")/../..; pwd)
-  setVars
-elif [ -n "$CONDA_PREFIX" ]
-then
-  zlux_path="$CONDA_PREFIX/share/zowe/app-server"
   setVars
 fi
 
+. ${zlux_path}/zlux-app-server/bin/utils/plugin-utils.sh
+
+
+
 utils_path=$zlux_path/zlux-server-framework/utils
-app_path=$(cd "$1"; pwd)
-if [ $# -gt 1 ]
-then
+#app_path=$(cd "$1"; pwd)
+app_path=$1
+if [ $# -gt 1 ]; then
   plugin_dir=$2
   shift
 else
@@ -75,13 +67,13 @@ if [ -z "$plugin_dir" ]; then
 fi
 mkdir -p $plugin_dir
 
+
 # Installs a zowe plugin by finding its ID and writing the locator json WITHOUT using install-app.js
 # This is to be used in cases where there are issues using JS, or nodejs is not found.
 # Input: relative or fully qualified path to a directory containing a plugindir=$(cd `dirname $0` && pwd)
 installNojs() {
   id=$(getPluginID "${app_path}")
-  if [ -n "${id}" ]
-  then
+  if [ -n "${id}" ]; then
     echo "Found plugin=${id}"
 
 cat <<EOF >${plugin_dir}/${id}.json
@@ -92,53 +84,47 @@ cat <<EOF >${plugin_dir}/${id}.json
 EOF
 
     echo "Plugin registration ended with rc=$?"
-    if [ -f "${plugin_dir}/${id}.json" ]
-    then
+    if [ -f "${plugin_dir}/${id}.json" ]; then
       chmod 0771 "${plugin_dir}/${id}.json"
     fi
   else
-      echo "Error: could not find plugin id for path=${app_path}"
-      exit 1
+    echo "Error: could not find plugin id for path=${app_path}"
+    exit 1
   fi
 }
 
-if [ -n "$INSTALL_NO_NODE" ]
-then
- installNojs
-else  
+
+if [ -n "$INSTALL_NO_NODE" ]; then
+  installNojs
+else
   cd $zlux_path/zlux-app-server/bin
 
   echo "Testing if node exists"
   type ${NODE_BIN}
   rc=$?
-  if [ $rc -ne 0 ]
-  then
+  if [ $rc -ne 0 ]; then
     installNojs
   else
-# normal case follows
-if [ -z "$ZLUX_INSTALL_LOG_DIR" ]
-then
-  if [ -d "${ZWE_zowe_logDirectory}" ]
-  then
-    ZLUX_INSTALL_LOG_DIR="$ZWE_zowe_logDirectory"
+    # normal case follows
+    if [ -z "$ZLUX_INSTALL_LOG_DIR" ]; then
+      if [ -d "${ZWE_zowe_logDirectory}" ]; then
+        ZLUX_INSTALL_LOG_DIR="$ZWE_zowe_logDirectory"
+      fi
+    fi
+
+    PLUGIN_LOG_FILE=/dev/null
+    if [ ! -z "$ZLUX_INSTALL_LOG_DIR" ]; then
+      if [ ! -d "$ZLUX_INSTALL_LOG_DIR" ]; then
+        echo "Will make log directory $ZLUX_INSTALL_LOG_DIR"
+        mkdir -p $ZLUX_INSTALL_LOG_DIR
+      fi
+      PLUGIN_LOG_FILE="$ZLUX_INSTALL_LOG_DIR/install-app.log"
+    fi
+
+
+    echo "Running app-server plugin registration. Log=$PLUGIN_LOG_FILE"
+    echo "utils_path=${utils_path}\napp_path=${app_path}"
+    echo "plugin_dir=${plugin_dir}"
+    { ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 ; echo "Plugin registration ended with rc=$?" ; } | tee -a $PLUGIN_LOG_FILE
   fi
-fi
-
-PLUGIN_LOG_FILE=/dev/null
-if [ ! -z "$ZLUX_INSTALL_LOG_DIR" ]
-then
-  if [ ! -d "$ZLUX_INSTALL_LOG_DIR" ]
-  then
-     echo "Will make log directory $ZLUX_INSTALL_LOG_DIR"
-     mkdir -p $ZLUX_INSTALL_LOG_DIR
-  fi
-  PLUGIN_LOG_FILE="$ZLUX_INSTALL_LOG_DIR/install-app.log"
-fi
-
-
-echo "Running app-server plugin registration. Log=$PLUGIN_LOG_FILE"
-echo "utils_path=${utils_path}\napp_path=${app_path}"
-echo "plugin_dir=${plugin_dir}"
-{ __UNTAGGED_READ_MODE=V6 ${NODE_BIN} ${utils_path}/install-app.js -i "$app_path" -p "$plugin_dir" $@ 2>&1 ; echo "Plugin registration ended with rc=$?" ; } | tee -a $PLUGIN_LOG_FILE
-fi
 fi

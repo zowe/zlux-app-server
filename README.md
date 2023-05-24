@@ -232,8 +232,6 @@ git clone --recursive git@github.com:zowe/zss.git
 cd zss/build
 ```
 
-**Note:** The code must be placed on z/OS**, as ZSS can only be compiled there and will only run there.
-
 Now, you can build both ZSS and the Cross Memory Server via:
 
 ```

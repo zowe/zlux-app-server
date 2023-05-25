@@ -24,16 +24,19 @@ if [ -n "${ZWE_zowe_runtimeDirectory}" ]; then
     fi
   fi
 
-  cd ${COMPONENT_HOME}/share/zlux-app-server/bin
-  ZLUX_APP_SERVER_DIR=$COMPONENT_HOME/share/zlux-app-server
+  # used for relativeTo plugins
+  export ZLUX_ROOT_DIR=$COMPONENT_HOME/share
 else
  # dev env
  . ./validate.sh
  COMPONENT_HOME=$(cd ../..; pwd)
- ZLUX_APP_SERVER_DIR=$COMPONENT_HOME/zlux-app-server
+
+  # used for relativeTo plugins
+  export ZLUX_ROOT_DIR=$COMPONENT_HOME
 fi
-# used for relativeTo plugins
-export ZLUX_ROOT_DIR=$COMPONENT_HOME
+
+ZLUX_APP_SERVER_DIR=${ZLUX_ROOT_DIR}/zlux-app-server
+cd ${ZLUX_APP_SERVER_DIR}/bin
 
 . ./init/node-init.sh
 . ./utils/setup-logs.sh

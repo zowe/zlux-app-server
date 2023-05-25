@@ -100,18 +100,7 @@ components:
       host: "${{ function a(){ if (components.zss.tls != false && process.env.ZWE_haInstance_hostname) { return process.env.ZWE_haInstance_hostname; } }; a() }}"
       mediationLayer:
         enabled: "${{ components['app-server'].node.mediationLayer.enabled }}"
-    #   # for the app server to know, not the agent
-    #   host: localhost
-    #   # used by the agent
-    #   http:
-    #     ipAddresses:
-    #     - 127.0.0.1
-    #     port: 7557
-    #     attls: false
-      gateway:
-        enabled: false #${{ components.gateway.enabled && components.zss.enabled }}
-        name: zss
-        prefix: "/api/v1"
+        serviceName: "zss"
       rootServices:
       - url: '/login'
         method: '*'

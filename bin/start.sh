@@ -98,6 +98,7 @@ fi
 
 if [ -z "${ZWED_FLAGS}" ]; then
   ZWED_FLAGS="${ZLUX_DNS_ORDER} --harmony "
+fi
 
 if [ -z "$ZLUX_NO_LOGFILE" ]; then
     _BPX_JOBNAME=${ZWE_zowe_job_prefix}DS \

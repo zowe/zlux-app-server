@@ -99,8 +99,7 @@ components:
       https: "${{ function a(){ if (components.zss.tls != false && components.zss.port) { return { port: components.zss.port }; } else { return undefined; } }; a() }}"
       host: "${{ function a(){ if (components.zss.tls != false && process.env.ZWE_haInstance_hostname) { return process.env.ZWE_haInstance_hostname; } }; a() }}"
       mediationLayer:
-        enabled: "${{ function a(){ if (os.platform == 'zos' && components['app-server'].node.mediationLayer?.enabled == true) { return true; } else if (components['app-server'].agent?.https?.port || components['app-server'].agent?.http?.port) { return true; } else { return false; } }; a() }}"
-        
+        enabled: "${{ components['app-server'].node.mediationLayer.enabled }}"
     #   # for the app server to know, not the agent
     #   host: localhost
     #   # used by the agent

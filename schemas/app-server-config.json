@@ -148,7 +148,7 @@
         "checkReferrer": {
           "deprecated": true,
           "enabled": {
-            "type": boolean",
+            "type": "boolean",
             "deprecated": true,
             "default": false,
             "description": "Controls whether or not the server will block requests that dont have a valid referrer. This should not be needed due to using same-site cookies for the same purpose"

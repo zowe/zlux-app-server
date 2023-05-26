@@ -15,6 +15,7 @@ zowe:
     # ZWED_TN3270_CODEPAGE: 
 components:
   app-server:
+    debug: false
     node:
       hostname: "${{ function a(){ if (process.env.ZWE_INTERNAL_HOST) { return process.env.ZWE_INTERNAL_HOST; } else if (process.env.ZWE_haInstance_hostname) { return process.env.ZWE_haInstance_hostname; } else { return undefined; } }; a() }}"
       https:
@@ -92,6 +93,8 @@ components:
     cookieIdentifier: ${{ zowe.cookieIdentifier }}
     # Specifies the default language for the server framework logging
     logLanguage: en
+    logLevels:
+      _zsf.*: "${{ components['app-server'].debug === true ? 5 : 2 }}"
   zss:
     # section used to define a connection to a server that can handle native or high privilege commands that the app server cannot
     agent:

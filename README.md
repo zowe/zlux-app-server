@@ -47,7 +47,7 @@ Follow each step and you'll be on your way to your first App Server instance!
 ### Building & Developing
 To build the App Server and Apps, the following is required:
 
-* **NodeJS** - v14.x minimum (except v14.17.2) up to v16.x. The App Server and server plugins may support minimum v12.x at runtime, but v14.x is used for building.
+* **NodeJS** - v14.x minimum (except v14.17.2) up to v16.x
 
 * **npm** - v6.4 minimum
 

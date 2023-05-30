@@ -87,7 +87,7 @@ components:
     pluginsDir: ${{ components['app-server'].instanceDir }}/plugins
     dataserviceAuthentication:
       # this specifies the default authentication type for dataservices that didn't specify which type to use. These dataservices therefore should not expect a particular type of authentication to be used.
-      defaultAuthentication: fallback
+      defaultAuthentication: "${{ function a(){ if ((components.zss?.enabled == true) || (components.gateway?.enabled == true)) { return 'saf'; } else { return 'fallback'; } }; a() }}"
       rbac: false
     instanceID: ${{ zowe.rbacProfileIdentifier }}
     cookieIdentifier: ${{ zowe.cookieIdentifier }}

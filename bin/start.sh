@@ -44,7 +44,8 @@ cd ${ZLUX_APP_SERVER_DIR}/bin
 # Get config path or fail
 if [ -z "${ZWE_CLI_PARAMETER_CONFIG}" ]; then
   echo "ZWE_CLI_PARAMETER_CONFIG is not defined. Only defaults will be used."
-  echo "To customize, rerun script with it defined to a list of paths to zowe.yaml files such as FILE(/yaml1.yaml):FILE(/path/to/yaml2.yaml)"
+  echo "To customize, rerun script with it defined to a list of paths to zowe.yaml files such as ZWE_CLI_PARAMETER_CONFIG=FILE(/yaml1.yaml):FILE(/path/to/yaml2.yaml)"
+  echo "FILE items specified on the right of the list will have properties overridden by FILE items on the left of the list, resulting in one merged configuration"
   if [ -e "${HOME}/.zowe/zowe.yaml" ]; then
     echo "Found and using ${HOME}/.zowe/zowe.yaml"
   else

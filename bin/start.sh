@@ -54,6 +54,7 @@ if [ -z "${ZWE_CLI_PARAMETER_CONFIG}" ]; then
   fi
   CONFIG_FILE="FILE(${HOME}/.zowe/zowe.yaml):FILE(${ZLUX_APP_SERVER_DIR}/defaults/serverConfig/defaults.yaml)"
 else
+  # Note in production, ZWE_CLI_PARAMETER_CONFIG is already a merged file, so no concern about PARMLIB here.
   CONFIG_FILE="FILE(${ZWE_CLI_PARAMETER_CONFIG}):FILE(${ZLUX_APP_SERVER_DIR}/defaults/serverConfig/defaults.yaml)"
 fi
 

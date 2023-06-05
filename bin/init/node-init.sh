@@ -14,6 +14,9 @@ else
   export NODE_BIN=node
 fi
 
+# These are used on z/OS and ignored elsewhere.
+# Some are already applied by zwe, but in dev, we add them.
+# They control text encoding primarily.
 export "_CEE_RUNOPTS=XPLINK(ON),HEAPPOOLS(ON)"
 export _BPXK_AUTOCVT=ON
 export __UNTAGGED_READ_MODE=V6

@@ -1,7 +1,7 @@
 zowe:
   workspaceDirectory: ${{ process.env.HOME + '/.zowe/workspace' }}
   externalDomains: ${{ function a() { if (process.env.ZWE_zowe_externalDomains) { return process.env.ZWE_zowe_externalDomains.split(','); } else { return [ os.hostname() ] } }; a() }}
-  envrionments:
+  environments:
     ZWED_SSH_PORT: 22
     ZWED_TN3270_PORT: 23
     ZWED_TN3270_SECURITY: telnet
@@ -48,7 +48,9 @@ components:
                                return [ "../defaults/serverConfig/zlux.keystore.cer" ]; } };
                         a() }}'
         certificateAuthorities: '${{ function a() {
-                                       if(zowe.certificate?.pem?.certificateAuthorities) {
+                                       if (zowe.certificate?.truststore?.type == "JCERACFKS") {
+                                          return [ zowe.certificate.truststore.file ];
+                                       } else if(zowe.certificate?.pem?.certificateAuthorities) {
                                           return [zowe.certificate.pem.certificateAuthorities];
                                         } else { return ["../defaults/serverConfig/apiml-localca.cer"]; } };
                                   a() }}'

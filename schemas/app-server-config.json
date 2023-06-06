@@ -17,8 +17,8 @@
           "properties": {
             "port": {
               "oneOf": [
-                { "$ref": "/schemas/v2/server-common/#zoweTcpPort" },
-                { "$ref": "/schemas/v2/server-common/#zoweReservedTcpPort" }, 
+                { "$ref": "/schemas/v2/server-common#zoweTcpPort" },
+                { "$ref": "/schemas/v2/server-common#zoweReservedTcpPort" }, 
               ],
               "default": 7556
             },
@@ -76,8 +76,8 @@
           "properties": {
             "port": {
               "oneOf": [
-                { "$ref": "/schemas/v2/server-common/#zoweTcpPort" },
-                { "$ref": "/schemas/v2/server-common/#zoweReservedTcpPort" }, 
+                { "$ref": "/schemas/v2/server-common#zoweTcpPort" },
+                { "$ref": "/schemas/v2/server-common#zoweReservedTcpPort" }, 
               ]
             },
             "ipAddresses": {
@@ -110,15 +110,15 @@
                 },
                 "gatewayPort": {
                   "oneOf": [
-                    { "$ref": "/schemas/v2/server-common/#zoweTcpPort" },
-                    { "$ref": "/schemas/v2/server-common/#zoweReservedTcpPort" }, 
+                    { "$ref": "/schemas/v2/server-common#zoweTcpPort" },
+                    { "$ref": "/schemas/v2/server-common#zoweReservedTcpPort" }, 
                   ],
                   "description": "The port where the Zowe Gateway service is running"
                 },
                 "port": {
                   "oneOf": [
-                    { "$ref": "/schemas/v2/server-common/#zoweTcpPort" },
-                    { "$ref": "/schemas/v2/server-common/#zoweReservedTcpPort" }, 
+                    { "$ref": "/schemas/v2/server-common#zoweTcpPort" },
+                    { "$ref": "/schemas/v2/server-common#zoweReservedTcpPort" }, 
                   ],
                   "description": "The port where the Zowe Discovery service is running"
                 },
@@ -252,8 +252,8 @@
           "properties": {
             "port": {
               "oneOf": [
-                { "$ref": "/schemas/v2/server-common/#zoweTcpPort" },
-                { "$ref": "/schemas/v2/server-common/#zoweReservedTcpPort" }, 
+                { "$ref": "/schemas/v2/server-common#zoweTcpPort" },
+                { "$ref": "/schemas/v2/server-common#zoweReservedTcpPort" }, 
               ],
               "default": 7557
             },
@@ -270,8 +270,8 @@
           "properties": {
             "port": {
               "oneOf": [
-                { "$ref": "/schemas/v2/server-common/#zoweTcpPort" },
-                { "$ref": "/schemas/v2/server-common/#zoweReservedTcpPort" }, 
+                { "$ref": "/schemas/v2/server-common#zoweTcpPort" },
+                { "$ref": "/schemas/v2/server-common#zoweReservedTcpPort" }, 
               ]
             },
             "attls": {
@@ -365,7 +365,7 @@
                 "plugins": {
                   "type": "array",
                   "items": {
-                    "$ref": "/schemas/v2/server-common/#zoweReverseDomainNotation"
+                    "$ref": "/schemas/v2/server-common#zoweReverseDomainNotation"
                   },
                   "uniqueItems": true
                 }
@@ -438,8 +438,8 @@
               "type": "array",
               "items": {
                 "anyOf": [
-                  { "$ref": "/schemas/v2/server-common/#zoweTcpPort" },
-                  { "$ref": "/schemas/v2/server-common/#zoweReservedTcpPort" }, 
+                  { "$ref": "/schemas/v2/server-common#zoweTcpPort" },
+                  { "$ref": "/schemas/v2/server-common#zoweReservedTcpPort" }, 
                 ],
                 "minItems": 2,
                 "maxItems": 2
@@ -449,8 +449,8 @@
               "type": "array",
               "items": {
                 "anyOf": [
-                  { "$ref": "/schemas/v2/server-common/#zoweTcpPort" },
-                  { "$ref": "/schemas/v2/server-common/#zoweReservedTcpPort" }, 
+                  { "$ref": "/schemas/v2/server-common#zoweTcpPort" },
+                  { "$ref": "/schemas/v2/server-common#zoweReservedTcpPort" }, 
                 ],
                 "uniqueItems": true
               }
@@ -485,7 +485,7 @@
                       "plugins": {
                         "type": "array",
                         "items": {
-                          "$ref": "/schemas/v2/server-common/#zoweReverseDomainNotation"
+                          "$ref": "/schemas/v2/server-common#zoweReverseDomainNotation"
                         }
                       }
                     }
@@ -556,6 +556,18 @@
     "privilegedServerName": {
       "type": "string",
       "description": "The nickname of the ZIS server to be used"
+    },
+    "dns": {
+      "type": "object",
+      "description": "Parameters used to customize DNS query behavior",
+      "properties": {
+        "lookupOrder": {
+          "type": "string",
+          "enum": [ "ipv4", "ipv6" ],
+          "default": "ipv4",
+          "description": "Used to specify to nodejs whether DNS lookups should return ipv4 or ipv6 IPs"
+        }
+      }
     }
   },
   "$defs": {

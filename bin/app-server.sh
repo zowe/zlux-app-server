@@ -50,7 +50,9 @@ then
   #dev env or backwards compat, do late configure
   # should we also export ZWE_zowe_workspaceDirectory=~/.zowe/zowe.yaml?
   # potentially zowe.yaml in there could point workspaceDirectory elsewhere to cause further confusion
-  . ./init/workspace-init.sh
+  cd init
+  . ./workspace-init.sh
+  cd ..
   CONFIG_FILE=~/.zowe/zowe.yaml
 fi
 

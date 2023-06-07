@@ -35,7 +35,8 @@ else
     export ZWE_zowe_logDirectory="${HOME}/.zowe/logs"
   fi
   mkdir -p ${ZWE_zowe_logDirectory}
-  cd ../../lib
+  cd ../lib
   __UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+  cd ../bin
   export CONFIG_FILE="${HOME}/.zowe/workspace/app-server/serverConfig/zowe.yaml"
 fi

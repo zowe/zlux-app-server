@@ -97,6 +97,7 @@ components:
     logLanguage: en
     logLevels:
       _zsf.*: "${{ components['app-server'].debug === true ? 5 : 2 }}"
+    agent: ${{ components.zss.agent }}
   zss:
     # section used to define a connection to a server that can handle native or high privilege commands that the app server cannot
     agent:

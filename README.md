@@ -47,15 +47,16 @@ Follow each step and you'll be on your way to your first App Server instance!
 ### Building & Developing
 To build the App Server and Apps, the following is required:
 
-* **NodeJS** - v14.x minimum. The App Server and server plugins must support minimum v12.x at runtime, but v14.x is used for building.
+* **NodeJS** - v14.x minimum (except v14.17.2) up to v16.x
 
 * **npm** - v6.4 minimum
 
 * **jdk** - v8 minimum
  
-* **ant** - v1.10 minimum
+* **ant** - v1.10 minimum (for installation help, see "Setup" in [Ant manual](https://ant.apache.org/manual/index.html)) 
 
-* **ant-contrib** - v1 minimum
+* **ant-contrib** - v1 minimum (such as: [here](http://www.java2s.com/example/jar/a/download-antcontrib10b3jar-file.html) -
+to install, copy `ant-contrib-1.0b3.jar` to the `ANT_HOME/lib` directory)
 
 For building zss ([Section 7](#7-adding-zss-to-the-environment)):
 
@@ -78,7 +79,7 @@ On z/OS, git 2.14.4 is the minimum needed.
 ### Runtime
 To use the App Server, the following is required:
 
-* **NodeJS** - v8.16.x minimum up to v12.x is officially supported by the Zowe community.
+* **NodeJS** - v14.x (except v14.17.2) up to v16.x is officially supported by the Zowe community.
 
 Plugins may depend upon other technologies, such as Java or ZSS. A plugin's [pluginDefinition](https://docs.zowe.org/stable/extend/extend-desktop/mvd-plugindefandstruct) or README will help you to understand if additional prerequisites are needed for that plugin.
 
@@ -93,7 +94,7 @@ cd zlux
 git submodule foreach "git checkout v2.x/master"
 ```
 
-For the initial setup, the default authentication is the "trivial authentication" plugin, which allows login to the App Server without valid credentials. At the end of this guide, you can customize the environment to switch to a secure authentication plugin instead, such as the ZSS authentication plugin, covered in [Section 7](#7-adding-zss-to-the-environment).
+For the initial setup, the default authentication is the "trivial authentication" plugin, which allows login to the App Server without valid credentials. At the end of this guide, you can customize the environment to switch to a secure authentication plugin instead, such as the ZSS authentication plugin, covered in [Section 7](#7-adding-zss-to-the-environment). This plugin works with the [ZSS mock server](https://github.com/zowe/zss/tree/v2.x/staging/mock) as well.
 
 
 ## 2. Initial build
@@ -210,22 +211,26 @@ git clone git@github.com:zowe/sample-iframe-app.git
 
 **Sample React and Iframe Apps depend on the Sample Angular App, as an example of dependencies. Recent versions of the Angular App also depends upon ZSS as an example, but you can use a version older than v1.21.0 if you do not have ZSS available.**
 
+For more information on Zowe Desktop plugins, check out [this](https://docs.zowe.org/stable/user-guide/mvd-using#zowe-desktop-application-plugins). You can also view the full list of open plugins in the Zowe project [here](https://github.com/orgs/zowe/repositories).
+
 ## 7. Adding ZSS to the environment
 Like the App Server, ZSS is an HTTP(S) server component of Zowe. 
 However unlike the App Server, ZSS is a z/OS specific component which exists to provide core low-level & security APIs, as well as a place to attach lower-level plugins that could be built with the App Server. The configuration, directories, and network-level API structures are similar, as these servers work together to support Apps.
 Also, some of the low-level APIs are made possibly by ZSS working in concert with the Zowe Cross Memory Server, which is not an HTTP(S) server, but ZSS provides any needed HTTP(S) access. So, if you need the APIs provided by ZSS, or want to build & use low-level plugins, then you must add ZSS and the Cross Memory Server to your Zowe environment.
 
-Since ZSS adheres to the same configuration & directory structure as the App server, the easiest way to set up ZSS is to clone all of the App Server repos ([Step 1](#1-acquire-the-source-code)) onto z/OS if you have not already done so. However, strictly speaking the only non-ZSS repo needed is the `zlux-app-server` repo because it contains the scripts that are used to start the servers.
+### What if I don't have access to a mainframe?
+To build ZSS, code must be placed on z/OS as it can only be compiled there and run there. However, if you don't have access to a mainframe, you have 2 options:
+1. Sign up for the [IBM Open Zowe trial](https://community.ibm.com/community/user/ibmz-and-linuxone/blogs/wen-ting-su/2023/04/28/unleash-the-power-of-zowe-v2-with-updated-trial) to obtain trial credentials to a mainframe
+2. or you can take advantage of the [ZSS mock server](https://github.com/zowe/zss/tree/v2.x/staging/mock) written in Python
+**Note: ** ZSS mock server may not be up to date with latest ZSS features.
 
 ### Building ZSS
-To build ZSS from source, it is recommended to use git on z/OS. You can use this command to get the code:
+To build ZSS from source, it is recommended to use git on z/OS from [step 0](#0-prerequisites). You can use this command to get the code:
 
 ```
 git clone --recursive git@github.com:zowe/zss.git
 cd zss/build
 ```
-
-**The code must be placed on z/OS**, as ZSS can only be compiled there and will only run there.
 
 Now, you can build both ZSS and the Cross Memory Server via:
 

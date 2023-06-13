@@ -2,6 +2,14 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v2.9.0
+
+- Bugfix: Recognizers from multiple plugins could not be merged due to an error in the merge code execution at startup.
+
+## v2.7.0
+
+- Bugfix: Explicitly prefer ipv4 dns results to be compatible with node 18 since it switched to prefer ipv6 without configuration. This behavior can be cusomized via components.app-server.dns.lookupOrder='ipv4' or 'ipv6'. It defaults to 'ipv4'.
+
 ## v2.4.0
 
 - Bugfix: Plugin register/deregister would not consider app2app actions and recgonizers. Now, they are added on registration and removed on deregistration.

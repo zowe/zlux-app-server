@@ -23,6 +23,9 @@ components:
         X-frame-Options:
           override: true
           value: sameorigin
+    agent:
+      http:
+        attls: ${{ ()=> { return (zowe.network.attls || components['app-server']?.launcher.attls) }() }}
     # All paths relative to zlux-app-server/bin
     # In real installations, these values will be configured during the install.
     # productDir: "../defaults"

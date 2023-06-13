@@ -2,6 +2,10 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v2.10.0
+
+- Enhancement: Implement new schema option for AT-TLS config
+
 ## v2.9.0
 
 - Bugfix: Recognizers from multiple plugins could not be merged due to an error in the merge code execution at startup.

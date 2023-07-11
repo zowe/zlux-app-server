@@ -126,7 +126,7 @@ function copyRecognizers(appDir, appId, appVers) {
         configRecognizers = fs.fileExists(filepathConfig) ? JSON.parse(xplatform.loadFileUTF8(filepathConfig, xplatform.AUTO_DETECT)).recognizers : {};
         const configRecognizersKeys = Object.keys(configRecognizers);
         for (const configKey of configRecognizersKeys) { // Traverse config recognizers
-          for (const key of recognizerKeys) { // Traverse plugin recognizers
+          for (const key of recognizersKeys) { // Traverse plugin recognizers
             if (configRecognizers[configKey].key && recognizers[key].key && configRecognizers[configKey].key == recognizers[key].key) { // TODO: Need to implement real keys for Recognizers
               configRecognizers[configKey] = recognizers[key]; // Choose the recognizers originating from plugin
             }

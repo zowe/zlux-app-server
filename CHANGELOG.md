@@ -2,6 +2,15 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v2.10.0
+
+- Enhancement: Migrated app-server configuration options into a "defaults.yaml" file which adheres to the schema of the Zowe config. This allows users to see the default behaviors more clearly, and can serve as an example by which users can customize their Zowe config to override such defaults. (#247)
+- Bugfix: Fixed the URLs app-server would print in the logs describing where it was accessible from. Messages were incorrectly pointing at the discovery server instead of the gateway server. (#247)
+
+## v2.9.0
+
+- Bugfix: Recognizers from multiple plugins could not be merged due to an error in the merge code execution at startup.
+
 ## v2.7.0
 
 - Bugfix: Explicitly prefer ipv4 dns results to be compatible with node 18 since it switched to prefer ipv6 without configuration. This behavior can be cusomized via components.app-server.dns.lookupOrder='ipv4' or 'ipv6'. It defaults to 'ipv4'.

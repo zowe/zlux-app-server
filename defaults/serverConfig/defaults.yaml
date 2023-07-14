@@ -54,7 +54,7 @@ components:
                                           if (Array.isArray(zowe.certificate.pem.certificateAuthorities)) {
                                             return zowe.certificate.pem.certificateAuthorities;
                                           } else {
-                                            return zowe.certificate.pem.certificateAuthorities.split(',');
+                                            return zowe.certificate.pem.certificateAuthorities.split(",");
                                           }
                                         } else { return ["../defaults/serverConfig/apiml-localca.cer"]; } };
                                   a() }}'

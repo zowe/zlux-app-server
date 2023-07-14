@@ -177,6 +177,198 @@ paths:
             type: string
         '404':
           description: File could not be opened or does not exist
+    put:
+      summary: Creates a dataset
+      tags:
+        - Dataset
+      parameters:
+        - name: dataset
+          in: path
+          description: Cache results for future
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              dsorg:
+                type: string
+                enum: [PS, PO]
+              blksz:
+                type: number
+              lrecl:
+                description: Desired record length
+                type: number
+              volser:
+                type: string
+              recfm:
+                type: string
+                enum: [A, B, F, U, V]
+              blkln:
+                description: The average data block length
+                type: number
+              ndisp:
+                type: string
+                default: CATLG
+                enum: [KEEP, CATLG]
+              strcls:
+                description: Desired SMS storage class
+                type: string
+              mngcls:
+                description: Desired SMS management class
+                type: string
+              datacls:
+                description: Desired SMS data class
+                type: string
+              space:
+                type: string
+                enum: [CYL, TRK, BYTE, KB, MB]
+              dir:
+                type: number
+              prime:
+                type: number
+                description: Desired primary space quantity
+              secnd:
+                type: number
+                description: Desired secondary space quantity
+              avgr:
+                type: string
+                description: Specifies which allocation unit to be used
+                enum: [M, K, U]
+              dsnt:
+                type: string
+                description: Specifies which data set type to create
+                enum: [PDSE, PDS, HFS, EXTREQ, EXTPPREF, BASIC, LARGE]
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+      responses:
+        '200':
+          description: Successfully created dataset
+          schema:
+            type: string
+        '400':
+          description: Invalid JSON
+          schema:
+            type: string
+          examples:
+            No JSON:
+              Cannot update file without JSON formatted record request
+            Invalid JSON:
+              Invalid JSON request body
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+          examples:
+            DD Allocation Error:
+              Unable to allocate a DD for ACB
+            Unalloc error:
+              "error: ds unalloc dsn={dataset} dd=ddname, rc=rc sysRC=rc, sysRSN=rsn"
+    delete:
+      summary: Delete a dataset or member
+      tags:
+        - Dataset
+      parameters:
+        - name: dataset
+          in: path
+          description: The dataset (and optionally member name) to be deleted
+          required: true
+          type: string
+      consumes:
+        - application/json
+      produces:
+        - application/json
+        - text/plain
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+          examples:
+            Member deletion:
+              {msg: Data set member membername was deleted successfully}
+            Dataset deletion:
+              {msg: Data set dataset was deleted successfully}
+        '400':
+          description: VSAM dataset detected. Please use regular dataset route
+          schema:
+            type: string
+        '401':
+          description: Dataset {dataset} busy (%s)
+          schema:
+            type: string
+        '404':
+          description: Not found
+          schema:
+            type: string
+          examples:
+            Dataset not found:
+              Dataset or member does not exist {dataset}
+            Member not found:
+              Data set member does not exist
+            Device not available:
+              Device not available for dataset {dataset}
+            Catalog not available:
+              Catalog not available for dataset {dataset}
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+          examples:
+            Dataset could not be opened:
+              Dataset could not be opened
+            Could not allocate member name:
+              Could not allocate member name
+            Member could not be deleted:
+              Member membername could not be deleted
+            DYNALLOC failure:
+              DYNALLOC failed with RC = rc, DYN RC = rc, RSN = rsn, dsn={dataset}, (site)
+  '/datasetCopy/{dataset}':
+    post:
+      summary: Copy a dataset and paste as a new one
+      tags:
+        - Dataset
+      parameters:
+        - name: dataset
+          in: path
+          description: Source dataset name
+          required: true
+          type: string
+        - name: newDataset
+          in: query
+          description: Target dataset name
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Successfully Copied Dataset
+          schema:
+            type: string
+        '400':
+          description: Invalid dataset path
+          schema:
+            type: string
+          examples:
+            Invalid dataset path:
+              Source dataset does not exist
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+          examples:
+            DD Allocation Error:
+              Unable to allocate a DD for ACB
+            Unalloc error:
+              "error: ds unalloc dsn={dataset} dd=ddname, rc=rc sysRC=rc, sysRSN=rsn"
   '/VSAMdatasetContents/{dataset}':
     get:
       summary: Get a VSAM dataset

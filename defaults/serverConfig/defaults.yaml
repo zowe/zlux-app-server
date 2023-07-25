@@ -101,10 +101,10 @@ components:
   zss:
     # section used to define a connection to a server that can handle native or high privilege commands that the app server cannot
     agent:
-      http: "${{ function a(){ if (components.zss.tls == false && components.zss.port) { return { port: components.zss.port }; } else { return undefined; } }; a() }}"
-      https: "${{ function a(){ if (components.zss.tls != false && components.zss.port) { return { port: components.zss.port }; } else { return undefined; } }; a() }}"
-      host: "${{ function a(){ if (components.zss.tls != false && process.env.ZWE_haInstance_hostname) { return process.env.ZWE_haInstance_hostname; } }; a() }}"
-      mediationLayer:
+      http: "${{ function a(){ if (process.env.ZWED_agent_http_port) { return process.env.ZWED_agent_http_port; } else if (components.zss.tls == false && components.zss.port) { return { port: components.zss.port }; } else { return undefined; } }; a() }}"
+      https: "${{ function a(){ if (process.env.ZWED_agent_https_port) { return process.env.ZWED_agent_https_port; } else if (components.zss.tls != false && components.zss.port) { return { port: components.zss.port }; } else { return undefined; } }; a() }}"
+      host: "${{ function a(){ if (process.env.ZWED_agent_host) { return process.env.ZWED_agent_host; } else if (components.zss.tls != false && process.env.ZWE_haInstance_hostname) { return process.env.ZWE_haInstance_hostname; } }; a() }}"
+     mediationLayer:
         enabled: "${{ components['app-server'].node.mediationLayer.enabled }}"
         serviceName: "zss"
       rootServices:

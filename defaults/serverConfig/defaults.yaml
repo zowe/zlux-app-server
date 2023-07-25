@@ -57,8 +57,22 @@ components:
       loopbackAddress: "${{ function a(){ if (process.env.ZOWE_LOOPBACK_ADDRESS) { return process.env.ZOWE_LOOPBACK_ADDRESS; } else { return undefined; } }; a() }}"
       mediationLayer:
         server:
-          hostname: ${{ zowe.externalDomains[0] }}
-          gatewayHostname: ${{ zowe.externalDomains[0] }}
+          # if ZWE_DISCOVERY_SERVICES_LIST exists, its more accurate than zowe.externalDomains, as that doesn't handle containers well.
+          # if exists, its in the format of "https://discovery-0.discovery-service.zowe.svc.cluster.local:7553/eureka/"
+          hostname: '${{ function a() {
+                         if (process.env.ZWE_DISCOVERY_SERVICES_LIST) {
+                           return process.env.ZWE_DISCOVERY_SERVICES_LIST.split(",")[0].split("/")[2].split(":")[0];
+                         } else { 
+                           return zowe.externalDomains[0] } };
+                     a() }}'
+          # usually, externalDomains is where gateway is. But on containers, this isnt accessible to containers, so
+          # HACK: special var ZWE_GATEWAY_HOST is used instead
+          gatewayHostname: '${{ function a() {
+                                if (process.env.ZWED_node_container=="true" && process.env.ZWE_GATEWAY_HOST) {
+                                  return process.env.ZWE_GATEWAY_HOST;
+                                } else {
+                                  return zowe.externalDomains[0] } };
+                            a() }}'
           port: ${{ components.discovery.port }}
           gatewayPort: ${{ zowe.externalPort }}
           isHttps: true

@@ -68,7 +68,7 @@ components:
           # usually, externalDomains is where gateway is. But on containers, this isnt accessible to containers, so
           # HACK: special var ZWE_GATEWAY_HOST is used instead
           gatewayHostname: '${{ function a() {
-                                if (process.env.ZWED_node_container=="true" && process.env.ZWE_GATEWAY_HOST) {
+                                if (process.env.ZWE_RUN_IN_CONTAINER=="true" && process.env.ZWE_GATEWAY_HOST) {
                                   return process.env.ZWE_GATEWAY_HOST;
                                 } else {
                                   return zowe.externalDomains[0] } };

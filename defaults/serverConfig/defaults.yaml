@@ -73,7 +73,13 @@ components:
                                   return zowe.externalDomains[0] } };
                             a() }}'
           port: ${{ components.discovery.port }}
-          gatewayPort: ${{ zowe.externalPort }}
+          # strange but true: to contact gateway in a container, dont use the external port.
+          gatewayPort: '${{ function a() {
+                         if (process.env.ZWE_RUN_IN_CONTAINER=="true") {
+                           return components.gateway.port;
+                         } else { 
+                           return zowe.externalPort } };
+                     a() }}'
           isHttps: true
           cachingService:
             enabled: ${{ components['app-server'].node.mediationLayer.enabled && components['caching-service'].enabled }}

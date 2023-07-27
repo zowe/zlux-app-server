@@ -57,11 +57,10 @@ components:
       loopbackAddress: "${{ function a(){ if (process.env.ZOWE_LOOPBACK_ADDRESS) { return process.env.ZOWE_LOOPBACK_ADDRESS; } else { return undefined; } }; a() }}"
       mediationLayer:
         server:
-          # if ZWE_DISCOVERY_SERVICES_LIST exists, its more accurate than zowe.externalDomains, as that doesn't handle containers well.
-          # if exists, its in the format of "https://discovery-0.discovery-service.zowe.svc.cluster.local:7553/eureka/"
+          # strange but true: to contact discovery in a container, instead reach for the gateway hostname.
           hostname: '${{ function a() {
-                         if (process.env.ZWE_DISCOVERY_SERVICES_LIST) {
-                           return process.env.ZWE_DISCOVERY_SERVICES_LIST.split(",")[0].split("/")[2].split(":")[0];
+                         if (process.env.ZWE_RUN_IN_CONTAINER=="true" && process.env.ZWE_GATEWAY_HOST) {
+                           return process.env.ZWE_GATEWAY_HOST;
                          } else { 
                            return zowe.externalDomains[0] } };
                      a() }}'

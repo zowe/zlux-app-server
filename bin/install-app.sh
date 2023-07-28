@@ -30,10 +30,13 @@ if [ -n "${ZWE_zowe_workspaceDirectory}" -a -n "${ZWE_zowe_runtimeDirectory}" ];
       ZLUX_CONTAINER_MODE=1  
       INSTALL_NO_NODE=1  
     fi
+    if [ ! -d "${COMPONENT_HOME}/share/zlux-app-server" ]; then
+      COMPONENT_HOME=${ZWE_zowe_runtimeDirectory}/components/app-server
+    fi
   fi
+  zlux_path="$COMPONENT_HOME/share"
 
   if [ -z "$INSTALL_NO_NODE" ]; then
-    zlux_path="$COMPONENT_HOME/share"
     setVars
     if [ ! -e "${ZWE_zowe_workspaceDirectory}/app-server/plugins/org.zowe.zlux.json" ]; then
       cd ${zlux_path}/zlux-app-server/lib

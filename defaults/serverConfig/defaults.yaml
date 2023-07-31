@@ -51,7 +51,11 @@ components:
                                        if (zowe.certificate?.truststore?.type == "JCERACFKS") {
                                           return [ zowe.certificate.truststore.file ];
                                        } else if(zowe.certificate?.pem?.certificateAuthorities) {
-                                          return [zowe.certificate.pem.certificateAuthorities];
+                                          if (Array.isArray(zowe.certificate.pem.certificateAuthorities)) {
+                                            return zowe.certificate.pem.certificateAuthorities;
+                                          } else {
+                                            return zowe.certificate.pem.certificateAuthorities.split(",");
+                                          }
                                         } else { return ["../defaults/serverConfig/apiml-localca.cer"]; } };
                                   a() }}'
       loopbackAddress: "${{ function a(){ if (process.env.ZOWE_LOOPBACK_ADDRESS) { return process.env.ZOWE_LOOPBACK_ADDRESS; } else { return undefined; } }; a() }}"

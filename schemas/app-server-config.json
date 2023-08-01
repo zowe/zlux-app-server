@@ -140,6 +140,29 @@
             }
           }
         },
+        "readBodyLimit": {
+          "type": "number",
+          "description": "Controls the default value for the maximum amount of bytes to accept when reading an HTTP body",
+          "default": 102400
+        },
+        "checkReferrer": {
+          "deprecated": true,
+          "enabled": {
+            "type": "boolean",
+            "deprecated": true,
+            "default": false,
+            "description": "Controls whether or not the server will block requests that dont have a valid referrer. This should not be needed due to using same-site cookies for the same purpose"
+          },
+          "hosts": {
+            "type": "array",
+            "deprecated": true,
+            "description": "A list of hostnames that the server is hosted on so that if it sees referrers with any of these hostnames, the HTTP requests will be approved rather than rejected",
+            "items": {
+              "type": "string",
+              "description": "A hostname or IP as seen from a browser"
+            }
+          }
+        },
         "internalRouting": {
           "type": "boolean",
           "description": "Controls if app-server should call one REST API from another by using a network call over a loopback address, or issue the request internal to the server by mimicking a network request",

@@ -140,6 +140,11 @@ app-server.bat
 
 When the App Server has started, one of the messages you will see as bootstrapping completes is that the server is listening on the HTTP/s port. Now, the server is ready for use.
 
+### Troubleshooting
+If you encounter an error message saying `No config file found, initializing`, it means that the App Server could not find a configuration file in the expected location.
+
+To fix this issue, you need to create a zowe.yaml file in the following directory: `%USERPROFILE%\.zowe\workspace\app-server\serverConfig`. You can use [this](https://github.com/zowe/zlux-app-server/blob/v2.x/staging/defaults/serverConfig/zowe.yaml) template as a starting point.
+
 ### Server Logs
 When the server starts, it writes logs to a text file. On z/OS, Unix, and Linux, the server also logs to the terminal via stdout.
 To view the entire logs, you can find the log file within the location specified by the zowe server configuration parameter `zowe.logDirectory`, but will default to `~/.zowe/logs` or `%USERPROFILE%/.zowe/logs` (Windows) if not specified. The log file starts with "appServer" and the filename may also include a timestamp.

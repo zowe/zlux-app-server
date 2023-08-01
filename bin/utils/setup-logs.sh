@@ -7,7 +7,6 @@
 # 
 # Copyright Contributors to the Zowe Project.
 
-
 if [ -n "$ZWED_NODE_LOG_FILE" ]
 then
   if [ -n "$ZWED_NODE_LOG_DIR" ]
@@ -20,7 +19,9 @@ else
   then
     if [ -d "$ZWE_zowe_logDirectory" ]
     then
-      ZWED_NODE_LOG_DIR=${ZWE_zowe_logDirectory}
+        ZWED_NODE_LOG_DIR=${ZWE_zowe_logDirectory}
+    elif [ -n "${HOME}" ]; then
+      ZWED_NODE_LOG_DIR="${HOME}/.zowe/logs"  
     else
       ZWED_NODE_LOG_DIR="../log"
     fi
@@ -91,7 +92,6 @@ fi
 
 
 echo ZWED_NODE_LOG_FILE=${ZWED_NODE_LOG_FILE}
-export ZLUX_LOG_PATH=$ZWED_NODE_LOG_FILE
 
 if [ ! -e $ZWED_NODE_LOG_FILE ]
 then
@@ -114,3 +114,5 @@ then
   echo file "$ZWED_NODE_LOG_FILE" is not writable. Logging disabled.
   ZWED_NODE_LOG_FILE=/dev/null
 fi
+
+export ZWED_NODE_LOG_FILE

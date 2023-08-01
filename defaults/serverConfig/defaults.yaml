@@ -1,0 +1,155 @@
+zowe:
+  workspaceDirectory: ${{ process.env.HOME + '/.zowe/workspace' }}
+  externalDomains: ${{ function a() { if (process.env.ZWE_zowe_externalDomains) { return process.env.ZWE_zowe_externalDomains.split(','); } else { return [ os.hostname() ] } }; a() }}
+  environments:
+    ZWED_SSH_PORT: 22
+    ZWED_TN3270_PORT: 23
+    ZWED_TN3270_SECURITY: telnet
+    ZWED_SSH_HOST: ${{ zowe.externalDomains[0] }}
+    ZWED_TN3270_HOST: ${{ zowe.externalDomains[0] }}
+    ZWED_TN3270_ROW: 24
+    ZWED_TN3270_COL: 80
+    #5=Dynamic
+    ZWED_TN3270_MOD: "5"
+    #
+    # ZWED_TN3270_CODEPAGE: 
+components:
+  app-server:
+    debug: false
+    node:
+      hostname: "${{ function a(){ if (process.env.ZWE_INTERNAL_HOST) { return process.env.ZWE_INTERNAL_HOST; } else if (process.env.ZWE_haInstance_hostname) { return process.env.ZWE_haInstance_hostname; } else { return undefined; } }; a() }}"
+      https:
+        ipAddresses: "${{ function a(){
+                          if (process.env.ZOWE_LOOPBACK_ADDRESS && process.env.BIND_TO_LOOPBACK == 'true') {
+                              return [ process.env.ZOWE_LOOPBACK_ADDRESS , '0.0.0.0' ];
+                            } else { return ['0.0.0.0'] } }; 
+                      a() }}"
+        port: "${{ function a(){
+                     if (process.env.ZWED_SERVER_HTTPS_PORT) {
+                       return Number(process.env.ZWED_SERVER_HTTPS_PORT);
+                     } else if (components['app-server'].port) {
+                       return components['app-server'].port;
+                     } else { return Number(7556); } };
+                a() }}"
+        keys: '${{ function a() {
+                     if (zowe.certificate?.keystore?.type == "JCERACFKS") {
+                       return [ zowe.certificate.keystore.file+"&"+zowe.certificate.keystore.alias ];
+                     } else if (zowe.certificate?.pem?.key) {
+                       return [ zowe.certificate.pem.key ];
+                     } else {
+                       return [ "../defaults/serverConfig/zlux.keystore.key" ]; } };
+                a() }}'
+        certificates: '${{ function a(){
+                             if (zowe.certificate?.keystore?.type == "JCERACFKS") {
+                               return [ zowe.certificate.keystore.file+"&"+zowe.certificate.keystore.alias ];
+                             } else if (zowe.certificate?.pem?.certificate) {
+                               return [ zowe.certificate.pem.certificate ];
+                             } else {
+                               return [ "../defaults/serverConfig/zlux.keystore.cer" ]; } };
+                        a() }}'
+        certificateAuthorities: '${{ function a() {
+                                       if (zowe.certificate?.truststore?.type == "JCERACFKS") {
+                                          return [ zowe.certificate.truststore.file ];
+                                       } else if(zowe.certificate?.pem?.certificateAuthorities) {
+                                          return [zowe.certificate.pem.certificateAuthorities];
+                                        } else { return ["../defaults/serverConfig/apiml-localca.cer"]; } };
+                                  a() }}'
+      loopbackAddress: "${{ function a(){ if (process.env.ZOWE_LOOPBACK_ADDRESS) { return process.env.ZOWE_LOOPBACK_ADDRESS; } else { return undefined; } }; a() }}"
+      mediationLayer:
+        server:
+          # if ZWE_DISCOVERY_SERVICES_LIST exists, its more accurate than zowe.externalDomains, as that doesn't handle containers well.
+          # if exists, its in the format of "https://discovery-0.discovery-service.zowe.svc.cluster.local:7553/eureka/"
+          hostname: '${{ function a() {
+                         if (process.env.ZWE_DISCOVERY_SERVICES_LIST) {
+                           return process.env.ZWE_DISCOVERY_SERVICES_LIST.split(",")[0].split("/")[2].split(":")[0];
+                         } else { 
+                           return zowe.externalDomains[0] } };
+                     a() }}'
+          # usually, externalDomains is where gateway is. But on containers, this isnt accessible to containers, so
+          # HACK: special var ZWE_GATEWAY_HOST is used instead
+          gatewayHostname: '${{ function a() {
+                                if (process.env.ZWE_RUN_IN_CONTAINER=="true" && process.env.ZWE_GATEWAY_HOST) {
+                                  return process.env.ZWE_GATEWAY_HOST;
+                                } else {
+                                  return zowe.externalDomains[0] } };
+                            a() }}'
+          port: ${{ components.discovery.port }}
+          gatewayPort: ${{ zowe.externalPort }}
+          isHttps: true
+          cachingService:
+            enabled: ${{ components['app-server'].node.mediationLayer.enabled && components['caching-service'].enabled }}
+        enabled: ${{ components.gateway.enabled && components.discovery.enabled }}
+      headers:
+        X-frame-Options:
+          override: true
+          value: sameorigin
+      allowInvalidTLSProxy: ${{ zowe.verifyCertificates == 'DISABLED' }}
+      noChild: false
+      noPrompt: false
+      productCode: "ZLUX"
+      rootRedirectURL: '/ZLUX/plugins/org.zowe.zlux.bootstrap/web/'
+      pluginScanIntervalSec: "${{ os.platform == 'zos' ? undefined : 60 }}"
+    readBodyLimit: 102400
+    checkReferrer:
+      enabled: "${{ process.env.ZWE_CHECK_REFERRER ? process.env.ZWE_CHECK_REFERRER : false }}"
+      hosts: "${{ process.env.ZWE_REFERRER_HOSTS ? process.env.ZWE_REFERRER_HOSTS.toLowerCase().split(',') : process.env.ZWE_REFERER_HOSTS ? process.env.ZWE_REFERER_HOSTS.toLowerCase().split(',') : [] }}"
+    # All paths relative to zlux-app-server/bin
+    # In real installations, these values will be configured during the install.
+    productDir: ${{ function a(){ if (zowe.runtimeDirectory) { return zowe.runtimeDirectory+'/components/app-server/share/zlux-app-server/defaults'; } else { return '../defaults'; } }; a() }}
+    instanceDir: ${{ zowe.workspaceDirectory }}/app-server
+    siteDir: ${{ components['app-server'].instanceDir }}/site
+    groupsDir: ${{ components['app-server'].instanceDir }}/groups
+    usersDir: ${{ components['app-server'].instanceDir }}/users
+    pluginsDir: ${{ components['app-server'].instanceDir }}/plugins
+    dataserviceAuthentication:
+      # this specifies the default authentication type for dataservices that didn't specify which type to use. These dataservices therefore should not expect a particular type of authentication to be used.
+      defaultAuthentication: "${{ function a(){ if ((components.zss?.enabled == true) || (components.gateway?.enabled == true)) { return 'saf'; } else { return 'fallback'; } }; a() }}"
+      rbac: false
+    instanceID: ${{ zowe.rbacProfileIdentifier }}
+    cookieIdentifier: ${{ zowe.cookieIdentifier }}
+    # Specifies the default language for the server framework logging
+    logLanguage: en
+    logLevels:
+      _zsf.*: "${{ components['app-server'].debug === true ? 5 : 2 }}"
+    agent: ${{ components.zss.agent }}
+  zss:
+    # section used to define a connection to a server that can handle native or high privilege commands that the app server cannot
+    agent:
+      http: "${{ function a(){ if (components.zss.tls == false && components.zss.port) { return { port: components.zss.port }; } else { return undefined; } }; a() }}"
+      https: "${{ function a(){ if (components.zss.tls != false && components.zss.port) { return { port: components.zss.port }; } else { return undefined; } }; a() }}"
+      host: "${{ function a(){ if (components.zss.tls != false && process.env.ZWE_haInstance_hostname) { return process.env.ZWE_haInstance_hostname; } }; a() }}"
+      mediationLayer:
+        enabled: "${{ components['app-server'].node.mediationLayer.enabled }}"
+        serviceName: "zss"
+      rootServices:
+      - url: '/login'
+        method: '*'
+        requiresAuth: false
+      - url: '/logout'
+        method: '*'
+        requiresAuth: false
+      - url: '/unixfile'
+        method: '*'
+      - url: '/datasetContents'
+        method: '*'
+      - url: '/jes'
+        method: '*'
+      - url: '/VSAMdatasetContents'
+        method: '*'
+      - url: '/datasetMetadata'
+        method: '*'
+      - url: '/datasetCopy'
+        method: '*'
+      - url: '/omvs'
+        method: '*'
+      - url: '/ras'
+        method: '*'
+      - url: '/security-mgmt'      
+        method: '*'      
+      - url: '/saf-auth'
+        method: '*'
+      - url: '/password'
+        method: '*'
+        requiresAuth: false
+      - url: '/user-info'
+        method: '*'

@@ -22,10 +22,38 @@ if [ "${ZWE_RUN_ON_ZOS}" != "true" ]; then
 fi
 
 cd ${COMPONENT_HOME}/share/zlux-app-server/bin
-. ./utils/convert-env.sh
+
+if [ -n "$ZWE_components_app_server_node_mediationLayer_enabled" -a -z "$ZWE_components_app_server_agent_mediationLayer_enabled" ]; then
+  if [ "${ZWE_RUN_ON_ZOS}" != "true" ]; then
+    zss_def_template="zss.apiml_static_reg.yaml.template"
+    zss_configured=false
+    if [ -n "${ZWE_components_app_server_agent_https_port}" ]; then
+      export ZSS_PORT="${ZWE_components_app_server_agent_https_port}"
+      export ZSS_PROTOCOL=https
+      zss_configured=true
+    elif [ -n "${ZWED_components_app_server_agent_http_port}" ]; then 
+      export ZSS_PORT="${ZWE_components_app_server_http_port}"
+      export ZSS_PROTOCOL=http
+      zss_configured=true
+    fi
+
+    if [ "${zss_configured}" = "true" ] && [ -n "${ZWE_STATIC_DEFINITIONS_DIR}" ]; then
+      zss_registration_yaml=${ZWE_STATIC_DEFINITIONS_DIR}/zss.apiml_static_reg_yaml_template.${ZWE_CLI_PARAMETER_HA_INSTANCE}.yml
+      zss_def="../${zss_def_template}"
+      zss_parsed_def=$( ( echo "cat <<EOF" ; cat "${zss_def}" ; echo ; echo EOF ) | sh 2>&1)
+      echo "${zss_parsed_def}" > "${zss_registration_yaml}"
+      chmod 770 "${zss_registration_yaml}"
+    fi
+  
+    unset ZSS_PORT
+    unset ZSS_PROTOCOL
+  fi
+fi
+
+
 . ./init/node-init.sh
 cd ../lib
-__UNTAGGED_READ_MODE=V6 $NODE_BIN initInstance.js
+CONFIG_FILE=$ZWE_CLI_PARAMETER_CONFIG $NODE_BIN initInstance.js
 
 cd ${COMPONENT_HOME}/share/zlux-app-server/bin/init
 if [ "${ZWE_zowe_useConfigmgr}" = "true" ]; then

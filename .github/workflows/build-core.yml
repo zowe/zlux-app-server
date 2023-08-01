@@ -44,11 +44,30 @@ jobs:
           github-repo: ${{ github.repository }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-  build:
+  check_changelog:
     runs-on: ubuntu-latest
     needs: check-permission
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Check if CHANGELOG is added
+        id: changed-files-yaml
+        uses: tj-actions/changed-files@v37
+        with:
+          files_yaml: |
+            doc:
+              - CHANGELOG.md
 
+      - name: Abort the workflow if CHANGELOG is not added
+        if: steps.changed-files-yaml.outputs.doc_any_changed != 'true'
+        run: |
+          echo "CHANGELOG
+
+  build:
+    runs-on: ubuntu-latest
+    needs: check_changelog
+    steps:
       - name: '[Prep 1] Cache node modules'
         uses: actions/cache@v2
         with:

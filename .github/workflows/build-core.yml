@@ -67,7 +67,7 @@ jobs:
       - name: Check if CHANGELOG is Updated and if not updated pass to update_changelog
         if: ${{ steps.check.outputs.was_updated != 'true' }}
         run: |
-          echo "CHANGELOG not added. Please add the CHANGELOG in the CHANGELOG.md file"
+          echo "CHANGELOG.md not updated, please update CHANGELOG.md with the changes made in the pull request"
 
       - name: Remove copy-repo
         if: always()

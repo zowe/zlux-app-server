@@ -69,9 +69,6 @@ jobs:
         run: |
           echo "CHANGELOG.md not updated, please update CHANGELOG.md with the changes made in the pull request"
 
-      - name: Remove copy-repo
-        if: always()
-        run: rm -r copy-repo
 
 
     update_changelog:

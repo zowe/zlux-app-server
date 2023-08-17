@@ -95,21 +95,21 @@ jobs:
             echo "::set-output name=change_detected::true"
           fi
 
-    check_changelog:
-      needs: update-changelog
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
+  check_changelog:
+    needs: update-changelog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-        - name: Verify Changelog update
-          run: |
-            if [ "${{ needs.update-changelog.outputs.was_updated }}" != "true" ]; then
-              echo "CHANGELOG.md not updated, please update CHANGELOG.md with the changes made in the pull request"
-              exit 1
-            else
-              echo "changelog was updated successfully."
-            fi
+      - name: Verify Changelog update
+        run: |
+          if [ "${{ needs.update-changelog.outputs.was_updated }}" != "true" ]; then
+            echo "CHANGELOG.md not updated, please update CHANGELOG.md with the changes made in the pull request"
+            exit 1
+          else
+            echo "changelog was updated successfully."
+          fi
 
   build:
     runs-on: ubuntu-latest

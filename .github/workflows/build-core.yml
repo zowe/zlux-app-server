@@ -48,43 +48,66 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       was_updated: ${{ steps.check-change.outputs.change_detected }}
+      check_commit: ${{ steps.check-changelog.outputs.check_commit }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
           ref: ${{ github.head_ref }}
+          fetch-depth: 0
 
+      - name: Check for updated CHANGELOG.md using git
+        id: check-changelog
+        run: |
+          if git diff --name-only origin/${{ github.base_ref }} | grep -q "^CHANGELOG.md$"; then
+            echo "CHANGELOG.md has been updated."
+            echo "::set-output name=check_commit::true"
+          else
+            echo "ERROR: CHANGELOG.md has not been updated."
+            echo "::set-output name=check_commit::false"
+          fi
       - name: Extract changelog info
+        if: steps.check-changelog.outputs.check_commit == 'false'
         id: extract-changelog
         run: |
           PR_DESCRIPTION="${{ github.event.pull_request.body }}"
-
           # Check if "changelog:" exists in PR description
-          if [[ $PR_DESCRIPTION == *"CHANGELOG:"* ]]; then
-
+          if echo "$PR_DESCRIPTION" | grep -q "VERSION:" && echo "$PR_DESCRIPTION" | grep -q "CHANGELOG:"; then
             # Extract text after "changelog:"
             CHANGELOG_TEXT=$(echo $PR_DESCRIPTION | sed -n 's/.*CHANGELOG: \(.*\)/\1/p')
-
+            # Extract VERSION: from PR description
+            VERSION=$(echo "$PR_DESCRIPTION" | grep -oP 'VERSION:\s*\Kv\d+\.\d+\.\d+')
             echo "Extracted changelog: $CHANGELOG_TEXT"
             echo "::set-output name=changelog::$CHANGELOG_TEXT"
+            echo "::set-output name=version::$VERSION"
           else
-            echo "No changelog information found in PR description please add the changelog note"
+            echo "No changelog and version information found in PR description please add them"
             exit 1
           fi
-
       - name: Check PR body against changelog
+        if: steps.check-changelog.outputs.check_commit == 'false'
         run: |
+          set -eux
           if ! grep -Fq "${{ steps.extract-changelog.outputs.changelog }}" CHANGELOG.md; then
-            LINE_NUMBER=$(awk '/^##/{print NR; exit}' CHANGELOG.md)
-            sed -i "${LINE_NUMBER} a- ${{ steps.extract-changelog.outputs.changelog }} . (#${{ github.event.pull_request.number }})" CHANGELOG.md
-            # echo "${{ steps.extract-changelog.outputs.changelog }}" >> CHANGELOG.md
+          # Check if version exists in CHANGELOG.md
+            if grep -q "## ${{ steps.extract-changelog.outputs.version }}" CHANGELOG.md; then
+              # Append PR description to existing version
+              sed -i "/## ${{ steps.extract-changelog.outputs.version }}/ a- ${{ steps.extract-changelog.outputs.changelog }} . (#${{ github.event.pull_request.number }})" CHANGELOG.md
+            else
+              # Append new version and PR description
+              echo "$(awk '/All notable changes to the Zlux App Server package will be documented in this file\./ {
+                print
+                print "\n## " "${{ steps.extract-changelog.outputs.version }}"
+                print "- " "${{ steps.extract-changelog.outputs.changelog }}" " (#${{ github.event.pull_request.number }})"
+                next
+              } 1' CHANGELOG.md)" > CHANGELOG.md
+           fi
             git config --local user.email "action@github.com"
             git config --local user.name "GitHub Action"
             git add CHANGELOG.md
             git commit -m "Update changelog with PR #${{ github.event.pull_request.number }} description"
             git push
           fi
-
       - name: check for changes
         id: check-change
         run: |
@@ -95,21 +118,21 @@ jobs:
             echo "::set-output name=change_detected::true"
           fi
 
-  check_changelog:
-    needs: update-changelog
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    check_changelog:
+      needs: update-changelog
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
 
-      - name: Verify Changelog update
-        run: |
-          if [ "${{ needs.update-changelog.outputs.was_updated }}" != "true" ]; then
-            echo "CHANGELOG.md not updated, please update CHANGELOG.md with the changes made in the pull request"
-            exit 1
-          else
-            echo "changelog was updated successfully."
-          fi
+        - name: Verify Changelog update
+          run: |
+            if [ "${{ needs.update-changelog.outputs.was_updated }}" != "true" ]; then
+              echo "CHANGELOG.md not updated, please update CHANGELOG.md with the changes made in the pull request"
+              exit 1
+            else
+              echo "changelog was updated successfully."
+            fi
 
   build:
     runs-on: ubuntu-latest

@@ -81,7 +81,7 @@ jobs:
             echo "::set-output name=changelog::$CHANGELOG_TEXT"
             echo "::set-output name=version::$VERSION"
           else
-            echo -e "No changelog and version information found in PR description please add them\n Expected Format VERSION:vX.XX.X\n CHANGELOG:This is changelog note\n
+            echo -e "No changelog and version information found in PR description please add them.\n Expected Format VERSION:vX.XX.X\n CHANGELOG:This is changelog note.\n
             To re-run the action, just pushed/commit the changes along with PR description, it will automatically triggered by sync."
             exit 1
           fi

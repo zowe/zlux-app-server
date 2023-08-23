@@ -88,20 +88,21 @@ jobs:
       - name: Check PR body against changelog
         if: steps.check-changelog.outputs.check_commit == 'false'
         run: |
-          if ! grep -Fq "${{ steps.extract-changelog.outputs.changelog }}" CHANGELOG.md; then
-          # Check if version exists in CHANGELOG.md
-            if grep -q "## ${{ steps.extract-changelog.outputs.version }}" CHANGELOG.md; then
+          ESCAPED_CHANGELOG="${{ steps.extract-changelog.outputs.changelog }}"
+          ESCAPED_CHANGELOG=$(echo "$ESCAPED_CHANGELOG" | sed "s/'/\\\\'/g")
+          VERSION="${{ steps.extract-changelog.outputs.version }}"
+          
+          if ! grep -Fq "$ESCAPED_CHANGELOG" CHANGELOG.md; then
+            # Check if version exists in CHANGELOG.md
+            if grep -q "^## $VERSION" CHANGELOG.md; then
               # Append PR description to existing version
-              sed -i "/## ${{ steps.extract-changelog.outputs.version }}/ a- ${{ steps.extract-changelog.outputs.changelog }} (#${{ github.event.pull_request.number }})" CHANGELOG.md
+              sed -i "/^## $VERSION/a - $ESCAPED_CHANGELOG (#${{ github.event.pull_request.number }})" CHANGELOG.md
             else
               # Append new version and PR description
-              echo "$(awk '/All notable changes to the Zlux App Server package will be documented in this file\./ {
-                print
-                print "\n## " "${{ steps.extract-changelog.outputs.version }}"
-                print "- " "${{ steps.extract-changelog.outputs.changelog }}" " (#${{ github.event.pull_request.number }})"
-                next
-              } 1' CHANGELOG.md)" > CHANGELOG.md
-           fi
+              ANCHOR_LINE=$(awk '/All notable changes to the Zlux App Server package will be documented in this file\./ {print NR}' CHANGELOG.md)
+              sed -i "$ANCHOR_LINE a\\
+              \n## $VERSION\n- $ESCAPED_CHANGELOG (#${{ github.event.pull_request.number }})\n" CHANGELOG.md
+            fi
             git config --local user.email "action@github.com"
             git config --local user.name "GitHub Action"
             git add CHANGELOG.md

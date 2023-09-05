@@ -3,7 +3,6 @@
 All notable changes to the Zlux App Server package will be documented in this file.
 
 ## v2.11.0
-
 - Bugfix: The server couldn't load more than one certificate authority specified within the zowe.certificate.pem.certificateAuthorities section under any condition. Now, it is supported regardless of if the section is an array or a comma-separated string. (#266)
 
 ## v2.10.0

@@ -39,32 +39,26 @@ function deleteFile(path) {
 
 function registerPlugin(pluginPath, pluginDefinition) {
   const pointerPath = `${pluginPointerDirectory}/${pluginDefinition.identifier}.json`;
-  if (fs.fileExists(pointerPath)) {
-    //in case of upgrade
-    registerApp2App(pluginPath, pluginDefinition.identifier, pluginDefinition.pluginVersion);
-    return true;
-  } else {
-    let location, relativeTo;
-    if (pluginPath.startsWith(runtimeDirectory)) {
-      relativeTo = "$ZWE_zowe_runtimeDirectory";
-      location = pluginPath.substring(runtimeDirectory.length);
-      if (location.startsWith('/')) {
-        location = location.substring(1);
-      }
-
-      xplatform.storeFileUTF8(pointerPath, xplatform.AUTO_DETECT, JSON.stringify({
-        "identifier": pluginDefinition.identifier,
-        "pluginLocation": location,
-        "relativeTo": relativeTo
-      }, null, 2));
-    } else {
-      xplatform.storeFileUTF8(pointerPath, xplatform.AUTO_DETECT, JSON.stringify({
-        "identifier": pluginDefinition.identifier,
-        "pluginLocation": pluginPath
-      }, null, 2));
+  let location, relativeTo;
+  if (pluginPath.startsWith(runtimeDirectory)) {
+    relativeTo = "$ZWE_zowe_runtimeDirectory";
+    location = pluginPath.substring(runtimeDirectory.length);
+    if (location.startsWith('/')) {
+      location = location.substring(1);
     }
-    registerApp2App(pluginPath, pluginDefinition.identifier, pluginDefinition.pluginVersion);
+    
+    xplatform.storeFileUTF8(pointerPath, xplatform.AUTO_DETECT, JSON.stringify({
+      "identifier": pluginDefinition.identifier,
+      "pluginLocation": location,
+      "relativeTo": relativeTo
+    }, null, 2));
+  } else {
+    xplatform.storeFileUTF8(pointerPath, xplatform.AUTO_DETECT, JSON.stringify({
+      "identifier": pluginDefinition.identifier,
+      "pluginLocation": pluginPath
+    }, null, 2));
   }
+  registerApp2App(pluginPath, pluginDefinition.identifier, pluginDefinition.pluginVersion);
 }
 
 

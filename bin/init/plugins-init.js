@@ -46,7 +46,7 @@ function registerPlugin(pluginPath, pluginDefinition) {
     if (location.startsWith('/')) {
       location = location.substring(1);
     }
-    
+
     xplatform.storeFileUTF8(pointerPath, xplatform.AUTO_DETECT, JSON.stringify({
       "identifier": pluginDefinition.identifier,
       "pluginLocation": location,

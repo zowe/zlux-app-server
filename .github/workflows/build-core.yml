@@ -72,18 +72,31 @@ jobs:
         id: extract-changelog
         run: |
           PR_DESCRIPTION="${{ github.event.pull_request.body }}"
+          PR_DESCRIPTION_CLEAN=$(echo "$PR_DESCRIPTION" | tr -d '[:space:]')
+          # check if PR description is identical to template.md
+          TEMPLATE_CONTENT=$(cat .github/workflows/pull_request_template.md)
+          TEMPLATE_CONTENT_CLEAN=$(echo "$TEMPLATE_CONTENT" | tr -d '[:space:]')
+          if [ "$TEMPLATE_CONTENT_CLEAN" == "$PR_DESCRIPTION_CLEAN" ]; then
+            echo "PR description is identical to pull_request_template.md"
+            exit 1
+          fi
           # Check if "changelog:" exists in PR description
           if echo "$PR_DESCRIPTION" | grep -q "VERSION:" && echo "$PR_DESCRIPTION" | grep -q "CHANGELOG:"; then
-            # Extract text after "changelog:"
+            # Extract content after "changelog:"
             CHANGELOG_TEXT=$(echo $PR_DESCRIPTION | sed -n 's/.*CHANGELOG: \(.*\)/\1/p')
+            CHANGELOG_TEXT_CLEAN=$(echo "$CHANGELOG_TEXT" | tr -d '[:space:]')
+            # Check if extracted CHANGELOG_TEXT is empty or identical to the template content
+            if [ -z "$CHANGELOG_TEXT" ] || [ "$CHANGELOG_TEXT" == "$PR_DESCRIPTION_CLEAN" ]; then
+              echo "The changelog information after 'CHANGELOG:' cannot be empty or identical to pull_request_template.md."
+              exit 1
+            fi
             # Extract VERSION: from PR description
             VERSION=$(echo "$PR_DESCRIPTION" | grep -oP 'VERSION:\s*\Kv\d+\.\d+\.\d+')
             echo "Extracted changelog: $CHANGELOG_TEXT"
             echo "::set-output name=changelog::$CHANGELOG_TEXT"
             echo "::set-output name=version::$VERSION"
           else
-            echo -e "No changelog and version information found in PR description please add them.\n Expected Format:\n VERSION:vX.XX.X\n CHANGELOG:This is changelog note.\n
-            To re-run the action, just make a push or commit after updating the PR description or updating the changelog via a manual file changing commit."
+            echo -e "No changelog and version information found in PR description please add them.\nExpected Format:\nVERSION:vX.XX.X\nCHANGELOG:This is changelog note.\nTo re-run the action, just make a push or commit after updating the PR description or updating the changelog via a manual file changing commit."
             exit 1
           fi
       - name: Check PR body against changelog
@@ -121,21 +134,21 @@ jobs:
           fi
 
   check_changelog:
-      if: github.event_name == 'pull_request'
-      needs: update-changelog
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
+    if: github.event_name == 'pull_request'
+    needs: update-changelog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-        - name: Verify Changelog update
-          run: |
-            if [ "${{ needs.update-changelog.outputs.was_updated }}" != "true" ]; then
-              echo "CHANGELOG.md not updated, please update CHANGELOG.md with the changes made in the pull request"
-              exit 1
-            else
-              echo "changelog was updated successfully."
-            fi
+      - name: Verify Changelog update
+        run: |
+          if [ "${{ needs.update-changelog.outputs.was_updated }}" != "true" ]; then
+            echo "CHANGELOG.md not updated, please update CHANGELOG.md with the changes made in the pull request"
+            exit 1
+          else
+            echo "changelog was updated successfully."
+          fi
 
   build:
     runs-on: ubuntu-latest

@@ -72,40 +72,48 @@ jobs:
         id: extract-changelog
         run: |
           PR_DESCRIPTION="${{ github.event.pull_request.body }}"
-          PR_DESCRIPTION_CLEAN=$(echo "$PR_DESCRIPTION" | tr -d '[:space:]')
-          # check if PR description is identical to template.md
-          TEMPLATE_CONTENT=$(cat .github/pull_request_template.md)
-          TEMPLATE_CONTENT_CLEAN=$(echo "$TEMPLATE_CONTENT" | tr -d '[:space:]')
-          if [ "$TEMPLATE_CONTENT_CLEAN" == "$PR_DESCRIPTION_CLEAN" ]; then
-            echo "PR description is identical to pull_request_template.md"
-            exit 1
-          fi
-          # Check if "changelog:" exists in PR description
-          if echo "$PR_DESCRIPTION" | grep -q "VERSION:" && echo "$PR_DESCRIPTION" | grep -q "CHANGELOG:"; then
-            # Extract content after "changelog:"
-            CHANGELOG_TEXT=$(echo $PR_DESCRIPTION | sed -n 's/.*CHANGELOG: \(.*\)/\1/p')
-            CHANGELOG_TEXT_CLEAN=$(echo "$CHANGELOG_TEXT" | tr -d '[:space:]')
-            # Check if extracted CHANGELOG_TEXT is empty or identical to the template content
-            if [ -z "$CHANGELOG_TEXT" ] || [ "$CHANGELOG_TEXT" == "$PR_DESCRIPTION_CLEAN" ]; then
-              echo "The changelog information after 'CHANGELOG:' cannot be empty or identical to pull_request_template.md."
+          echo "$PR_DESCRIPTION" > /tmp/pr_description.txt
+          echo "PR DESCRIPTION saved to /tmp/pr_description.txt."
+          cat /tmp/pr_description.txt
+          
+          # Save the template content to a file
+          TEMPLATE_CONTENT=$(sed 's/"//g' .github/pull_request_template.md)
+          echo "$TEMPLATE_CONTENT" > /tmp/template_content.txt
+          echo "Template content saved to /tmp/template_content.txt."
+          cat /tmp/template_content.txt
+          
+          # Use diff to compare the two files
+          if diff -wB /tmp/pr_description.txt /tmp/template_content.txt > /dev/null; then
+              echo "ERROR: PR description is identical to the template."
               exit 1
-            fi
-            # Extract VERSION: from PR description
-            VERSION=$(echo "$PR_DESCRIPTION" | grep -oP 'VERSION:\s*\Kv\d+\.\d+\.\d+')
-            echo "Extracted changelog: $CHANGELOG_TEXT"
-            echo "::set-output name=changelog::$CHANGELOG_TEXT"
-            echo "::set-output name=version::$VERSION"
           else
-            echo -e "No changelog and version information found in PR description please add them.\nExpected Format:\nVERSION:vX.XX.X\nCHANGELOG:This is changelog note.\nTo re-run the action, just make a push or commit after updating the PR description or updating the changelog via a manual file changing commit."
-            exit 1
+              echo "PR description and template are different."
           fi
+           # Check if "changelog:" exists in PR description
+           if echo "$PR_DESCRIPTION" | grep -q "VERSION:" && echo "$PR_DESCRIPTION" | grep -q "CHANGELOG:"; then
+             # Extract content after "changelog:"
+             CHANGELOG_TEXT=$(echo $PR_DESCRIPTION | sed -n 's/.*CHANGELOG: \(.*\)/\1/p')
+             # Check if extracted CHANGELOG_TEXT is empty or identical to the template content
+             if [ -z "$CHANGELOG_TEXT" ] || [ diff -wB /tmp/pr_description.txt /tmp/template_content.txt ]; then
+               echo "The changelog information after 'CHANGELOG:' cannot be empty or identical to pull_request_template.md."
+               exit 1
+             fi
+             # Extract VERSION: from PR description
+             VERSION=$(echo "$PR_DESCRIPTION" | grep -oP 'VERSION:\s*\Kv\d+\.\d+\.\d+')
+             echo "Extracted changelog: $CHANGELOG_TEXT"
+             echo "::set-output name=changelog::$CHANGELOG_TEXT"
+             echo "::set-output name=version::$VERSION"
+           else
+             echo -e "No changelog and version information found in PR description please add them.\nExpected Format:\nVERSION:vX.XX.X\nCHANGELOG:This is changelog note.\nTo re-run the action, just make a push or commit after updating the PR description or updating the changelog via a manual file changing commit."
+             exit 1
+           fi
       - name: Check PR body against changelog
         if: steps.check-changelog.outputs.check_commit == 'false'
         run: |
           ESCAPED_CHANGELOG="${{ steps.extract-changelog.outputs.changelog }}"
           ESCAPED_CHANGELOG=$(echo "$ESCAPED_CHANGELOG" | sed "s/'/\\\\'/g")
           VERSION="${{ steps.extract-changelog.outputs.version }}"
-          
+
           if ! grep -Fq "$ESCAPED_CHANGELOG" CHANGELOG.md; then
             # Check if version exists in CHANGELOG.md
             if grep -q "^## $VERSION" CHANGELOG.md; then

@@ -38,7 +38,7 @@ function deleteFile(path) {
 }
 
 function registerPlugin(pluginPath, pluginDefinition) {
-  const pointerPath = `${pluginPointerDirectory}/${pluginDefinition.identifier}.json`;
+  const pointerPath = `${pluginPointerDirectory}/${pluginDefinition.identifier}.json`; 
   let location, relativeTo;
   if (pluginPath.startsWith(runtimeDirectory)) {
     relativeTo = "$ZWE_zowe_runtimeDirectory";

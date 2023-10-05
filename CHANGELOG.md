@@ -1,6 +1,10 @@
 # Zlux App Server Changelog
 
 All notable changes to the Zlux App Server package will be documented in this file.
+    
+## v2.12.0
+- enhancement: new versions of components can change the location of their plugins, as the app-server will now re-inspect the plugin locations on each startup. (#280)
+
 
 ## v2.11.0
 

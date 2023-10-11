@@ -23,8 +23,8 @@ fi
 
 cd ${COMPONENT_HOME}/share/zlux-app-server/bin
 
-if [ "$ZWE_components_gateway_enabled" == "true" ]; then
-  if [ "$ZWE_components_zss_enabled" == "true" ]; then
+if [ "$ZWE_components_gateway_enabled" = "true" ]; then
+  if [ "$ZWE_components_zss_enabled" = "true" ]; then
     if [ "${ZWE_RUN_ON_ZOS}" != "true" ]; then
       zss_def_template="zss.apiml_static_reg.yaml.template"
       export ZSS_PORT="${ZWE_components_zss_port}"

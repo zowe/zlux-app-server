@@ -20,9 +20,17 @@ components:
       hostname: "${{ function a(){ if (process.env.ZWE_INTERNAL_HOST) { return process.env.ZWE_INTERNAL_HOST; } else if (process.env.ZWE_haInstance_hostname) { return process.env.ZWE_haInstance_hostname; } else { return undefined; } }; a() }}"
       https:
         ipAddresses: "${{ function a(){
+                          let addresses;
+                          if (components['app-server'].zowe.network.server.listenAddresses) {
+                            addresses = components['app-server'].zowe.network.server.listenAddresses;
+                          } else if (zowe.network.server.listenAddresses) {
+                            addresses = zowe.networking.server.listenAddresses;
+                          } else {
+                            addresses = ['0.0.0.0'];
+                          }
                           if (process.env.ZOWE_LOOPBACK_ADDRESS && process.env.BIND_TO_LOOPBACK == 'true') {
-                              return [ process.env.ZOWE_LOOPBACK_ADDRESS , '0.0.0.0' ];
-                            } else { return ['0.0.0.0'] } }; 
+                              return [ process.env.ZOWE_LOOPBACK_ADDRESS ].concat(addresses);
+                            } else { return addresses } }; 
                       a() }}"
         port: "${{ function a(){
                      if (process.env.ZWED_SERVER_HTTPS_PORT) {
@@ -58,6 +66,22 @@ components:
                                           }
                                         } else { return ["../defaults/serverConfig/apiml-localca.cer"]; } };
                                   a() }}'
+        maxTls: '${{ function a(){
+                             if (components["app-server"].zowe.network.server.maxTls) {
+                               return components["app-server"].zowe.network.server.maxTls;
+                             } else if (zowe.network.server.maxTls) {
+                               return zowe.network.server.maxTls;
+                             } else {
+                               return "TLSv1.3";
+                        a() }}'
+        minTls: '${{ function a(){
+                             if (components["app-server"].zowe.network.server.minTls) {
+                               return components["app-server"].zowe.network.server.minTls;
+                             } else if (zowe.network.server.minTls) {
+                               return zowe.network.server.minTls;
+                             } else {
+                               return "TLSv1.2";
+                        a() }}'
       loopbackAddress: "${{ function a(){ if (process.env.ZOWE_LOOPBACK_ADDRESS) { return process.env.ZOWE_LOOPBACK_ADDRESS; } else { return undefined; } }; a() }}"
       mediationLayer:
         server:

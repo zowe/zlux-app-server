@@ -73,79 +73,32 @@ jobs:
           PR_DESCRIPTION: ${{ github.event.pull_request.body }}
         run: |
           # Safely print the PR description using Node.js
-          node -e 'const prDesc = process.env.PR_DESCRIPTION; console.log("----- PR Description Start -----\n" + prDesc + "\n----- PR Description End -----");'
-          echo "$PR_DESCRIPTION" > /tmp/pr_description.txt
-          echo "PR DESCRIPTION saved to /tmp/pr_description.txt."
           
-          # Save the template content to a file without modifying it
-          cat .github/pull_request_template.md > /tmp/template_content.txt
-          echo "Template content saved to /tmp/template_content.txt."
-          
-          
+          node -e "const fs=require('fs'); fs.writeFileSync('/tmp/pr_description.txt', process.env.PR_DESCRIPTION);"
           # Use diff to compare the two files
-          if diff -wB /tmp/pr_description.txt /tmp/template_content.txt > /dev/null; then
+          if diff -wB /tmp/pr_description.txt .github/pull_request_template.md > /dev/null; then
             echo "ERROR: PR description is identical to the template."
             exit 1
           else
             echo "PR description and template are different."
           fi
 
-      - name: Extract changelog info using Node.js
+      - name: Check PR body against changelog
         if: steps.check-changelog.outputs.check_commit == 'false'
         id: extract-changelog
         run: |
-          PR_DESCRIPTION=$(cat /tmp/pr_description.txt)
-          
-          # Check if "changelog:" exists in PR description
-          if echo "$PR_DESCRIPTION" | grep -q "VERSION:" && echo "$PR_DESCRIPTION" | grep -q "CHANGELOG:"; then
-          
-            # Extract content after "changelog:" using Node.js
-            CHANGELOG_TEXT=$(node -e "const lines = process.env.PR_DESCRIPTION.split('\n'); \
-            for (const line of lines) { \
-              if (line.startsWith('CHANGELOG: ')) { \
-                console.log(line.substring('CHANGELOG: '.length)); \
-                break; \
-              } \
-            }")
-          
-            # Extract VERSION: from PR description
-            VERSION=$(echo "$PR_DESCRIPTION" | grep -oP 'VERSION:\s*\Kv\d+\.\d+\.\d+')
-          
-            echo "Extracted changelog: $CHANGELOG_TEXT"
-            echo "::set-output name=changelog::$(echo "$CHANGELOG_TEXT" | base64)"
-            echo "::set-output name=version::$VERSION"
-          
-          else
-            echo -e "No changelog and version information found in PR description. Please add them.\nExpected Format:\nVERSION:vX.XX.X\nCHANGELOG:This is changelog note.\nTo re-run the action, just make a push or commit after updating the PR description or updating the changelog via a manual file changing commit."
-            exit 1
-          fi
-
-        env:
-          PR_DESCRIPTION: ${{ env.PR_DESCRIPTION }}
-
-      - name: Check PR body against changelog
-        if: steps.check-changelog.outputs.check_commit == 'false'
-        run: |
-          ESCAPED_CHANGELOG=$(echo "${{ steps.extract-changelog.outputs.changelog }}" | base64 -d)
-          echo "$ESCAPED_CHANGELOG"
-          ESCAPED_CHANGELOG=$(echo "$ESCAPED_CHANGELOG" | sed "s/'/\\\\'/g")
-          VERSION="${{ steps.extract-changelog.outputs.version }}"
-          if ! grep -Fq "$ESCAPED_CHANGELOG" CHANGELOG.md; then
-            # Check if version exists in CHANGELOG.md
-            if grep -q "^## $VERSION" CHANGELOG.md; then
-              # Append PR description to existing version
-              sed -i "/^## $VERSION/a - $ESCAPED_CHANGELOG (#${{ github.event.pull_request.number }})" CHANGELOG.md
-            else
-              # Append new version and PR description
-              ANCHOR_LINE=$(awk '/All notable changes to the Zlux App Server package will be documented in this file\./ {print NR}' CHANGELOG.md)
-              sed -i "$ANCHOR_LINE a\\
-              \n## $VERSION\n- $ESCAPED_CHANGELOG (#${{ github.event.pull_request.number }})\n" CHANGELOG.md
-            fi
+          result=$(node .github/workflows/set-changelog.js ${{ github.event.pull_request.number }})
+          if [ "$result" = "Success" ]; then
             git config --global user.email "zowe-robot@users.noreply.github.com"
             git config --global user.name "Zowe Robot"
             git add CHANGELOG.md
             git commit -s -m "Update changelog with PR #${{ github.event.pull_request.number }} description"
             git push
+            echo "Updated CHANGELOG from description"
+          else
+            echo $result
+            echo -e "No changelog and version information found in PR description. Please add them.\nExpected Format:\nVERSION:vX.XX.X\nCHANGELOG:This is changelog note.\nTo re-run the action, just make a push or commit after updating the PR description or updating the changelog via a manual file changing commit."
+            exit 1
           fi
 
       - name: check for changes

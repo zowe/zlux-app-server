@@ -21,9 +21,9 @@ components:
       https:
         ipAddresses: "${{ function a(){
                           let addresses;
-                          if (components['app-server'].zowe.network.server.listenAddresses) {
+                          if (components['app-server'].zowe?.network?.server?.listenAddresses) {
                             addresses = components['app-server'].zowe.network.server.listenAddresses;
-                          } else if (zowe.network.server.listenAddresses) {
+                          } else if (zowe.network?.server?.listenAddresses) {
                             addresses = zowe.networking.server.listenAddresses;
                           } else {
                             addresses = ['0.0.0.0'];
@@ -67,17 +67,17 @@ components:
                                         } else { return ["../defaults/serverConfig/apiml-localca.cer"]; } };
                                   a() }}'
         maxTls: '${{ function a(){
-                             if (components["app-server"].zowe.network.server.maxTls) {
+                             if (components["app-server"].zowe?.network?.server.maxTls) {
                                return components["app-server"].zowe.network.server.maxTls;
-                             } else if (zowe.network.server.maxTls) {
+                             } else if (zowe.network?.server?.maxTls) {
                                return zowe.network.server.maxTls;
                              } else {
                                return "TLSv1.3";
                         a() }}'
         minTls: '${{ function a(){
-                             if (components["app-server"].zowe.network.server.minTls) {
+                             if (components["app-server"].zowe?.network?.server.minTls) {
                                return components["app-server"].zowe.network.server.minTls;
-                             } else if (zowe.network.server.minTls) {
+                             } else if (zowe.network?.server?.minTls) {
                                return zowe.network.server.minTls;
                              } else {
                                return "TLSv1.2";

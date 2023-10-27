@@ -67,7 +67,7 @@ components:
                                         } else { return ["../defaults/serverConfig/apiml-localca.cer"]; } };
                                   a() }}'
         maxTls: '${{ function a(){
-                             if (components["app-server"].zowe?.network?.server.maxTls) {
+                             if (components["app-server"].zowe?.network?.server?.maxTls) {
                                return components["app-server"].zowe.network.server.maxTls;
                              } else if (zowe.network?.server?.maxTls) {
                                return zowe.network.server.maxTls;
@@ -75,7 +75,7 @@ components:
                                return "TLSv1.3";
                         a() }}'
         minTls: '${{ function a(){
-                             if (components["app-server"].zowe?.network?.server.minTls) {
+                             if (components["app-server"].zowe?.network?.server?.minTls) {
                                return components["app-server"].zowe.network.server.minTls;
                              } else if (zowe.network?.server?.minTls) {
                                return zowe.network.server.minTls;

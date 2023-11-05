@@ -2,20 +2,20 @@
   This program and the accompanying materials are
   made available under the terms of the Eclipse Public License v2.0 which accompanies
   this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html
-
+  
   SPDX-License-Identifier: EPL-2.0
-
+  
   Copyright Contributors to the Zowe Project.
 */
 
 import * as os from 'os';
-import * as zos from 'zos';
+//import * as zos from 'zos';
 import * as std from 'std';
-import * as xplatform from 'xplatform';
-import * as fs from '../../../../../../bin/libs/fs';
-import * as common from '../../../../../../bin/libs/common';
-import * as componentlib from '../../../../../../bin/libs/component';
-import { PathAPI as pathoid } from '../../../../../../bin/libs/pathoid';
+import type { xplatform } from 'xplatform';
+import type { fs } from '../../../../../../bin/libs/fs';
+import type { common } from '../../../../../../bin/libs/common';
+import type { componentlib } from '../../../../../../bin/libs/component';
+import type { PathAPI as pathoid } from '../../../../../../bin/libs/pathoid';
 
 common.printFormattedDebug("ZWED", "plugins-init", `Started plugins-init.js, platform=${os.platform}`);
 

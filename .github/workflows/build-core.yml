@@ -80,6 +80,7 @@ jobs:
             VERSION=$(echo "$PR_DESCRIPTION" | grep -oP 'VERSION:\s*\Kv\d+\.\d+\.\d+')
             echo "Extracted changelog: $CHANGELOG_TEXT"
             echo "::set-output name=changelog::$CHANGELOG_TEXT"
+            echo "::set-output name=changelog::$CHANGELOG_TEXT"
             echo "::set-output name=version::$VERSION"
           else
             echo -e "No changelog and version information found in PR description please add them.\n Expected Format:\n VERSION:vX.XX.X\n CHANGELOG:This is changelog note.\n
@@ -89,6 +90,7 @@ jobs:
       - name: Check PR body against changelog
         if: steps.check-changelog.outputs.check_commit == 'false'
         run: |
+          ESCAPED_CHANGELOG="${{ steps.extract-changelog.outputs.changelog }}"
           ESCAPED_CHANGELOG="${{ steps.extract-changelog.outputs.changelog }}"
           ESCAPED_CHANGELOG=$(echo "$ESCAPED_CHANGELOG" | sed "s/'/\\\\'/g")
           VERSION="${{ steps.extract-changelog.outputs.version }}"
@@ -118,6 +120,8 @@ jobs:
             echo "::set-output name=change_detected::false"
           else
             echo "::set-output name=change_detected::true"
+          fi
+
           fi
 
   check_changelog:

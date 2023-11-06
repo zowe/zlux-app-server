@@ -14,15 +14,7 @@ module.exports = {
     es6: true,
     node: true
   },
-  globals: {
-    describe: 'readonly',
-    it: 'readonly',
-    before: 'readonly',
-    after: 'readonly',
-    beforeEach: 'readonly',
-    afterEach: 'readonly',
-  },
-  ignorePatterns: ['.github/**/*.yml', '**/.build', '**/build', '**/dist', '**/node_modules', '**/release', '**/lib','**/test/yaml-loader'],
+  ignorePatterns: ['.github/**/*.yml', '**/.build', '**/build', '**/dist', '**/node_modules', '**/release', '**/lib'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
@@ -34,8 +26,8 @@ module.exports = {
   plugins: ['header'],
   rules: {
     'header/header': [
-      2,         // Error level
-      'block',   // Location
+      2,
+      'block',
      [
         '\n  This program and the accompanying materials are' +
        '\n  made available under the terms of the Eclipse Public License v2.0 which accompanies' +

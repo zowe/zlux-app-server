@@ -9,6 +9,19 @@
 */
 
 module.exports = {
+  overrides: [
+    {
+      files: ['**/*.js', '**/*.mjs'], // Specify the file extensions where this configuration applies
+      rules: {
+        'import/no-unresolved': [
+          'error',
+          {
+            ignore: ['^../../../../../../bin/', 'zlux-server-framework'],
+          }, // Specify the regular expressions to ignore
+        ],
+      },
+    },
+  ],
   env: {
     browser: true,
     es6: true,

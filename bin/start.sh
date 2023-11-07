@@ -65,15 +65,15 @@ if [ -z "${ZWE_zowe_runtimeDirectory}" ]; then
   fi
   if [ ! -e "${ZWE_zowe_workspaceDirectory}/app-server/plugins/org.zowe.zlux.json}" ]; then
     cd ${ZLUX_APP_SERVER_DIR}/lib
-    $NODE_BIN initInstance.js
+    $NODE_BIN initInstance.mjs
   fi
 fi
 
 if [ -z "$ZLUX_NO_CLUSTER" ]; then
-  ZLUX_SERVER_FILE=zluxCluster.js
+  ZLUX_SERVER_FILE=zluxCluster.mjs
   export ZLUX_MIN_WORKERS=${ZLUX_MIN_WORKERS:-2}
 else
-  ZLUX_SERVER_FILE=zluxServer.js
+  ZLUX_SERVER_FILE=zluxServer.mjs
 fi
 
 if [ "$ZWE_zowe_verifyCertificates" = "DISABLED" ]; then

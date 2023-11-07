@@ -2,7 +2,7 @@
   "name": "zlux-app-server",
   "version": "1.0.0",
   "type": "module",
-  "main": "lib/zluxServer.js",
+  "main": "lib/zluxServer.mjs",
   "directories": {
     "doc": "doc"
   },

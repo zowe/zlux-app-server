@@ -14,7 +14,7 @@ if defined NODE_HOME (
   set NODE_BIN=node
 )
 
-if not exist "..\lib\zluxArgs.js" (
+if not exist "..\lib\zluxArgs.mjs" (
   if defined CONDA_PREFIX (
     cd "%CONDA_PREFIX%\share\zowe\app-server\zlux-app-server\bin"
   )
@@ -36,7 +36,7 @@ if exist "%ZLUX_CONFIG_FILE%" (
         set CONFIG_FILE=%WORKSPACE_DIR%\app-server\serverConfig\zowe.yaml
       ) else (
         cd ..\lib
-        !NODE_BIN! initInstance.js
+        !NODE_BIN! initInstance.mjs
         cd ..\bin
       )
     ) else (
@@ -45,7 +45,7 @@ if exist "%ZLUX_CONFIG_FILE%" (
           set CONFIG_FILE=%INSTANCE_DIR%\workspace\app-server\serverConfig\zowe.yaml
         ) else (
           cd ..\lib
-          !NODE_BIN! initInstance.js
+          !NODE_BIN! initInstance.mjs
           cd ..\bin        
         )
       ) else (
@@ -57,7 +57,7 @@ if exist "%ZLUX_CONFIG_FILE%" (
           set INSTANCE_DIR=%USERPROFILE%\.zowe
           call :makedir "!INSTANCE_DIR!\logs"
           cd ..\lib
-          !NODE_BIN! initInstance.js
+          !NODE_BIN! initInstance.mjs
           set CONFIG_FILE=%USERPROFILE%\.zowe\workspace\app-server\serverConfig\zowe.yaml
           cd ..\bin
         )
@@ -96,9 +96,9 @@ if not defined ZLUX_MIN_WORKERS (
 set NODE_CLUSTER_SCHED_POLICY=none
 
 if "%ZLUX_NO_CLUSTER%" == "1" (
-  set ZLUX_SERVER_FILE=zluxServer.js
+  set ZLUX_SERVER_FILE=zluxServer.mjs
 ) else (
-  set ZLUX_SERVER_FILE=zluxCluster.js
+  set ZLUX_SERVER_FILE=zluxCluster.mjs
 )
 
 if not defined ZOWE_WORKING_DIR (

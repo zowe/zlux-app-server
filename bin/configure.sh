@@ -51,11 +51,11 @@ fi
 
 . ./init/node-init.sh
 cd ../lib
-CONFIG_FILE=$ZWE_CLI_PARAMETER_CONFIG $NODE_BIN initInstance.js
+CONFIG_FILE=$ZWE_CLI_PARAMETER_CONFIG $NODE_BIN initInstance.mjs
 
 cd ${COMPONENT_HOME}/share/zlux-app-server/bin/init
 if [ "${ZWE_zowe_useConfigmgr}" = "true" ]; then
-  _CEE_RUNOPTS="XPLINK(ON),HEAPPOOLS(OFF)" ${ZWE_zowe_runtimeDirectory}/bin/utils/configmgr -script "${ZWE_zowe_runtimeDirectory}/components/app-server/share/zlux-app-server/bin/init/plugins-init.js"
+  _CEE_RUNOPTS="XPLINK(ON),HEAPPOOLS(OFF)" ${ZWE_zowe_runtimeDirectory}/bin/utils/configmgr -script "${ZWE_zowe_runtimeDirectory}/components/app-server/share/zlux-app-server/bin/init/plugins-init.mjs"
 else
   . ./plugins-init.sh
 fi

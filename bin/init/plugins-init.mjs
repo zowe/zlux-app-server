@@ -18,7 +18,7 @@ import * as common from '../../../../../../bin/libs/common';
 import * as componentlib from '../../../../../../bin/libs/component';
 import { PathAPI as pathoid } from '../../../../../../bin/libs/pathoid';
 
-common.printFormattedDebug("ZWED", "plugins-init", `Started plugins-init.js, platform=${os.platform}`);
+common.printFormattedDebug("ZWED", "plugins-init", `Started plugins-init.mjs, platform=${os.platform}`);
 
 const runtimeDirectory=std.getenv('ZWE_zowe_runtimeDirectory');
 const extensionDirectory=std.getenv('ZWE_zowe_extensionDirectory');

@@ -40,7 +40,7 @@ if [ -n "${ZWE_zowe_workspaceDirectory}" -a -n "${ZWE_zowe_runtimeDirectory}" ];
     setVars
     if [ ! -e "${ZWE_zowe_workspaceDirectory}/app-server/plugins/org.zowe.zlux.json" ]; then
       cd ${zlux_path}/zlux-app-server/lib
-      CONFIG_FILE=$ZWE_CLI_PARAMETER_CONFIG $NODE_BIN initInstance.js
+      CONFIG_FILE=$ZWE_CLI_PARAMETER_CONFIG $NODE_BIN initInstance.mjs
     fi
   fi
 else

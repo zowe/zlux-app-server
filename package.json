@@ -1,16 +1,26 @@
 {
   "name": "zlux-app-server",
   "version": "1.0.0",
+  "type": "module",
   "main": "lib/zluxServer.js",
   "directories": {
     "doc": "doc"
   },
   "scripts": {
     "build": "exit 0",
-    "test": "echo \"Warning: no test specified\" && exit 0"
+    "test": "echo \"Warning: no test specified\" && exit 0",
+    "lint": "eslint ."
   },
   "dependencies": {
-    "zlux-server-framework": "file:../zlux-server-framework",
-    "mkdirp": "~0.5.1"
+    "mkdirp": "~0.5.1",
+    "ncp": "^2.0.0",
+    "std": "^0.1.40",
+    "zlux-server-framework": "file:../zlux-server-framework"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "eslint": "^8.53.0",
+    "eslint-plugin-header": "^3.1.1",
+    "eslint-plugin-import": "^2.29.0"
   }
 }

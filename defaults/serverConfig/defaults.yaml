@@ -24,7 +24,7 @@ components:
                           if (components['app-server'].zowe?.network?.server?.listenAddresses) {
                             addresses = components['app-server'].zowe.network.server.listenAddresses;
                           } else if (zowe.network?.server?.listenAddresses) {
-                            addresses = zowe.networking.server.listenAddresses;
+                            addresses = zowe.network.server.listenAddresses;
                           } else {
                             addresses = ['0.0.0.0'];
                           }

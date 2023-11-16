@@ -72,7 +72,7 @@ components:
                              } else if (zowe.network?.server?.tls?.maxTls) {
                                return zowe.network.server.tls.maxTls;
                              } else {
-                               return "TLSv1.3";
+                               return "TLSv1.3"; } };
                         a() }}'
         minTls: '${{ function a(){
                              if (components["app-server"].zowe?.network?.server?.tls?.minTls) {
@@ -80,7 +80,23 @@ components:
                              } else if (zowe.network?.server?.tls?.minTls) {
                                return zowe.network.server.tls.minTls;
                              } else {
-                               return "TLSv1.2";
+                               return "TLSv1.2"; } };
+                        a() }}'
+        ciphers: '${{ function a(){
+                             if (components["app-server"].zowe?.network?.server?.tls?.ciphers) {
+                               return components["app-server"].zowe.network.server.tls.ciphers.join(":");
+                             } else if (zowe.network?.server?.tls?.ciphers) {
+                               return zowe.network.server.tls.ciphers.join(":");
+                             } else {
+                               return "" } };
+                        a() }}'
+        curves: '${{ function a(){
+                             if (components["app-server"].zowe?.network?.server?.tls?.curves) {
+                               return components["app-server"].zowe.network.server.tls.curves;
+                             } else if (zowe.network?.server?.tls?.curves) {
+                               return zowe.network.server.tls.curves;
+                             } else {
+                               return [] } };
                         a() }}'
       loopbackAddress: "${{ function a(){ if (process.env.ZOWE_LOOPBACK_ADDRESS) { return process.env.ZOWE_LOOPBACK_ADDRESS; } else { return undefined; } }; a() }}"
       mediationLayer:

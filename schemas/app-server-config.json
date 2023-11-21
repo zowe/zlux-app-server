@@ -667,14 +667,14 @@
     },
     "safKeyringCertObject": {
       "type": "string",
-      "pattern": "^safkeyring:(\/\/)+.*$"
+      "pattern": "^safkeyring.*:(\/\/)+.*$"
     },
     "pathCertObject": {
       "type": "string",
       "not": {
         "anyOf": [
           { "pattern": "^file:\/\/.*$" },
-          { "pattern": "^safkeyring:(\/\/)+.*$" }
+          { "pattern": "^safkeyring.*:(\/\/)+.*$" }
         ]
       }
     },

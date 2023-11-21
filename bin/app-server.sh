@@ -99,3 +99,4 @@ else
 fi
 
 
+./start.sh

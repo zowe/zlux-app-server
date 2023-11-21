@@ -2,6 +2,42 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v2.13.0
+- Enhancement: Updated schema to allow cipher customization in IANA format. (#284)
+- Enhancement: Updated schema to allow curve customization. (#284)
+- Enhancement: Updated defaults to read TLS settings and IP settings from the "zowe.network.server" attribute of Zowe.yaml. (#284)
+
+## v2.12.0
+- enhancement: new versions of components can change the location of their plugins, as the app-server will now re-inspect the plugin locations on each startup. (#280)
+- bugfix: Removed error message "components/app-server/bin/configure.sh 26: .: FSUM6807 expression syntax error" seen in startup of Zowe in v2.11.0, caused by incorrect shell syntax. (#283)
+
+
+## v2.11.0
+
+- Bugfix: The server couldn't load more than one certificate authority specified within the zowe.certificate.pem.certificateAuthorities section under any condition. Now, it is supported regardless of if the section is an array or a comma-separated string. (#266)
+
+## v2.10.0
+
+- Enhancement: Migrated app-server configuration options into a "defaults.yaml" file which adheres to the schema of the Zowe config. This allows users to see the default behaviors more clearly, and can serve as an example by which users can customize their Zowe config to override such defaults. (#247)
+- Bugfix: Fixed the URLs app-server would print in the logs describing where it was accessible from. Messages were incorrectly pointing at the discovery server instead of the gateway server. (#247)
+
+## v2.9.0
+
+- Bugfix: Recognizers from multiple plugins could not be merged due to an error in the merge code execution at startup.
+
+## v2.7.0
+
+- Bugfix: Explicitly prefer ipv4 dns results to be compatible with node 18 since it switched to prefer ipv6 without configuration. This behavior can be cusomized via components.app-server.dns.lookupOrder='ipv4' or 'ipv6'. It defaults to 'ipv4'.
+
+## v2.4.0
+
+- Bugfix: Plugin register/deregister would not consider app2app actions and recgonizers. Now, they are added on registration and removed on deregistration.
+
+## v2.3.0
+
+- Enhancement: app-server can now be configured by using configmgr. This increases startup time and validation of components and their plugins to increase automatic detection of plugin compatibility issues. This mode can be enabled or disabled with zowe configuration property 'zowe.useConfigmgr=true/false'
+- Bugfix: Schema regex pattern for semver range was not working in configmgr, and has been corrected
+
 ## v2.0.0
 
 - Enhancement: Renamed ZLUX_ environment variables to ZWED_ for consistency. Backwards compatible with old environment variables.

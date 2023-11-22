@@ -48,6 +48,18 @@
               "deprecated": true,
               "description": "Passes through the secureProtocol attribute to TLS calls of nodeJS, as defined within https://nodejs.org/api/tls.html#tlscreatesecurecontextoptions"
             },
+            "minTls": {
+              "type": "string",
+              "enum": ["TLSv1.2", "TLSv1.3"],
+              "default": "TLSv1.3",
+              "description": "Maximum TLS version allowed for network connections."
+            },
+            "minTls": {
+              "type": "string",
+              "enum": ["TLSv1.2", "TLSv1.3"],
+              "default": "TLSv1.2",
+              "description": "Minimum TLS version allowed for network connections, and less than maxTls."
+            },
             "ciphers": {
               "oneOf": [
                 { "$ref": "#/$defs/nodejsDefaultCiphers" },

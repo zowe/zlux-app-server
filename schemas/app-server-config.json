@@ -48,12 +48,31 @@
               "deprecated": true,
               "description": "Passes through the secureProtocol attribute to TLS calls of nodeJS, as defined within https://nodejs.org/api/tls.html#tlscreatesecurecontextoptions"
             },
+            "maxTls": {
+              "type": "string",
+              "enum": ["TLSv1.2", "TLSv1.3"],
+              "default": "TLSv1.3",
+              "description": "Maximum TLS version allowed for network connections."
+            },
+            "minTls": {
+              "type": "string",
+              "enum": ["TLSv1.2", "TLSv1.3"],
+              "default": "TLSv1.2",
+              "description": "Minimum TLS version allowed for network connections, and less than or equal to maxTls."
+            },
             "ciphers": {
               "oneOf": [
                 { "$ref": "#/$defs/nodejsDefaultCiphers" },
                 { "$ref": "#/$defs/zoweDefaultCiphers" },
                 { "$ref": "#/$defs/customCiphers" }
               ]
+            },
+            "curves": {
+              "type": "array",
+              "description": "A list of curve NIDs or names, for example P-521, P-384, P-256",
+              "items": {
+                "type": "string"
+              }
             },
             "enableTrace": {
               "type": "boolean",
@@ -620,7 +639,7 @@
           { "$ref": "#/$defs/zoweDefaultCiphers" }
         ]
       },
-      "description": "Instructs app-server to use the list of ciphers in this string when using TLS. String must be in the form defined here https://nodejs.org/api/tls.html#modifying-the-default-tls-cipher-suite"
+      "description": "Instructs app-server to use the list of ciphers in this string when using TLS. String is a colon separated list of IANA or openSSL names"
     },
     "headerCustomization": {
       "type": "object",
@@ -660,14 +679,14 @@
     },
     "safKeyringCertObject": {
       "type": "string",
-      "pattern": "^safkeyring:(\/\/)+.*$"
+      "pattern": "^safkeyring.*:(\/\/)+.*$"
     },
     "pathCertObject": {
       "type": "string",
       "not": {
         "anyOf": [
           { "pattern": "^file:\/\/.*$" },
-          { "pattern": "^safkeyring:(\/\/)+.*$" }
+          { "pattern": "^safkeyring.*:(\/\/)+.*$" }
         ]
       }
     },

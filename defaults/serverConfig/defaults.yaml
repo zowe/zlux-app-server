@@ -20,9 +20,17 @@ components:
       hostname: "${{ function a(){ if (process.env.ZWE_INTERNAL_HOST) { return process.env.ZWE_INTERNAL_HOST; } else if (process.env.ZWE_haInstance_hostname) { return process.env.ZWE_haInstance_hostname; } else { return undefined; } }; a() }}"
       https:
         ipAddresses: "${{ function a(){
+                          let addresses;
+                          if (components['app-server'].zowe?.network?.server?.listenAddresses) {
+                            addresses = components['app-server'].zowe.network.server.listenAddresses;
+                          } else if (zowe.network?.server?.listenAddresses) {
+                            addresses = zowe.network.server.listenAddresses;
+                          } else {
+                            addresses = ['0.0.0.0'];
+                          }
                           if (process.env.ZOWE_LOOPBACK_ADDRESS && process.env.BIND_TO_LOOPBACK == 'true') {
-                              return [ process.env.ZOWE_LOOPBACK_ADDRESS , '0.0.0.0' ];
-                            } else { return ['0.0.0.0'] } }; 
+                              return [ process.env.ZOWE_LOOPBACK_ADDRESS ].concat(addresses);
+                            } else { return addresses } }; 
                       a() }}"
         port: "${{ function a(){
                      if (process.env.ZWED_SERVER_HTTPS_PORT) {
@@ -32,7 +40,7 @@ components:
                      } else { return Number(7556); } };
                 a() }}"
         keys: '${{ function a() {
-                     if (zowe.certificate?.keystore?.type == "JCERACFKS") {
+                     if (zowe.certificate?.keystore?.type && zowe.certificate.keystore.type.match("JCE.*KS")) {
                        return [ zowe.certificate.keystore.file+"&"+zowe.certificate.keystore.alias ];
                      } else if (zowe.certificate?.pem?.key) {
                        return [ zowe.certificate.pem.key ];
@@ -40,7 +48,7 @@ components:
                        return [ "../defaults/serverConfig/zlux.keystore.key" ]; } };
                 a() }}'
         certificates: '${{ function a(){
-                             if (zowe.certificate?.keystore?.type == "JCERACFKS") {
+                             if (zowe.certificate?.keystore?.type && zowe.certificate.keystore.type.match("JCE.*KS")) {
                                return [ zowe.certificate.keystore.file+"&"+zowe.certificate.keystore.alias ];
                              } else if (zowe.certificate?.pem?.certificate) {
                                return [ zowe.certificate.pem.certificate ];
@@ -48,7 +56,7 @@ components:
                                return [ "../defaults/serverConfig/zlux.keystore.cer" ]; } };
                         a() }}'
         certificateAuthorities: '${{ function a() {
-                                       if (zowe.certificate?.truststore?.type == "JCERACFKS") {
+                                       if (zowe.certificate?.truststore?.type && zowe.certificate.truststore.type.match("JCE.*KS")) {
                                           return [ zowe.certificate.truststore.file ];
                                        } else if(zowe.certificate?.pem?.certificateAuthorities) {
                                           if (Array.isArray(zowe.certificate.pem.certificateAuthorities)) {
@@ -58,6 +66,38 @@ components:
                                           }
                                         } else { return ["../defaults/serverConfig/apiml-localca.cer"]; } };
                                   a() }}'
+        maxTls: '${{ function a(){
+                             if (components["app-server"].zowe?.network?.server?.tls?.maxTls) {
+                               return components["app-server"].zowe.network.server.tls.maxTls;
+                             } else if (zowe.network?.server?.tls?.maxTls) {
+                               return zowe.network.server.tls.maxTls;
+                             } else {
+                               return "TLSv1.3"; } };
+                        a() }}'
+        minTls: '${{ function a(){
+                             if (components["app-server"].zowe?.network?.server?.tls?.minTls) {
+                               return components["app-server"].zowe.network.server.tls.minTls;
+                             } else if (zowe.network?.server?.tls?.minTls) {
+                               return zowe.network.server.tls.minTls;
+                             } else {
+                               return "TLSv1.2"; } };
+                        a() }}'
+        ciphers: '${{ function a(){
+                             if (components["app-server"].zowe?.network?.server?.tls?.ciphers) {
+                               return components["app-server"].zowe.network.server.tls.ciphers.join(":");
+                             } else if (zowe.network?.server?.tls?.ciphers) {
+                               return zowe.network.server.tls.ciphers.join(":");
+                             } else {
+                               return "" } };
+                        a() }}'
+        curves: '${{ function a(){
+                             if (components["app-server"].zowe?.network?.server?.tls?.curves) {
+                               return components["app-server"].zowe.network.server.tls.curves;
+                             } else if (zowe.network?.server?.tls?.curves) {
+                               return zowe.network.server.tls.curves;
+                             } else {
+                               return [] } };
+                        a() }}'
       loopbackAddress: "${{ function a(){ if (process.env.ZOWE_LOOPBACK_ADDRESS) { return process.env.ZOWE_LOOPBACK_ADDRESS; } else { return undefined; } }; a() }}"
       mediationLayer:
         server:

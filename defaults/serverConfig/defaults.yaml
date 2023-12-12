@@ -115,7 +115,7 @@ components:
                               } else if (process.env.ZWE_DISCOVERY_SERVICES_LIST) {
                                 return process.env.ZWE_DISCOVERY_SERVICES_LIST.split(",");
                               } else {
-                                return ["https://"+zowe.externalDomains[0]+":"+components.discovery.port+"/eureka/"];
+                                return ["https://"+zowe.externalDomains[0]+":"+components.discovery.port+"/eureka/"] } };
                           a() }}'
           # usually, externalDomains is where gateway is. But on containers, this isnt accessible to containers, so
           # HACK: special var ZWE_GATEWAY_HOST is used instead

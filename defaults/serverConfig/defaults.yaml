@@ -102,12 +102,21 @@ components:
       mediationLayer:
         server:
           # strange but true: to contact discovery in a container, instead reach for the gateway hostname.
+          # DEPRECATED. Use discoveryUrls instead.
           hostname: '${{ function a() {
                          if (process.env.ZWE_RUN_IN_CONTAINER=="true" && process.env.ZWE_GATEWAY_HOST) {
                            return process.env.ZWE_GATEWAY_HOST;
                          } else { 
                            return zowe.externalDomains[0] } };
                      a() }}'
+          discoveryUrls: '${{ function a() {
+                              if (process.env.ZWE_RUN_IN_CONTAINER=="true" && process.env.ZWE_GATEWAY_HOST) {
+                                return ["https://"+process.env.ZWE_GATEWAY_HOST+":"+components.discovery.port+"/eureka/"];
+                              } else if (process.env.ZWE_DISCOVERY_SERVICES_LIST) {
+                                return process.env.ZWE_DISCOVERY_SERVICES_LIST.split(",");
+                              } else {
+                                return ["https://"+zowe.externalDomains[0]+":"+components.discovery.port+"/eureka/"];
+                          a() }}'
           # usually, externalDomains is where gateway is. But on containers, this isnt accessible to containers, so
           # HACK: special var ZWE_GATEWAY_HOST is used instead
           gatewayHostname: '${{ function a() {
@@ -116,6 +125,7 @@ components:
                                 } else {
                                   return zowe.externalDomains[0] } };
                             a() }}'
+          # DEPRECATED. Use discoveryUrls instead.
           port: ${{ components.discovery.port }}
           # strange but true: to contact gateway in a container, dont use the external port.
           gatewayPort: '${{ function a() {

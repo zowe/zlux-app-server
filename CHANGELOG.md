@@ -2,6 +2,9 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v2.14.0
+- Enhancement: Updated schema to specify multiple discovery servers.
+
 ## v2.13.0
 - Enhancement: Updated schema to allow cipher customization in IANA format. (#284)
 - Enhancement: Updated schema to allow curve customization. (#284)

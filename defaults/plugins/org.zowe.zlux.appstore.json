@@ -1,0 +1,4 @@
+{
+    "identifier": "org.zowe.zlux.appstore",
+    "pluginLocation": "../../zlux-app-manager/system-apps/app-store"
+}

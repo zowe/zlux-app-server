@@ -123,6 +123,12 @@
     {
       "identifier": "org.openmainframe.zowe.workshop-starter",
       "versions": "*"
+    },
+    {
+      "identifier": "org.zowe.zlux.appstore",
+      "versions": [
+        "*"
+      ]
     }
   ]
 }

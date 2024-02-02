@@ -110,9 +110,7 @@ components:
                            return zowe.externalDomains[0] } };
                      a() }}'
           discoveryUrls: '${{ function a() {
-                              if (process.env.ZWE_RUN_IN_CONTAINER=="true" && process.env.ZWE_GATEWAY_HOST) {
-                                return ["https://"+process.env.ZWE_GATEWAY_HOST+":"+components.discovery.port+"/eureka/"];
-                              } else if (process.env.ZWE_DISCOVERY_SERVICES_LIST) {
+                              if (process.env.ZWE_DISCOVERY_SERVICES_LIST) {
                                 return process.env.ZWE_DISCOVERY_SERVICES_LIST.split(",");
                               } else {
                                 return ["https://"+zowe.externalDomains[0]+":"+components.discovery.port+"/eureka/"] } };

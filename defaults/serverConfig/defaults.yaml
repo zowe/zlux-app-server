@@ -106,7 +106,13 @@ components:
           hostname: '${{ function a() {
                          if (process.env.ZWE_RUN_IN_CONTAINER=="true" && process.env.ZWE_GATEWAY_HOST) {
                            return process.env.ZWE_GATEWAY_HOST;
-                         } else { 
+                         } else if (zowe.network?.server?.dvipa?.enabled=="true") {
+                            if(components["gateway"].zowe?.network?.server?.dvipa?.enabled=="true" && components["gateway"].zowe?.network?.server?.dvipa?.vipa){
+                              return components["gateway"].zowe?.network?.server?.dvipa?.vipa
+                            } else {
+                              return zowe.network.server.dvipa.vipa;
+                            }
+                          } else { 
                            return zowe.externalDomains[0] } };
                      a() }}'
           discoveryUrls: '${{ function a() {

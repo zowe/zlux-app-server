@@ -1,0 +1,26 @@
+name: Lint TypeScript
+
+on:
+  push:
+    branches:
+      - v2.x/staging
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint TypeScript
+        run: npm run lint

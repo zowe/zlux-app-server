@@ -54,7 +54,9 @@ cd ../lib
 CONFIG_FILE=$ZWE_CLI_PARAMETER_CONFIG $NODE_BIN initInstance.js
 
 cd ${COMPONENT_HOME}/share/zlux-app-server/bin/init
-if [ "${ZWE_zowe_useConfigmgr}" = "true" ]; then
+if [ "${ZWE_components_app_server_zowe_useConfigmgr}" = "false" ]; then
+  . ./plugins-init.sh  
+elif [ "${ZWE_zowe_useConfigmgr}" = "true" ]; then
   _CEE_RUNOPTS="XPLINK(ON),HEAPPOOLS(OFF)" ${ZWE_zowe_runtimeDirectory}/bin/utils/configmgr -script "${ZWE_zowe_runtimeDirectory}/components/app-server/share/zlux-app-server/bin/init/plugins-init.js"
 else
   . ./plugins-init.sh

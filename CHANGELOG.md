@@ -1,7 +1,15 @@
 # Zlux App Server Changelog
 
 All notable changes to the Zlux App Server package will be documented in this file.
-    
+
+## v2.14.0
+- Enhancement: Updated schema to specify multiple discovery servers.
+
+## v2.13.0
+- Enhancement: Updated schema to allow cipher customization in IANA format. (#284)
+- Enhancement: Updated schema to allow curve customization. (#284)
+- Enhancement: Updated defaults to read TLS settings and IP settings from the "zowe.network.server" attribute of Zowe.yaml. (#284)
+
 ## v2.12.0
 - enhancement: new versions of components can change the location of their plugins, as the app-server will now re-inspect the plugin locations on each startup. (#280)
 - bugfix: Removed error message "components/app-server/bin/configure.sh 26: .: FSUM6807 expression syntax error" seen in startup of Zowe in v2.11.0, caused by incorrect shell syntax. (#283)

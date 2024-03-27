@@ -49,6 +49,8 @@ To build the App Server and Apps, the following is required:
 
 * **NodeJS** - v14.x minimum (except v14.17.2) up to v16.x
 
+Note & TODO: Node 17+ will fail on Windows when running full zlux build, [more information in this thread.](https://stackoverflow.com/questions/69692842/error-message-error0308010cdigital-envelope-routinesunsupported). An upgrade solution needs to be applied across multiple failing components
+
 * **npm** - v6.4 minimum
 
 * **jdk** - v8 minimum
@@ -79,7 +81,7 @@ On z/OS, git 2.14.4 is the minimum needed.
 ### Runtime
 To use the App Server, the following is required:
 
-* **NodeJS** - v14.x (except v14.17.2) up to v16.x is officially supported by the Zowe community.
+* **NodeJS** - v16.x up to v18.x is officially supported by the Zowe community.
 
 Plugins may depend upon other technologies, such as Java or ZSS. A plugin's [pluginDefinition](https://docs.zowe.org/stable/extend/extend-desktop/mvd-plugindefandstruct) or README will help you to understand if additional prerequisites are needed for that plugin.
 

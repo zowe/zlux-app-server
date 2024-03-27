@@ -6,6 +6,18 @@
   "type": "object",
   "additionalProperties": true,
   "properties": {
+    "zowe": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Contains customizations from the Zowe global configuration.",
+      "properties": {
+        "useConfigmgr": {
+          "type": "boolean",
+          "default": true,
+          "description": "Determines whether configmgr will be used during the startup proceedure, such as to register plugins."
+        }
+      }
+    },
     "node": {
       "type": "object",
       "description": "Configuration options specific to the app-server and things it depends upon",

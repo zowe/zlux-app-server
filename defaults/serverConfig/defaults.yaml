@@ -18,6 +18,15 @@ components:
     debug: false
     node:
       hostname: "${{ function a(){ if (process.env.ZWE_INTERNAL_HOST) { return process.env.ZWE_INTERNAL_HOST; } else if (process.env.ZWE_haInstance_hostname) { return process.env.ZWE_haInstance_hostname; } else { return undefined; } }; a() }}"
+      http: "${{ function a() {
+                if (components['app-server'].zowe?.network?.server?.tls?.attls === true) {
+                  return { 'port': components['app-server'].port || Number(7556)};
+                } else if (zowe.network?.server?.tls?.attls === true) {
+                  return { 'port': components['app-server'].port || Number(7556)};
+                } else {
+                  return undefined;
+                } };
+            a() }}"
       https:
         ipAddresses: "${{ function a(){
                           let addresses;
@@ -33,7 +42,11 @@ components:
                             } else { return addresses } }; 
                       a() }}"
         port: "${{ function a(){
-                     if (process.env.ZWED_SERVER_HTTPS_PORT) {
+                     if (components['app-server'].zowe?.network?.server?.tls?.attls === true) {
+                       return undefined;
+                     } else if (zowe?.network?.server?.tls?.attls === true) {
+                       return undefined;
+                     } else if (process.env.ZWED_SERVER_HTTPS_PORT) {
                        return Number(process.env.ZWED_SERVER_HTTPS_PORT);
                      } else if (components['app-server'].port) {
                        return components['app-server'].port;

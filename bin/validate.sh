@@ -7,7 +7,7 @@
 # 
 # Copyright Contributors to the Zowe Project.
 
-type node
+result=$(type node)
 if [ "$?" -ne "0" ]; then
   if [ -e "${NODE_HOME}/bin/node" ]; then
     echo "Node found in NODE_HOME"

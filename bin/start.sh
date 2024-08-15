@@ -80,6 +80,39 @@ if [ "$ZWE_zowe_verifyCertificates" = "DISABLED" ]; then
   export NODE_TLS_REJECT_UNAUTHORIZED=0
 fi
 
+# Check ssh and telnet port
+if [ -z "${ZWED_SSH_PORT}" ]; then
+  if [ -e "/etc/ssh/sshd_config" ]; then
+    ssh_port=$(cat "/etc/ssh/sshd_config" | grep '^Port.*' | awk -F\  '{print $2}')
+    # Empty or non-numeric? Set default
+    if [ -z "${ssh_port}" ] || [ -z $(echo "${ssh_port}" | grep -E '^[0-9]{1,5}$') ]; then
+      export ZWED_SSH_PORT=22
+    else
+      # Out of range? Set default
+      if [ "${ssh_port}" -lt 1 ] || [ "${ssh_port}" -gt 65535 ]; then
+        export ZWED_SSH_PORT=22
+      else
+        export ZWED_SSH_PORT="${ssh_port}"
+      fi
+    fi
+  fi
+fi
+
+if [ -z "${ZWED_TN3270_PORT}" ]; then
+  if [ -e "/etc/services" ]; then
+    telnet_port=$(cat "/etc/services" | grep '^telnet' | awk -F\  '{print $2}' | awk -F/ '{print $1}')
+    if [ -z "${telnet_port}" ] || [ -z $(echo "${telnet_port}" | grep -E '^[0-9]{1,5}$') ]; then
+      export ZWED_TN3270_PORT=23
+    else
+      if [ "${telnet_port}" -lt 1 ] || [ "${telnet_port}" -gt 65535 ]; then
+        export ZWED_TN3270_PORT=23
+      else
+        export ZWED_TN3270_PORT="${telnet_port}"
+      fi
+    fi
+  fi
+fi
+
 # set production mode if applicable
 export NODE_ENV=${NODE_ENV:-production}
 

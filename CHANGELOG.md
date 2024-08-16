@@ -2,7 +2,7 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
-## v2.18.0
+## v3.0.0
 - Enhancement: app-server tries to detect ssh and telnet ports (used by terminals) automatically. (#313)
 
 ## v2.17.0

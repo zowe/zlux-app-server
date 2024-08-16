@@ -12,9 +12,6 @@ setlocal EnableDelayedExpansion
 set app_path="%~f1"
 set temp_cd=%CD%
 set zlux_path="%~dp0\..\.."
-if defined CONDA_PREFIX (
-  set zlux_path="%CONDA_PREFIX%\share\zowe\app-server"
-)
 
 if not defined ZLUX_INSTALL_LOG_DIR (
   if exist "%INSTANCE_DIR%" (

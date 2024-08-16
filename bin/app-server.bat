@@ -14,56 +14,38 @@ if defined NODE_HOME (
   set NODE_BIN=node
 )
 
-if not exist "..\lib\zluxArgs.js" (
-  if defined CONDA_PREFIX (
-    cd "%CONDA_PREFIX%\share\zowe\app-server\zlux-app-server\bin"
-  )
-)
 set temp_cd=%CD%
+cd ..\
+set ZLUX_APP_SERVER_DIR=%CD%
+cd %temp_cd%
 
 set NODE_PATH=../..;../../zlux-server-framework/node_modules;%NODE_PATH%
 
 REM ZLUX_CONFIG_FILE, WORKSPACE_DIR, and INSTANCE_DIR are for official Zowe environment use.
 REM If none found, will assume dev environment and consider ~/.zowe as INSTANCE_DIR
-if exist "%ZLUX_CONFIG_FILE%" (
-  set CONFIG_FILE=%ZLUX_CONFIG_FILE%
+if exist "%ZWE_CLI_PARAMETER_CONFIG%" (
+  set CONFIG_FILE="FILE(%ZWE_CLI_PARAMETER_CONFIG%):FILE(%ZLUX_APP_SERVER_DIR%/defaults/serverConfig/defaults.yaml)"
 ) else (
-  if exist "%ZWE_CLI_PARAMETER_CONFIG%" (
-    set CONFIG_FILE=%ZWE_CLI_PARAMETER_CONFIG%
+  echo "ZWE_CLI_PARAMETER_CONFIG is not defined. Only defaults will be used."
+  echo "To customize, rerun script with it defined to a list of paths to zowe.yaml files such as ZWE_CLI_PARAMETER_CONFIG=FILE(/yaml1.yaml):FILE(/path/to/yaml2.yaml)"
+  echo "FILE items specified on the right of the list will have properties overridden by FILE items on the left of the list, resulting in one merged configuration"
+
+  if exist "%USERPROFILE%\.zowe\zowe.yaml" (
+    echo "Found and using %USERPROFILE%/.zowe/zowe.yaml"
   ) else (
-    if exist "%WORKSPACE_DIR%" (
-      if exist "%WORKSPACE_DIR%\app-server\serverConfig\zowe.yaml" (
-        set CONFIG_FILE=%WORKSPACE_DIR%\app-server\serverConfig\zowe.yaml
-      ) else (
-        cd ..\lib
-        !NODE_BIN! initInstance.js
-        cd ..\bin
-      )
-    ) else (
-      if exist "%INSTANCE_DIR%" (
-        if exist "%INSTANCE_DIR%\workspace\app-server\serverConfig\zowe.yaml" (
-          set CONFIG_FILE=%INSTANCE_DIR%\workspace\app-server\serverConfig\zowe.yaml
-        ) else (
-          cd ..\lib
-          !NODE_BIN! initInstance.js
-          cd ..\bin        
-        )
-      ) else (
-        if exist "%USERPROFILE%\.zowe\workspace\app-server\serverConfig\zowe.yaml" (
-          set CONFIG_FILE=%USERPROFILE%\.zowe\workspace\app-server\serverConfig\zowe.yaml
-          set INSTANCE_DIR=%USERPROFILE%\.zowe
-        ) else (
-          echo No config file found, initializing
-          set INSTANCE_DIR=%USERPROFILE%\.zowe
-          call :makedir "!INSTANCE_DIR!\logs"
-          cd ..\lib
-          !NODE_BIN! initInstance.js
-          set CONFIG_FILE=%USERPROFILE%\.zowe\workspace\app-server\serverConfig\zowe.yaml
-          cd ..\bin
-        )
-      )
-    )
+    call :makedir "%USERPROFILE%\.zowe"
+    robocopy "%ZLUX_APP_SERVER_DIR%\defaults\serverConfig\defaults.yaml" "%USERPROFILE%\.zowe\zowe.yaml" /QUIT /NP /NDL /NFL /NC /NS /NJS /NJH
   )
+  set CONFIG_FILE="FILE(%USERPROFILE%/.zowe/zowe.yaml):FILE(%ZLUX_APP_SERVER_DIR%/defaults/serverConfig/defaults.yaml)"
+)
+
+if not defined ZWE_zowe_workspaceDirectory (
+  set ZWE_zowe_workspaceDirectory="%USERPROFILE%/.zowe/workspace"
+)
+if not exist "%ZWE_zowe_workspaceDirectory%\app-server\plugins\org.zowe.zlux.json" (
+  cd ..\lib
+  !NODE_BIN! initInstance.js
+  cd ..\bin
 )
 
 

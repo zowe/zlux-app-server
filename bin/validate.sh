@@ -10,11 +10,11 @@
 result=$(type node)
 if [ "$?" -ne "0" ]; then
   if [ -e "${NODE_HOME}/bin/node" ]; then
-    echo "Node found in NODE_HOME"
+    echo "zlux-app-server/bin/validate.sh: Node found in NODE_HOME"
   elif [ -e "${ZOWE_NODE_HOME}/bin/node" ]; then
-    echo "Node found in NODE_HOME"
+    echo "zlux-app-server/bin/validate.sh: Node found in NODE_HOME"
   else 
-    echo "Error: node not found, app-server cannot run"
+    echo "zlux-app-server/bin/validate.sh: Error: Node not found, app-server cannot run"
     exit 1
   fi
 fi

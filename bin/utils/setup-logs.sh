@@ -78,12 +78,12 @@ if [ "$ZWED_NODE_LOG_FILE" != "/dev/null" ]; then
   ZWED_NODE_LOG_FILE=$ZLUX_NODE_CHECK_DIR/$(basename "$ZWED_NODE_LOG_FILE")
 fi
 
-echo "${ZWED_TMP_MSGID} ZWED_NODE_LOG_FILE=${ZWED_NODE_LOG_FILE}"
-
 if [ ! -z $(echo "${ZWED_NODE_LOG_FILE}" | grep "^${ZWE_zowe_runtimeDirectory}") ]; then
   echo "${ZWED_TMP_MSGID} Logging into zowe.runtimeDirectory not allowed. Logging disabled."
   ZWED_NODE_LOG_FILE=/dev/null
 fi
+
+echo "${ZWED_TMP_MSGID} ZWED_NODE_LOG_FILE=${ZWED_NODE_LOG_FILE}"
 
 if [ ! -e $ZWED_NODE_LOG_FILE ]; then
   touch $ZWED_NODE_LOG_FILE

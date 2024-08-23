@@ -26,7 +26,6 @@ else
       if [ -z "${ZWE_zowe_runtimeDirectory}" ]; then
         ZWED_NODE_LOG_DIR="../log"
       else
-        echo "Cannot determine the log directory. Logging disabled."
         ZWED_NODE_LOG_DIR=
         ZWED_NODE_LOG_FILE=/dev/null
       fi
@@ -38,7 +37,7 @@ else
     ZWED_NODE_LOG_FILE=$ZWED_NODE_LOG_DIR
   elif [ ! -d "$ZWED_NODE_LOG_DIR" ]
   then
-    if [ -n "${ZWED_NODE_LOG_DIR}" ]; then
+    if [ -n "$ZWED_NODE_LOG_DIR" ]; then
       echo "Will make log directory $ZWED_NODE_LOG_DIR"
       mkdir -p $ZWED_NODE_LOG_DIR
       if [ $? -ne 0 ]; then

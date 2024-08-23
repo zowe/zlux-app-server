@@ -2,7 +2,7 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 ## v3.0.0
-- Bugfix: ommiting `zowe.logDirectory` forces the app-server to log into the `zowe.runtimeDirectory`. (#317)
+- Enhancement: if no `zowe.logDirectory` is defined in config, logging is disabled. (#317)
 
 ## v2.17.0
 - Enhancement: app-server can now use Zowe's standardized and simplified AT-TLS configuration simply by toggling `zowe.network.server.tls.attls: true` or `components.app-server.zowe.network.server.tls.attls: true`. If you wish to control client tls separately from server tls, you can also use `zowe.network.client.tls.attls` or `components.app-server.zowe.network.client.tls.attls`. (#300) (#303)

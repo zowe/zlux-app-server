@@ -26,6 +26,7 @@ else
       if [ -z "${ZWE_zowe_runtimeDirectory}" ]; then
         ZWED_NODE_LOG_DIR="../log"
       else
+        echo "No log directory. Logging disabled."
         ZWED_NODE_LOG_DIR=
         ZWED_NODE_LOG_FILE=/dev/null
       fi

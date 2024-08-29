@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - v3.x/staging
+      - v3.x/rc
+      - v3.x/master
   pull_request:
     types: [opened, reopened, synchronize]
 
@@ -154,9 +156,9 @@ jobs:
             ${{ runner.os }}-build-cache-node-modules-
 
       - name: '[Prep 2] Setup Node'
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: 16.15.0
+          node-version: 18
 
       - name: '[Prep 3] Setup jFrog CLI'
         uses: jfrog/setup-jfrog-cli@v2

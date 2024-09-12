@@ -6,6 +6,18 @@
   "type": "object",
   "additionalProperties": true,
   "properties": {
+    "zowe": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Contains customizations from the Zowe global configuration.",
+      "properties": {
+        "useConfigmgr": {
+          "type": "boolean",
+          "default": true,
+          "description": "Determines whether configmgr will be used during the startup proceedure, such as to register plugins."
+        }
+      }
+    },
     "node": {
       "type": "object",
       "description": "Configuration options specific to the app-server and things it depends upon",
@@ -48,12 +60,31 @@
               "deprecated": true,
               "description": "Passes through the secureProtocol attribute to TLS calls of nodeJS, as defined within https://nodejs.org/api/tls.html#tlscreatesecurecontextoptions"
             },
+            "maxTls": {
+              "type": "string",
+              "enum": ["TLSv1.2", "TLSv1.3"],
+              "default": "TLSv1.3",
+              "description": "Maximum TLS version allowed for network connections."
+            },
+            "minTls": {
+              "type": "string",
+              "enum": ["TLSv1.2", "TLSv1.3"],
+              "default": "TLSv1.2",
+              "description": "Minimum TLS version allowed for network connections, and less than or equal to maxTls."
+            },
             "ciphers": {
               "oneOf": [
                 { "$ref": "#/$defs/nodejsDefaultCiphers" },
                 { "$ref": "#/$defs/zoweDefaultCiphers" },
                 { "$ref": "#/$defs/customCiphers" }
               ]
+            },
+            "curves": {
+              "type": "array",
+              "description": "A list of curve NIDs or names, for example P-521, P-384, P-256",
+              "items": {
+                "type": "string"
+              }
             },
             "enableTrace": {
               "type": "boolean",
@@ -98,6 +129,14 @@
                   "type": "boolean",
                   "description": "Controls if connections to the API Mediation Layer gateway and/or discovery service should be HTTP or HTTPS"
                 },
+                "discoveryUrls": {
+                  "type": "array",
+                  "description": "A list of URLs where discovery servers can be found. URLs must be in the form of 'https://host:port/eureka/'. This will be used instead of the 'hostname' and 'port' values if present.",
+                  "items": {
+                    "type": "string",
+                    "pattern": "https:\/\/.*:[0-9].*\/eureka\/"
+                  }
+                },
                 "gatewayHostname": {
                   "type": "string",
                   "format": "hostname",
@@ -106,7 +145,8 @@
                 "hostname": {
                   "type": "string",
                   "format": "hostname",
-                  "description": "The hostname or IP where the Zowe Discovery service is running"
+                  "description": "The hostname or IP where the Zowe Discovery service is running",
+                  "deprecated": true
                 },
                 "gatewayPort": {
                   "oneOf": [
@@ -120,6 +160,7 @@
                     { "$ref": "/schemas/v2/server-common#zoweTcpPort" },
                     { "$ref": "/schemas/v2/server-common#zoweReservedTcpPort" }, 
                   ],
+                  "deprecated": true,
                   "description": "The port where the Zowe Discovery service is running"
                 },
                 "enabled": {
@@ -620,7 +661,7 @@
           { "$ref": "#/$defs/zoweDefaultCiphers" }
         ]
       },
-      "description": "Instructs app-server to use the list of ciphers in this string when using TLS. String must be in the form defined here https://nodejs.org/api/tls.html#modifying-the-default-tls-cipher-suite"
+      "description": "Instructs app-server to use the list of ciphers in this string when using TLS. String is a colon separated list of IANA or openSSL names"
     },
     "headerCustomization": {
       "type": "object",
@@ -660,14 +701,14 @@
     },
     "safKeyringCertObject": {
       "type": "string",
-      "pattern": "^safkeyring:(\/\/)+.*$"
+      "pattern": "^safkeyring.*:(\/\/)+.*$"
     },
     "pathCertObject": {
       "type": "string",
       "not": {
         "anyOf": [
           { "pattern": "^file:\/\/.*$" },
-          { "pattern": "^safkeyring:(\/\/)+.*$" }
+          { "pattern": "^safkeyring.*:(\/\/)+.*$" }
         ]
       }
     },

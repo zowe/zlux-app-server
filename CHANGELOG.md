@@ -1,7 +1,27 @@
 # Zlux App Server Changelog
 
 All notable changes to the Zlux App Server package will be documented in this file.
-    
+
+## v3.0.0
+- Enhancement: Added new plugin identifier for the V3 Ivy Desktop to list of default plugins. Also added this plugin to list of allowedPlugins.json.
+- Enhancement: Updated schema to document new entry points in V3.
+
+## v2.17.0
+- Enhancement: app-server can now use Zowe's standardized and simplified AT-TLS configuration simply by toggling `zowe.network.server.tls.attls: true` or `components.app-server.zowe.network.server.tls.attls: true`. If you wish to control client tls separately from server tls, you can also use `zowe.network.client.tls.attls` or `components.app-server.zowe.network.client.tls.attls`. (#300) (#303)
+- Enhancement: The app-server configure stage performance increased due to combining two seperate processes in this stage (plugins-init.js and initInstance.js) into one. (#304)
+- Enhancement: Remove dns check specific to node 14 and below to reduce startup time. Node 14 has not been supported since september 2023. (#304)
+
+## v2.16.0
+- Bugfix: Removed message saying node not found prior to discovery of node. Now, you will only get an error message if node is not found after lookup in NODE_HOME.
+
+## v2.14.0
+- Enhancement: Updated schema to specify multiple discovery servers.
+
+## v2.13.0
+- Enhancement: Updated schema to allow cipher customization in IANA format. (#284)
+- Enhancement: Updated schema to allow curve customization. (#284)
+- Enhancement: Updated defaults to read TLS settings and IP settings from the "zowe.network.server" attribute of Zowe.yaml. (#284)
+
 ## v2.12.0
 - enhancement: new versions of components can change the location of their plugins, as the app-server will now re-inspect the plugin locations on each startup. (#280)
 - bugfix: Removed error message "components/app-server/bin/configure.sh 26: .: FSUM6807 expression syntax error" seen in startup of Zowe in v2.11.0, caused by incorrect shell syntax. (#283)

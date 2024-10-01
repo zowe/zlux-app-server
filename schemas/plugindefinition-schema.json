@@ -228,6 +228,22 @@
         "framework": {
           "type": "string",
           "enum": [ "angular2", "angular", "react" ]
+        },
+        "entryPoint": {
+          "type": "object",
+          "description": "Describes a path, relative to the app's '/web' folder in the browser, where the main file is that will be loaded by the Zowe Desktop. This is assumed to be 'main.js' for Zowe versions older than v3 but allows you to ship multiple entryPoints to target different versions of Zowe",
+          "additionalProperties": false,
+          "properties": {
+            "2.0": {
+              "const": "main.js",
+              "type": "string",
+              "description": "This property is not configurable. The Zowe Desktop in v2 will always search for web/main.js. This entry is just defined to document this fact."
+            },
+            "3.0": {
+              "type": "string",
+              "description": "This is a path, relative to the app's '/web' folder in the browser, where the main file that will be loaded by the Zowe Desktop is located. This should not be 'main.js' to avoid conflict with that name used in Zowe v2."
+            }
+          }
         }
       }
     },

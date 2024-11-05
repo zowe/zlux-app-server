@@ -1,7 +1,7 @@
 # Zlux App Server Changelog
 
 All notable changes to the Zlux App Server package will be documented in this file.
-## v3.0.0
+## v3.1.0
 - Enhancement: if no `zowe.logDirectory` is defined in config, logging is disabled. (#317)
 
 ## v3.0.0

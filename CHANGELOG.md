@@ -2,6 +2,9 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v3.1.0
+- Bugfix: app-server no longer causes Zowe to print "FSUM7422 node is not found" and "Node found in NODE_HOME" upon startup. This avoids confusion about if node requirements are met. (#325)
+
 ## v3.0.0
 - Enhancement: Added new plugin identifier for the V3 Ivy Desktop to list of default plugins. Also added this plugin to list of allowedPlugins.json.
 - Enhancement: Updated schema to document new entry points in V3.

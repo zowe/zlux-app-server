@@ -3,7 +3,7 @@
 All notable changes to the Zlux App Server package will be documented in this file.
 
 ## v3.1.0
-- Enhancement: app-server tries to detect ssh and telnet ports (used by terminals) automatically. [(#3??)](https://github.com/zowe/zlux-app-server/pull/3??)
+- Enhancement: app-server tries to detect ssh and telnet ports (used by terminals) automatically. [(#326)](https://github.com/zowe/zlux-app-server/pull/326)
 - Bugfix: app-server no longer causes Zowe to print "FSUM7422 node is not found" and "Node found in NODE_HOME" upon startup. This avoids confusion about if node requirements are met. (#325)
 
 ## v3.0.0

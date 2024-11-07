@@ -167,6 +167,11 @@
                   "type": "boolean",
                   "description": "Controls whether the app-server should register to the Zowe API Mediation Layer as a Eureka Client"
                 },
+                "cookieName": {
+                  "type": "string",
+                  "description": "Informs app-server of the gateway's cookie name needed for SSO",
+                  "default": "apimlAuthenticationToken"
+                },
                 "cachingService": {
                   "type": "object",
                   "additionalProperties": false,

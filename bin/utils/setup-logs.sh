@@ -2,9 +2,9 @@
 # This program and the accompanying materials are
 # made available under the terms of the Eclipse Public License v2.0 which accompanies
 # this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
-# 
+#
 # Copyright Contributors to the Zowe Project.
 
 if [ -n "$ZWED_NODE_LOG_FILE" ]
@@ -21,26 +21,33 @@ else
     then
         ZWED_NODE_LOG_DIR=${ZWE_zowe_logDirectory}
     elif [ -n "${HOME}" ]; then
-      ZWED_NODE_LOG_DIR="${HOME}/.zowe/logs"  
+      ZWED_NODE_LOG_DIR="${HOME}/.zowe/logs"
     else
-      ZWED_NODE_LOG_DIR="../log"
+      if [ -z "${ZWE_zowe_runtimeDirectory}" ]; then
+        ZWED_NODE_LOG_DIR="../log"
+      else
+        echo "No log directory. Logging disabled."
+        ZWED_NODE_LOG_DIR=
+        ZWED_NODE_LOG_FILE=/dev/null
+      fi
     fi
   fi
-  
+
   if [ -f "$ZWED_NODE_LOG_DIR" ]
   then
     ZWED_NODE_LOG_FILE=$ZWED_NODE_LOG_DIR
   elif [ ! -d "$ZWED_NODE_LOG_DIR" ]
   then
-    echo "Will make log directory $ZWED_NODE_LOG_DIR"
-    mkdir -p $ZWED_NODE_LOG_DIR
-    if [ $? -ne 0 ]
-    then
-      echo "Cannot make log directory.  Logging disabled."
-      ZWED_NODE_LOG_FILE=/dev/null
+    if [ -n "$ZWED_NODE_LOG_DIR" ]; then
+      echo "Will make log directory $ZWED_NODE_LOG_DIR"
+      mkdir -p $ZWED_NODE_LOG_DIR
+      if [ $? -ne 0 ]; then
+        echo "Cannot make log directory.  Logging disabled."
+        ZWED_NODE_LOG_FILE=/dev/null
+      fi
     fi
   fi
-  
+
   ZLUX_ROTATE_LOGS=0
   if [ -d "$ZWED_NODE_LOG_DIR" ] && [ -z "$ZWED_NODE_LOG_FILE" ]
   then
@@ -58,9 +65,9 @@ else
     if [ $ZWED_NODE_LOGS_TO_KEEP -ge 0 ]
     then
       ZLUX_ROTATE_LOGS=1
-    fi 
+    fi
   fi
-  
+
   #Clean up excess logs, if appropriate.
   if [ $ZLUX_ROTATE_LOGS -ne 0 ]
   then

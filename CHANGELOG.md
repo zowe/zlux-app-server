@@ -1,6 +1,8 @@
 # Zlux App Server Changelog
 
 All notable changes to the Zlux App Server package will be documented in this file.
+## v3.1.0
+- Enhancement: if no `zowe.logDirectory` is defined in config, logging is disabled. [(#317)](https://github.com/zowe/zlux-app-server/pull/317)
 
 ## v3.1.0
 - Enhancement: app-server tries to detect ssh and telnet ports (used by terminals) automatically. [(#326)](https://github.com/zowe/zlux-app-server/pull/326)

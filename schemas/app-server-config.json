@@ -116,6 +116,11 @@
             }
           }
         },
+        "requestTimeout": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Modifies the time until a request socket closes due to timeout as documented in https://nodejs.org/api/http.html#serversettimeoutmsecs-callback"
+        },
         "mediationLayer": {
           "type": "object",
           "description": "Properties relating to how the app-server should interact with and find the API Mediation Layer components",

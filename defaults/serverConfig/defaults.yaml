@@ -2,8 +2,8 @@ zowe:
   workspaceDirectory: ${{ process.env.HOME + '/.zowe/workspace' }}
   externalDomains: ${{ function a() { if (process.env.ZWE_zowe_externalDomains) { return process.env.ZWE_zowe_externalDomains.split(','); } else { return [ os.hostname() ] } }; a() }}
   environments:
-    ZWED_SSH_PORT: 22
-    ZWED_TN3270_PORT: 23
+    ZWED_SSH_PORT: "${{ process.env.ZWED_SSH_PORT ? process.env.ZWED_SSH_PORT : 22 }}"
+    ZWED_TN3270_PORT: "${{ process.env.ZWED_TN3270_PORT ? process.env.ZWED_TN3270_PORT : 23 }}"
     ZWED_TN3270_SECURITY: telnet
     ZWED_SSH_HOST: ${{ zowe.externalDomains[0] }}
     ZWED_TN3270_HOST: ${{ zowe.externalDomains[0] }}

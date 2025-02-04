@@ -27,9 +27,8 @@ if [ -n "${ZWE_zowe_runtimeDirectory}" ]; then
   # used for relativeTo plugins
   export ZLUX_ROOT_DIR=$COMPONENT_HOME/share
 else
- # dev env
- . ./validate.sh
- COMPONENT_HOME=$(cd ../..; pwd)
+  # dev env
+  COMPONENT_HOME=$(cd ../..; pwd)
 
   # used for relativeTo plugins
   export ZLUX_ROOT_DIR=$COMPONENT_HOME

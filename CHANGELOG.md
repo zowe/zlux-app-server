@@ -2,6 +2,10 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v2.18.1
+- Bugfix: app-server no longer causes Zowe to print "FSUM7422 node is not found" and "Node found in NODE_HOME" upon startup. This avoids confusion about if node requirements are met. (#324)
+- Bugfix: Configuration property "components.app-server.node.mediationLayer.eureka" was not documented in the schema, so it was not possible to set in configuration (#334)
+
 ## v2.17.0
 - Enhancement: app-server can now use Zowe's standardized and simplified AT-TLS configuration simply by toggling `zowe.network.server.tls.attls: true` or `components.app-server.zowe.network.server.tls.attls: true`. If you wish to control client tls separately from server tls, you can also use `zowe.network.client.tls.attls` or `components.app-server.zowe.network.client.tls.attls`. (#300) (#303)
 - Enhancement: The app-server configure stage performance increased due to combining two seperate processes in this stage (plugins-init.js and initInstance.js) into one. (#304)
@@ -19,9 +23,9 @@ All notable changes to the Zlux App Server package will be documented in this fi
 - Enhancement: Updated defaults to read TLS settings and IP settings from the "zowe.network.server" attribute of Zowe.yaml. (#284)
 
 ## v2.12.0
+
 - enhancement: new versions of components can change the location of their plugins, as the app-server will now re-inspect the plugin locations on each startup. (#280)
 - bugfix: Removed error message "components/app-server/bin/configure.sh 26: .: FSUM6807 expression syntax error" seen in startup of Zowe in v2.11.0, caused by incorrect shell syntax. (#283)
-
 
 ## v2.11.0
 

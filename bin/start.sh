@@ -27,9 +27,8 @@ if [ -n "${ZWE_zowe_runtimeDirectory}" ]; then
   # used for relativeTo plugins
   export ZLUX_ROOT_DIR=$COMPONENT_HOME/share
 else
- # dev env
- . ./validate.sh
- COMPONENT_HOME=$(cd ../..; pwd)
+  # dev env
+  COMPONENT_HOME=$(cd ../..; pwd)
 
   # used for relativeTo plugins
   export ZLUX_ROOT_DIR=$COMPONENT_HOME
@@ -93,12 +92,6 @@ echo Starting node
 ZLUX_DNS_ORDER="--dns-result-order=ipv4first"
 if [ "$ZWE_components_app_server_dns_lookupOrder" = "ipv6" ]; then
   ZLUX_DNS_ORDER="--dns-result-order=verbatim"
-fi
-
-# not all versions of node support the above (14.18+ generally) so we can just try it to see what happens.
-v4_check=$(${NODE_BIN} ${ZLUX_DNS_ORDER} -e "console.log('success');")
-if [ "${v4_check}" != "success" ]; then
-  ZLUX_DNS_ORDER=
 fi
 
 if [ -z "${ZWED_FLAGS}" ]; then

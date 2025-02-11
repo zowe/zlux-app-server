@@ -47,9 +47,9 @@ Follow each step and you'll be on your way to your first App Server instance!
 ### Building & Developing
 To build the App Server and Apps, the following is required:
 
-* **NodeJS** - v14.x minimum (except v14.17.2) up to v16.x
+* **NodeJS** - v16.x minimum up to v18.x
 
-Note & TODO: Node 17+ will fail on Windows when running full zlux build, [more information in this thread.](https://stackoverflow.com/questions/69692842/error-message-error0308010cdigital-envelope-routinesunsupported). An upgrade solution needs to be applied across multiple failing components
+**Note:** Some plugins may not install/build with 16, some will not with 18. It is recommended to have both versions present to troubleshoot issues. Example errors include: `Error: error:0308010C:digital envelope routines::unsupported [...]` (may occur with 16). For switching Node versions, avoid using `nvm` for Windows, as it is known to cause bugs.
 
 * **npm** - v6.4 minimum
 
@@ -81,7 +81,7 @@ On z/OS, git 2.14.4 is the minimum needed.
 ### Runtime
 To use the App Server, the following is required:
 
-* **NodeJS** - v16.x up to v18.x is officially supported by the Zowe community.
+**NodeJS** - v16.x up to v20.x is officially supported by the Zowe community.
 
 Plugins may depend upon other technologies, such as Java or ZSS. A plugin's [pluginDefinition](https://docs.zowe.org/stable/extend/extend-desktop/mvd-plugindefandstruct) or README will help you to understand if additional prerequisites are needed for that plugin.
 
@@ -125,8 +125,18 @@ This will take some time to complete.
 
 **Note:** It has been reported that building can hang on Windows if you have put the code in a directory that has a symbolic link. Build time can depend on hardware speed, but should take minutes not hours.
 
-
 Upon completion, the App Server is ready to be run.
+
+### Fixing build failures
+
+If you encounter errors such as `npm ERR! Conflicting peer dependency [...]` or `Invalid tag name` or in-general issues at the package level when installing dependencies, it may be due to poor package-lock metadata. To resolve:
+- Reset `package-lock.json` via `git checkout *package-lock.json`.
+- If the install still fails, delete `package-lock.json`
+
+To reset package-lock for all repos:
+- `cd zlux`
+- `git submodule foreach "git checkout *package-lock.json"`
+
 
 ## 3. Initial startup
 To start the App Server with all default settings, do the following:
@@ -147,9 +157,25 @@ If you encounter an error message saying `No config file found, initializing`, i
 
 To fix this issue, you need to create a zowe.yaml file in the following directory: `%USERPROFILE%\.zowe\workspace\app-server\serverConfig`. You can use [this](https://github.com/zowe/zlux-app-server/blob/v2.x/staging/defaults/serverConfig/defaults.yaml) template as a starting point.
 
+**Note:** The App server will not remain running until [Section 7](#7-adding-zss-to-the-environment) is complete.
+
+**Note:** Ensure your `zowe.yaml` file is valid YAML. You may use a safe offline YAML checker such as from [RedHat's VSCode plugin](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml).
+
+**Known Issue & Workaround:** If you get the error `Unhandled rejection, Type error: Cannot read properties of undefined` after attempting to start your App Server AND your Zowe.yaml is formatted correctly to the best of your knowledge, try the unsupported, less strict version of the App Server via these two commands:
+
+zlux-server-framework:
+```
+git checkout 7a394212bb13af24b587ea22f3c7267981d31111
+```
+zlux-app-server:
+```
+git checkout d112621faf9d86862ed458e5244732479bf7fbf3
+```
+
 ### Server Logs
 When the server starts, it writes logs to a text file. On z/OS, Unix, and Linux, the server also logs to the terminal via stdout.
 To view the entire logs, you can find the log file within the location specified by the zowe server configuration parameter `zowe.logDirectory`, but will default to `~/.zowe/logs` or `%USERPROFILE%/.zowe/logs` (Windows) if not specified. The log file starts with "appServer" and the filename may also include a timestamp.
+
 
 ## 4. Connect in a browser
 With the App Server started, you can access Apps and the Zowe Desktop from it in a web browser.
@@ -229,7 +255,7 @@ Also, some of the low-level APIs are made possibly by ZSS working in concert wit
 To build ZSS, code must be placed on z/OS as it can only be compiled there and run there. However, if you don't have access to a mainframe, you have 2 options:
 1. Sign up for the [IBM Open Zowe trial](https://community.ibm.com/community/user/ibmz-and-linuxone/blogs/wen-ting-su/2023/04/28/unleash-the-power-of-zowe-v2-with-updated-trial) to obtain trial credentials to a mainframe
 2. or you can take advantage of the [ZSS mock server](https://github.com/zowe/zss/tree/v2.x/staging/mock) written in Python
-**Note: ** ZSS mock server may not be up to date with latest ZSS features.
+**Note:** ZSS mock server may not be up to date with latest ZSS features.
 
 ### Building ZSS
 To build ZSS from source, it is recommended to use git on z/OS from [step 0](#0-prerequisites). You can use this command to get the code:

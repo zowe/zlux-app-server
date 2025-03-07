@@ -178,6 +178,15 @@
                   }
                 }
               }
+            },
+            "eureka": {
+              "type": "object",
+              "description": "Overrides Eureka registration properties"
+            },
+            "traceTls": {
+              "type": "boolean",
+              "description": "Enables NodeJS's TLS tracing for network activity between app-server and APIML",
+              "default": false
             }
           }
         },

@@ -20,7 +20,6 @@ All notable changes to the Zlux App Server package will be documented in this fi
 - Enhancement: The app-server configure stage performance increased due to combining two seperate processes in this stage (plugins-init.js and initInstance.js) into one. (#304)
 - Enhancement: Remove dns check specific to node 14 and below to reduce startup time. Node 14 has not been supported since september 2023. (#304)
 
-
 ## v2.16.0
 - Bugfix: Removed message saying node not found prior to discovery of node. Now, you will only get an error message if node is not found after lookup in NODE_HOME.
 

@@ -2,8 +2,7 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
-
-- Enhancement: Support PKCS12 and default to loading PKCS12 files instead of PEM when keystore or truststore type is PKCS12. (#337)[https://github.com/zowe/pulls/337]
+- Enhancement: Support PKCS12 and default to loading PKCS12 files instead of PEM when keystore or truststore type is PKCS12. [(#337)](https://github.com/zowe/pulls/337)
 
 ## v3.5.0
 - Enhancement: App-server startup no longer runs certificate validation as that has been migrated to the zwe launcher startup process to work for all components. [(#364)](https://github.com/zowe/zlux-app-server/pull/364)
@@ -21,7 +20,7 @@ All notable changes to the Zlux App Server package will be documented in this fi
 - Enhancement: app-server handles the setting "components.apiml.enabled: true" as an alternative to enabling "gateway", "discovery", and "caching-service" components. [(#345)](https://github.com/zowe/zlux-app-server/pull/345)
 
 ## v3.2.0
-- Bugfix: Configuration property "components.app-server.node.mediationLayer.eureka" was not documented in the schema, so it was not possible to set in configuration (#336)
+- Bugfix: Configuration property "components.app-server.node.mediationLayer.eureka" was not documented in the schema, so it was not possible to set in configuration [(#336)](https://github.com/zowe/pulls/336)
 - Enhancement: Validate certificate properties on startup. [(#338)](https://github.com/zowe/zlux-app-server/pull/338)
 
 ## v3.1.0
@@ -37,7 +36,6 @@ All notable changes to the Zlux App Server package will be documented in this fi
 - Enhancement: app-server can now use Zowe's standardized and simplified AT-TLS configuration simply by toggling `zowe.network.server.tls.attls: true` or `components.app-server.zowe.network.server.tls.attls: true`. If you wish to control client tls separately from server tls, you can also use `zowe.network.client.tls.attls` or `components.app-server.zowe.network.client.tls.attls`. (#300) (#303)
 - Enhancement: The app-server configure stage performance increased due to combining two separate processes in this stage (plugins-init.js and initInstance.js) into one. (#304)
 - Enhancement: Remove dns check specific to node 14 and below to reduce startup time. Node 14 has not been supported since September 2023. (#304)
-
 
 ## v2.16.0
 - Bugfix: Removed message saying node not found prior to discovery of node. Now, you will only get an error message if node is not found after lookup in NODE_HOME.

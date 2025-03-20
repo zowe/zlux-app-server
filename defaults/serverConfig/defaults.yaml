@@ -61,6 +61,8 @@ components:
         keys: '${{ function a() {
                      if (zowe.certificate?.keystore?.type && zowe.certificate.keystore.type.match("JCE.*KS")) {
                        return [ zowe.certificate.keystore.file+"&"+zowe.certificate.keystore.alias ];
+                     } else if (zowe.certificate.keystore?.file) {
+                       return [ zowe.certificate.keystore.file ];
                      } else if (zowe.certificate?.pem?.key) {
                        return [ zowe.certificate.pem.key ];
                      } else {
@@ -69,6 +71,8 @@ components:
         certificates: '${{ function a(){
                              if (zowe.certificate?.keystore?.type && zowe.certificate.keystore.type.match("JCE.*KS")) {
                                return [ zowe.certificate.keystore.file+"&"+zowe.certificate.keystore.alias ];
+                             } else if (zowe.certificate.keystore?.file) {
+                               return [ zowe.certificate.keystore.file ];
                              } else if (zowe.certificate?.pem?.certificate) {
                                return [ zowe.certificate.pem.certificate ];
                              } else {
@@ -93,7 +97,7 @@ components:
                                      return undefined; } };
                               a() }}'
         certificateAuthorities: '${{ function a() {
-                                       if (zowe.certificate?.truststore?.type && zowe.certificate.truststore.type.match("JCE.*KS")) {
+                                       if (zowe.certificate?.truststore?.file) {
                                           return [ zowe.certificate.truststore.file ];
                                        } else if(zowe.certificate?.pem?.certificateAuthorities) {
                                           if (Array.isArray(zowe.certificate.pem.certificateAuthorities)) {

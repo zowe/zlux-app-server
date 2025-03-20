@@ -2,6 +2,8 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+- Enhancement: Support PKCS12 and default to loading PKCS12 files instead of PEM when keystore or truststore type is PKCS12. (#???)[https://github.com/zowe/pulls/???]
+
 ## v3.5.0
 - Enhancement: App-server startup no longer runs certificate validation as that has been migrated to the zwe launcher startup process to work for all components. [(#364)](https://github.com/zowe/zlux-app-server/pull/364)
 - Enhancement: App-server now supports separate server and client TLS certificates. Define `zowe.certificate.keystore.clientCertificateAlias` (for keyrings) or `zowe.certificate.pem.clientCertificate` and `zowe.certificate.pem.clientKey` (for PEM files) to use a dedicated client certificate for all outbound connections. The main certificate continues to be used for serving HTTPS. When not defined, the existing certificate is used for both as before. [(#365)](https://github.com/zowe/zlux-app-server/pull/365) [(#364)](https://github.com/zowe/zlux-app-server/pull/364)
@@ -34,6 +36,7 @@ All notable changes to the Zlux App Server package will be documented in this fi
 - Enhancement: app-server can now use Zowe's standardized and simplified AT-TLS configuration simply by toggling `zowe.network.server.tls.attls: true` or `components.app-server.zowe.network.server.tls.attls: true`. If you wish to control client tls separately from server tls, you can also use `zowe.network.client.tls.attls` or `components.app-server.zowe.network.client.tls.attls`. (#300) (#303)
 - Enhancement: The app-server configure stage performance increased due to combining two separate processes in this stage (plugins-init.js and initInstance.js) into one. (#304)
 - Enhancement: Remove dns check specific to node 14 and below to reduce startup time. Node 14 has not been supported since September 2023. (#304)
+
 
 ## v2.16.0
 - Bugfix: Removed message saying node not found prior to discovery of node. Now, you will only get an error message if node is not found after lookup in NODE_HOME.

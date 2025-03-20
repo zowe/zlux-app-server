@@ -18,6 +18,7 @@ All notable changes to the Zlux App Server package will be documented in this fi
 - Enhancement: app-server can now use Zowe's standardized and simplified AT-TLS configuration simply by toggling `zowe.network.server.tls.attls: true` or `components.app-server.zowe.network.server.tls.attls: true`. If you wish to control client tls separately from server tls, you can also use `zowe.network.client.tls.attls` or `components.app-server.zowe.network.client.tls.attls`. (#300) (#303)
 - Enhancement: The app-server configure stage performance increased due to combining two seperate processes in this stage (plugins-init.js and initInstance.js) into one. (#304)
 - Enhancement: Remove dns check specific to node 14 and below to reduce startup time. Node 14 has not been supported since september 2023. (#304)
+- Enhancement: Validate certificate properties on startup. (???)
 
 ## v2.16.0
 - Bugfix: Removed message saying node not found prior to discovery of node. Now, you will only get an error message if node is not found after lookup in NODE_HOME.

@@ -2,7 +2,8 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
-- Enhancement: Support PKCS12 and default to loading PKCS12 files instead of PEM when keystore or truststore type is PKCS12. (#???)[https://github.com/zowe/pulls/???]
+
+- Enhancement: Support PKCS12 and default to loading PKCS12 files instead of PEM when keystore or truststore type is PKCS12. (#337)[https://github.com/zowe/pulls/337]
 
 ## v3.5.0
 - Enhancement: App-server startup no longer runs certificate validation as that has been migrated to the zwe launcher startup process to work for all components. [(#364)](https://github.com/zowe/zlux-app-server/pull/364)

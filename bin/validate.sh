@@ -8,7 +8,7 @@
 # Copyright Contributors to the Zowe Project.
 
 if [ "${ZWE_RUN_ON_ZOS}" = "true" ]; then
-  if [ "${ZWED_SKIP_VALIDATE_CERT}" = "true"]; then
+  if [ "${ZWED_SKIP_VALIDATE_CERT}" = "true" ]; then
     exit 0
   else
     cert_type=$ZWE_zowe_certificate_keystore_type

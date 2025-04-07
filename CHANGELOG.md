@@ -4,6 +4,7 @@ All notable changes to the Zlux App Server package will be documented in this fi
 
 ## v3.2.0
 - Bugfix: Configuration property "components.app-server.node.mediationLayer.eureka" was not documented in the schema, so it was not possible to set in configuration (#336)
+- Enhancement: Validate certificate properties on startup. [(#338)](https://github.com/zowe/zlux-app-server/pull/338)
 
 ## v3.1.0
 - Enhancement: if no `zowe.logDirectory` is defined in config, logging is disabled. [(#317)](https://github.com/zowe/zlux-app-server/pull/317)

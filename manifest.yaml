@@ -25,6 +25,7 @@ build:
   commitHash: "{{build.commitHash}}"
   timestamp: {{build.timestamp}}
 commands:
+  validate: bin/validate.sh
   install: share/zlux-app-server/bin/internal-install.sh
   start: bin/start.sh
   configure: bin/configure.sh

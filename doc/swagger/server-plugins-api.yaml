@@ -345,7 +345,7 @@ paths:
       - "application/json"
       parameters:
       - in: "query"
-        name: "plugin location"
+        name: "path"
         description: "Location in the local file system"
         type: "string"
         required: true

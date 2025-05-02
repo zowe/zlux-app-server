@@ -61,26 +61,19 @@ cd ${ZLUX_APP_SERVER_DIR}/bin
 if [ "${ZWE_RUN_ON_ZOS}" = "true" ]; then  
   id=$(id -nu)
   # Trying to capture columns T, ID, and second to last column, which for q=LSPID, m=CPID
-  for s in $(ipcs -a | awk 'match($1,"q|m") && $5 == "'${id}'" {print $1","$2":"$(NF-1)}'); do
-    x=${s%%:*}
-    pid=${s##*:}
-    type=${x%%,*}
-    num=${x##*,}
+  for s in $(ipcs -a | awk 'match($1,"q|m") && $5 == "'${id}'" { print "type=\""$1"\";pid=\""$2"\";num=\""$(NF-1)"\"" }'); do
+    eval "${s}"
     if [[ $pid -gt 0 ]]; then
       kill -0 "$pid" 1>/dev/null 2>&1
-      if [ $? -eq 0 ]; then
-        true
-      else
+      if [ $? -ne 0 ]; then
         ipcrm -$type $num
       fi
     fi
   done
-  
+
   # Trying to capture columns T, ID. Type=S has no PID to capture
-  for s in $(ipcs -a | awk 'match($1,"s") && $5 == "'${id}'" {print $1","$2}'); do
-    type=${s%%,*}
-    num=${s##*,}
-    ipcrm -$type $num
+  for s in $(ipcs -a | awk 'match($1,"s") && $5 == "'${id}'" { print $2 }'); do
+    ipcrm -s $s
   done
 fi
 ###################################

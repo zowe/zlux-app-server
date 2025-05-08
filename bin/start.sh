@@ -61,19 +61,25 @@ cd ${ZLUX_APP_SERVER_DIR}/bin
 if [ "${ZWE_RUN_ON_ZOS}" = "true" ]; then  
   id=$(id -nu)
   # Trying to capture columns T, ID, and second to last column, which for q=LSPID, m=CPID
-  for s in $(ipcs -a | awk 'match($1,"q|m") && $5 == "'${id}'" { print "type=\""$1"\";pid=\""$2"\";num=\""$(NF-1)"\"" }'); do
+  for s in $(ipcs -a | awk 'match($1,"q|m") && $5 == "'${id}'" { print "type=\""$1"\";num=\""$2"\";pidOne=\""$(NF-1)"\";pidTwo=\""$(NF)"\"" }'); do    
     eval "${s}"
-    if [[ $pid -gt 0 ]]; then
-      kill -0 "$pid" 1>/dev/null 2>&1
+    if [ $pidOne -gt 0 ] && [ $pidTwo -gt 0 ]; then
+      kill -0 "$pidOne" 1>/dev/null 2>&1
       if [ $? -ne 0 ]; then
-        ipcrm -$type $num
+        kill -0 "$pidTwo" 1>/dev/null 2>&1
+        if [ $? -ne 0 ]; then   # Neither pid exists, safe to remove q/m
+          ipcrm -$type $num
+        fi
       fi
     fi
   done
 
-  # Trying to capture columns T, ID. Type=S has no PID to capture
-  for s in $(ipcs -a | awk 'match($1,"s") && $5 == "'${id}'" { print $2 }'); do
-    ipcrm -s $s
+  # Trying to capture columns T, ID, WTRPID. When WTRPID is empty, semaphore is orphaned.
+  for s in $(ipcs -sw | awk 'match($1,"s") && $3 == "'${id}'" { print "sem=\""$2"\";pid=\""$5"\"" }'); do
+    eval "${s}"
+    if [[ $pid -eq 0 ]]; then
+      ipcrm -s $sem
+    fi
   done
 fi
 ###################################

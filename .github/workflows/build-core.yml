@@ -131,7 +131,7 @@ jobs:
     needs: check-permission
     steps:
       - name: '[Prep 1] Cache node modules'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: |

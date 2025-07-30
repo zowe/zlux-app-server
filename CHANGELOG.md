@@ -2,8 +2,8 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
-## v3.3.3
-- Enhancement: app-server handles the setting "components.apiml.enabled: true" as an alternative to enabling "gateway", "discovery", and "caching-service" components.
+## v3.3.0
+- Enhancement: app-server handles the setting "components.apiml.enabled: true" as an alternative to enabling "gateway", "discovery", and "caching-service" components. [(#345)](https://github.com/zowe/zlux-app-server/pull/345)
 
 ## v3.2.0
 - Bugfix: Configuration property "components.app-server.node.mediationLayer.eureka" was not documented in the schema, so it was not possible to set in configuration (#336)

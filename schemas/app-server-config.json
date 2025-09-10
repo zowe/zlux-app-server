@@ -187,6 +187,11 @@
               "type": "boolean",
               "description": "Enables NodeJS's TLS tracing for network activity between app-server and APIML",
               "default": false
+            },
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable API Mediation Layer onboarding and SSO capability",
+              "default": false
             }
           }
         },

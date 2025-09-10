@@ -19,7 +19,9 @@ if [ "${ZWE_RUN_ON_ZOS}" = "true" ]; then
     if [ "${ZWE_components_gateway_enabled}" = "true" ]; then
       eku=" -e"  
     elif [ "${ZWE_components_discovery_enabled}" = "true" ]; then
-      eku=" -e"
+        eku=" -e"
+    elif [ "${ZWE_components_apiml_enabled}" = "true" ]; then
+        eku=" -e"
     fi
 
     COMPONENT_HOME=${ZWE_zowe_runtimeDirectory}/components/app-server

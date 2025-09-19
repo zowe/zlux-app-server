@@ -417,6 +417,10 @@
       "type": "string",
       "description": "The location where plugin locator JSON files are found, which are used by the app-server and agent to locate and use plugins"
     },
+    "enablePasswordChange": {
+      "type": "boolean",
+      "description": "This flag is responsible for showing or hiding 'Change Password' tool in Personalization Tool. This has default value true."
+    },
     "dataserviceAuthentication": {
       "type": "object",
       "description": "Describes how the app-server will utilize the auth plugins it finds and loads at startup",

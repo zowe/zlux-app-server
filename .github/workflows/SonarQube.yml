@@ -16,7 +16,7 @@ jobs:
       pull-requests: write
     defaults:
       run:
-        working-directory: webClient
+        working-directory: ./
 
     steps:
       - name: Checkout PR head with limited history

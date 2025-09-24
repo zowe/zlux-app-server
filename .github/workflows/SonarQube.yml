@@ -47,6 +47,7 @@ jobs:
           args: >
             -Dsonar.projectKey=zowe_zlux-app-server
             -Dsonar.organization=zowe
+            -Dsonar.branch.name=${{ github.ref_name }}
             -Dsonar.sources=bin,defaults,lib
             -Dsonar.test.inclusions=**/*.sh,**/*.js,**/*.json
             -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**,**/*.d.ts

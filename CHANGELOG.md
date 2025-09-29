@@ -2,6 +2,9 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v3.4.0
+- Enhancement: Added new flag in zowe.yaml 'enablePasswordChange' which controls the access to 'Change Password' tool in 'Personalization Panel'.
+
 ## v3.3.0
 - Enhancement: app-server handles the setting "components.apiml.enabled: true" as an alternative to enabling "gateway", "discovery", and "caching-service" components. [(#345)](https://github.com/zowe/zlux-app-server/pull/345)
 

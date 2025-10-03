@@ -2,6 +2,9 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v2.18.4
+- Bugfix: App-server no longer prints out the contents of "zowe.sysMessages", so that it will not get captured by the syslog messaging system of the launcher. [(#353)](https://github.com/zowe/zlux-app-server/pull/353)
+
 ## v2.18.1
 - Bugfix: app-server no longer causes Zowe to print "FSUM7422 node is not found" and "Node found in NODE_HOME" upon startup. This avoids confusion about if node requirements are met. (#324)
 - Bugfix: Configuration property "components.app-server.node.mediationLayer.eureka" was not documented in the schema, so it was not possible to set in configuration (#334)

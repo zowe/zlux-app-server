@@ -171,6 +171,7 @@ components:
     groupsDir: ${{ components['app-server'].instanceDir }}/groups
     usersDir: ${{ components['app-server'].instanceDir }}/users
     pluginsDir: ${{ components['app-server'].instanceDir }}/plugins
+    enablePasswordChange: true
     dataserviceAuthentication:
       # this specifies the default authentication type for dataservices that didn't specify which type to use. These dataservices therefore should not expect a particular type of authentication to be used.
       defaultAuthentication: "${{ function a(){ if ((components.zss?.enabled == true) || (components.apiml?.enabled == true) || (components.gateway?.enabled == true)) { return 'saf'; } else { return 'fallback'; } }; a() }}"

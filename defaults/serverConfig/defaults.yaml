@@ -21,6 +21,8 @@ components:
       http: "${{ function a() {
                 if (components['app-server'].zowe?.network?.server?.tls?.attls === true) {
                   return { 'port': components['app-server'].port || Number(7556)};
+                } else if (omponents['app-server'].zowe?.network?.server?.tls?.attls === false) {
+                  return undefined;
                 } else if (zowe.network?.server?.tls?.attls === true) {
                   return { 'port': components['app-server'].port || Number(7556)};
                 } else {
@@ -44,6 +46,10 @@ components:
         port: "${{ function a(){
                      if (components['app-server'].zowe?.network?.server?.tls?.attls === true) {
                        return undefined;
+                     } else if (components['app-server'].zowe?.network?.server?.tls?.attls === false) {
+                       return process.env.ZWED_SERVER_HTTPS_PORT ? Number(process.env.ZWED_SERVER_HTTPS_PORT) 
+                              : components['app-server'].port ? components['app-server'].port 
+                              : Number(7556);
                      } else if (zowe?.network?.server?.tls?.attls === true) {
                        return undefined;
                      } else if (process.env.ZWED_SERVER_HTTPS_PORT) {

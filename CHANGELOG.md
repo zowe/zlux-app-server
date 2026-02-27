@@ -3,7 +3,7 @@
 All notable changes to the Zlux App Server package will be documented in this file.
 
 ## v3.5.0
-- Bugfix: SSH and TELNET port detection may fail due to a lack of necessary permissions. [(#???)](https://github.com/zowe/zlux-app-server/pull/???)
+- Bugfix: SSH and TELNET port detection may fail due to a lack of necessary permissions. [(#356)](https://github.com/zowe/zlux-app-server/pull/356)
 
 ## v3.4.0
 - Enhancement: Built-in apps such as 'zlux-editor', 'tn3270-ng2', 'vt-ng2' can now be enabled or disabled using the Zowe YAML with the same syntax as seen in other apps such as 'explorer-jes'. [(#346)](https://github.com/zowe/zlux-app-server/pull/346)

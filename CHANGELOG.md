@@ -2,6 +2,9 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v3.5.0
+- Bugfix: SSH and TELNET port detection may fail due to a lack of necessary permissions. [(#356)](https://github.com/zowe/zlux-app-server/pull/356)
+
 ## v3.4.0
 - Enhancement: Built-in apps such as 'zlux-editor', 'tn3270-ng2', 'vt-ng2' can now be enabled or disabled using the Zowe YAML with the same syntax as seen in other apps such as 'explorer-jes'. [(#346)](https://github.com/zowe/zlux-app-server/pull/346)
 - Enhancement: Added new flag in zowe.yaml 'enablePasswordChange' which controls the access to 'Change Password' tool in 'Personalization Panel'. [(#347)](https://github.com/zowe/zlux-app-server/pull/347)
@@ -25,8 +28,8 @@ All notable changes to the Zlux App Server package will be documented in this fi
 
 ## v2.17.0
 - Enhancement: app-server can now use Zowe's standardized and simplified AT-TLS configuration simply by toggling `zowe.network.server.tls.attls: true` or `components.app-server.zowe.network.server.tls.attls: true`. If you wish to control client tls separately from server tls, you can also use `zowe.network.client.tls.attls` or `components.app-server.zowe.network.client.tls.attls`. (#300) (#303)
-- Enhancement: The app-server configure stage performance increased due to combining two seperate processes in this stage (plugins-init.js and initInstance.js) into one. (#304)
-- Enhancement: Remove dns check specific to node 14 and below to reduce startup time. Node 14 has not been supported since september 2023. (#304)
+- Enhancement: The app-server configure stage performance increased due to combining two separate processes in this stage (plugins-init.js and initInstance.js) into one. (#304)
+- Enhancement: Remove dns check specific to node 14 and below to reduce startup time. Node 14 has not been supported since September 2023. (#304)
 
 ## v2.16.0
 - Bugfix: Removed message saying node not found prior to discovery of node. Now, you will only get an error message if node is not found after lookup in NODE_HOME.
@@ -63,7 +66,7 @@ All notable changes to the Zlux App Server package will be documented in this fi
 
 ## v2.4.0
 
-- Bugfix: Plugin register/deregister would not consider app2app actions and recgonizers. Now, they are added on registration and removed on deregistration.
+- Bugfix: Plugin register/deregister would not consider app2app actions and recognizers. Now, they are added on registration and removed on deregistration.
 
 ## v2.3.0
 
@@ -113,7 +116,7 @@ All notable changes to the Zlux App Server package will be documented in this fi
 
 ## v1.16.0
 
-- Bugfix: Changes to terminal settings in instance.env would not take effect post-install, causing the initial values to be permenent unless users set personalized settings
+- Bugfix: Changes to terminal settings in instance.env would not take effect post-install, causing the initial values to be permanent unless users set personalized settings
 - Feature: More terminal settings present in the UI can be set as defaults from instance.env. TN3270 mod type can be set by ZOWE_ZLUX_TN3270_MOD, and the row and column by ZOWE_ZLUX_TN3270_ROW and ZOWE_ZLUX_TN3270_COL. ZOWE_ZLUX_TN3270_CODEPAGE also can be used to set the default codepage to a value which matches the strings seen in the UI, such as "278: Finnish/Swedish" for EBCDIC-278. As a shorthand, just the number can be set as well, such as "278".
 
 ## v1.13.0

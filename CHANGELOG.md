@@ -3,6 +3,7 @@
 All notable changes to the Zlux App Server package will be documented in this file.
 
 ## v3.5.0
+- Bugfix: App-server was not respecting property "components.app-server.zowe.network.server.tls.attls". Instead, property "zowe.network.server.tls.attls" was taking priority. [(#357)](https://github.com/zowe/zlux-app-server/pull/357)
 - Bugfix: SSH and TELNET port detection may fail due to a lack of necessary permissions. [(#356)](https://github.com/zowe/zlux-app-server/pull/356)
 
 ## v3.4.0

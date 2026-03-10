@@ -155,6 +155,7 @@ components:
           cachingService:
             enabled: ${{ components['app-server'].node.mediationLayer.enabled && (components.apiml?.enabled || components['caching-service']?.enabled) }}
         enabled: ${{ components.apiml?.enabled || (components.gateway?.enabled && components.discovery?.enabled) }}
+        static: false
       headers:
         X-frame-Options:
           override: true

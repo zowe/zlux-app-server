@@ -5,6 +5,7 @@ All notable changes to the Zlux App Server package will be documented in this fi
 ## v3.5.0
 - Bugfix: App-server was not respecting property "components.app-server.zowe.network.server.tls.attls". Instead, property "zowe.network.server.tls.attls" was taking priority. [(#357)](https://github.com/zowe/zlux-app-server/pull/357)
 - Bugfix: SSH and TELNET port detection may fail due to a lack of necessary permissions. [(#356)](https://github.com/zowe/zlux-app-server/pull/356)
+- Enhancement: app-server can do static registration to APIML instead of eureka registration if desired. To opt-in to this behavior, set YAML property "components.app-server.node.mediationLayer.static: true" [(#???)]()
 
 ## v3.4.0
 - Enhancement: Built-in apps such as 'zlux-editor', 'tn3270-ng2', 'vt-ng2' can now be enabled or disabled using the Zowe YAML with the same syntax as seen in other apps such as 'explorer-jes'. [(#346)](https://github.com/zowe/zlux-app-server/pull/346)

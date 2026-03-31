@@ -2,6 +2,9 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## Recent
+- Enhancement: Plugins can now ship start menu folders by placing a `folders.json` in `config/startMenuFolders/`. On server startup, `initUtils.js` copies this file to the desktop's plugin storage so the desktop can render shipped folder links in the launch menu. `initInstance.js` includes a fallback scan of registered plugin references for dev environments where `ZWE_INSTALLED_COMPONENTS` is not set. Related to desktop shortcuts PR: [zlux-app-manager#695](https://github.com/zowe/zlux-app-manager/pull/695)
+
 ## v3.5.0
 - Bugfix: App-server was not respecting property "components.app-server.zowe.network.server.tls.attls". Instead, property "zowe.network.server.tls.attls" was taking priority. [(#357)](https://github.com/zowe/zlux-app-server/pull/357)
 - Bugfix: SSH and TELNET port detection may fail due to a lack of necessary permissions. [(#356)](https://github.com/zowe/zlux-app-server/pull/356)

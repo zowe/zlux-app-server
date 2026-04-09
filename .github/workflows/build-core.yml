@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-core:
-    uses: zowe/zlux-build/.github/workflows/build-core.yml@users/jstruga/add-trigger-option
+    uses: zowe/zlux-build/.github/workflows/build-core.yml@v3.x/staging
     secrets: inherit
     with:
       SOURCE_REPO: zlux-app-server

@@ -3,6 +3,7 @@
 All notable changes to the Zlux App Server package will be documented in this file.
 
 ## v3.5.0
+- Enhancement: App-server startup no longer runs certificate validation as that has been migrated to the zwe launcher startup process to work for all components. [(#364)](https://github.com/zowe/zlux-app-server/pull/364)
 - Enhancement: App-server now supports separate server and client TLS certificates. Define `zowe.certificate.keystore.clientCertificateAlias` (for keyrings) or `zowe.certificate.pem.clientCertificate` and `zowe.certificate.pem.clientKey` (for PEM files) to use a dedicated client certificate for all outbound connections. The main certificate continues to be used for serving HTTPS. When not defined, the existing certificate is used for both as before. [(#365)](https://github.com/zowe/zlux-app-server/pull/365) [(#364)](https://github.com/zowe/zlux-app-server/pull/364)
 - Bugfix: App-server was not respecting property "components.app-server.zowe.network.server.tls.attls". Instead, property "zowe.network.server.tls.attls" was taking priority. [(#357)](https://github.com/zowe/zlux-app-server/pull/357)
 - Bugfix: SSH and TELNET port detection may fail due to a lack of necessary permissions. [(#356)](https://github.com/zowe/zlux-app-server/pull/356)

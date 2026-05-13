@@ -234,14 +234,14 @@ To build ZSS, code must be placed on z/OS as it can only be compiled there and r
 ### Building ZSS
 To build ZSS from source, it is recommended to use git on z/OS from [step 0](#0-prerequisites). You can use this command to get the code:
 
-```
+```shell
 git clone --recursive git@github.com:zowe/zss.git
 cd zss/build
 ```
 
 Now, you can build both ZSS and the Cross Memory Server via:
 
-```
+```shell
 ./build_zss.sh
 ./build_zis.sh
 ```
@@ -250,7 +250,7 @@ A successful build will result in the ZSS binary being placed at `zss/bin/zssSer
 
 Before running, you must set also set program control attribute on the ZSS binary. It is needed to make the APIs run under the authenticated user's permissions. 
 
-```
+```shell
 cp zssServer64 ../../zlux-app-server/bin
 extattr +p ../../zlux-app-server/bin/zssServer64
 ```
@@ -273,7 +273,7 @@ Keep this file open to continue with agent setup.
  
 #### Agent Setup (App Server side)
 Within the Zowe configuration file, you need to define or set **components.zss.agent.host** to a hostname or ip address where ZSS is located that is also visible to the App Server. This should be the hostname of a z/OS system.
-You must also define or set **component.zss..port**. This is the TCP port which ZSS will listen on to be contacted by the App Server. Define this in the configuration file as a value between 1024-65535. See [zss configuration](https://docs.zowe.org/stable/user-guide/mvd-configuration) for more information and an example.
+You must also define or set **component.zss.port**. This is the TCP port which ZSS will listen on to be contacted by the App Server. Define this in the configuration file as a value between 1024-65535. See [zss configuration](https://docs.zowe.org/stable/user-guide/mvd-configuration) for more information and an example.
 
 An example of a zowe configuration file that works for app-server when zss is available on a different system:
 

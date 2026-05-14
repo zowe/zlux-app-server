@@ -2,9 +2,9 @@
 REM This program and the accompanying materials are
 REM made available under the terms of the Eclipse Public License v2.0 which accompanies
 REM this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html
-REM 
+REM
 REM SPDX-License-Identifier: EPL-2.0
-REM 
+REM
 REM Copyright Contributors to the Zowe Project.
 if [%1]==[] goto :fail
 setlocal EnableDelayedExpansion
@@ -39,19 +39,8 @@ if defined ZWE_zowe_runtimeDirectory (
 REM ---- Node module path ----
 set NODE_PATH=!ZLUX_ROOT_DIR!;!ZLUX_ROOT_DIR!\zlux-server-framework\node_modules;%NODE_PATH%
 
-REM ---- Workspace initialization (production only) ----
-if defined ZWE_zowe_runtimeDirectory (
-  if defined ZWE_zowe_workspaceDirectory (
-    if not exist "!ZWE_zowe_workspaceDirectory!\app-server\plugins\org.zowe.zlux.json" (
-      cd "!ZLUX_APP_SERVER_DIR!\lib"
-      !NODE_BIN! initInstance.js
-      cd "!SCRIPT_DIR!"
-    )
-  )
-)
-
-REM ---- App path (argument 1) ----
-set app_path=%~f1
+REM ---- App input (argument 1): plugin ID or path ----
+set app_input=%1
 
 REM ---- Plugin directory ----
 REM Use explicit second argument if provided; otherwise resolve from env vars.
@@ -71,10 +60,9 @@ if not [%2]==[] (
 
 if not defined plugin_dir (
   echo Error: could not find plugin directory
-  echo Plugin registration ended with rc=1
+  echo Plugin deregistration ended with rc=1
   exit /B 1
 )
-call :makedir "!plugin_dir!"
 
 REM ---- Log file setup ----
 if not defined ZLUX_INSTALL_LOG_DIR (
@@ -86,37 +74,35 @@ if not defined ZLUX_INSTALL_LOG_DIR (
 set PLUGIN_LOG_FILE=nul
 if defined ZLUX_INSTALL_LOG_DIR (
   call :makedir "!ZLUX_INSTALL_LOG_DIR!"
-  for %%a in ('powershell -NoProfile -Command "[datetime]::Now.ToString(''yyyyMMdd-HHmmss'')"') do set PLUGIN_TIMESTAMP=%%a
   for /f %%a in ('powershell -NoProfile -Command "[datetime]::Now.ToString(''yyyyMMdd-HHmmss'')"') do set PLUGIN_TIMESTAMP=%%a
-  for %%a in ("%app_path%") do set PLUGIN_NICKNAME=%%~nxa
-  set PLUGIN_LOG_FILE=!ZLUX_INSTALL_LOG_DIR!\install-app-!PLUGIN_NICKNAME!-!PLUGIN_TIMESTAMP!.log
+  for %%a in ("%app_input%") do set PLUGIN_NICKNAME=%%~nxa
+  set PLUGIN_LOG_FILE=!ZLUX_INSTALL_LOG_DIR!\uninstall-app-!PLUGIN_NICKNAME!-!PLUGIN_TIMESTAMP!.log
 )
 
 REM ---- Check node ----
 echo Testing if node exists
 !NODE_BIN! --version >nul 2>&1
 if errorlevel 1 (
-  echo Error: node not found, cannot register plugin
-  echo Plugin registration ended with rc=1
+  echo Error: node not found, cannot deregister plugin
+  echo Plugin deregistration ended with rc=1
   exit /B 1
 )
 
-REM ---- Run installer ----
-echo Running app-server plugin registration. Log=!PLUGIN_LOG_FILE!
-echo app_path=!app_path!
+REM ---- Run uninstaller ----
+echo Running app-server plugin deregistration. Log=!PLUGIN_LOG_FILE!
+echo app_input=!app_input!
 echo plugin_dir=!plugin_dir!
-!NODE_BIN! "!ZLUX_APP_SERVER_DIR!\lib\install-app.js" -i "!app_path!" -p "!plugin_dir!" >> "!PLUGIN_LOG_FILE!" 2>&1
+!NODE_BIN! "!ZLUX_APP_SERVER_DIR!\lib\uninstall-app.js" -i "!app_input!" -p "!plugin_dir!" >> "!PLUGIN_LOG_FILE!" 2>&1
 set rc=%ERRORLEVEL%
-echo Plugin registration ended with rc=%rc%
+echo Plugin deregistration ended with rc=%rc%
 endlocal
 exit /B %rc%
 
 :fail
-echo Usage: install-app.bat AppPath [PluginsDir]
+echo Usage: uninstall-app.bat AppID^|AppPath [PluginsDir]
 exit /B 1
 
 REM Create a directory if it does not exist yet.
 :makedir
 if not exist %1 mkdir %1
 goto :eof
-

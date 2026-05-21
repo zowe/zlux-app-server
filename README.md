@@ -264,7 +264,7 @@ Keep this file open to continue with agent setup.
  
 #### Agent Setup (App Server side)
 Within the Zowe configuration file, you need to define or set **components.zss.agent.host** to a hostname or ip address where ZSS is located that is also visible to the App Server. This should be the hostname of a z/OS system.
-You must also define or set **component.zss.port**. This is the TCP port which ZSS will listen on to be contacted by the App Server. Define this in the configuration file as a value between 1024-65535. See [zss configuration](https://docs.zowe.org/stable/user-guide/mvd-configuration) for more information and an example.
+You must also define or set **components.zss.port**. This is the TCP port which ZSS will listen on to be contacted by the App Server. Define this in the configuration file as a value between 1024-65535. See [zss configuration](https://docs.zowe.org/stable/user-guide/mvd-configuration) for more information and an example.
 
 An example of a zowe configuration file that works for app-server when zss is available on a different system:
 

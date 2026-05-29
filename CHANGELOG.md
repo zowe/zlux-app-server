@@ -2,6 +2,7 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v3.6.0
 - Enhancement: Support PKCS12 and default to loading PKCS12 files instead of PEM when keystore or truststore type is PKCS12. [(#337)](https://github.com/zowe/pulls/337)
 
 ## v3.5.0

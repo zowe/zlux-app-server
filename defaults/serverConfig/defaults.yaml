@@ -61,17 +61,18 @@ components:
         keys: '${{ function a() {
                      if (zowe.certificate?.keystore?.type && zowe.certificate.keystore.type.match("JCE.*KS")) {
                        return [ zowe.certificate.keystore.file+"&"+zowe.certificate.keystore.alias ];
-                     } else if (zowe.certificate.keystore?.file) {
+                     } else if (zowe.certificate.keystore?.file && !components["app-server"]?.node?.https?.preferPem) {
                        return [ zowe.certificate.keystore.file ];
                      } else if (zowe.certificate?.pem?.key) {
                        return [ zowe.certificate.pem.key ];
                      } else {
                        return [ "../defaults/serverConfig/zlux.keystore.key" ]; } };
                 a() }}'
+        preferPem: false
         certificates: '${{ function a(){
                              if (zowe.certificate?.keystore?.type && zowe.certificate.keystore.type.match("JCE.*KS")) {
                                return [ zowe.certificate.keystore.file+"&"+zowe.certificate.keystore.alias ];
-                             } else if (zowe.certificate.keystore?.file) {
+                             } else if (zowe.certificate.keystore?.file && !components["app-server"]?.node?.https?.preferPem) {
                                return [ zowe.certificate.keystore.file ];
                              } else if (zowe.certificate?.pem?.certificate) {
                                return [ zowe.certificate.pem.certificate ];
@@ -82,7 +83,7 @@ components:
                            if (zowe.certificate?.keystore?.type && zowe.certificate.keystore.type.match("JCE.*KS")
                                && zowe.certificate?.keystore?.clientCertificateAlias) {
                              return [ zowe.certificate.keystore.file+"&"+zowe.certificate.keystore.clientCertificateAlias ];
-                           } else if (zowe.certificate.keystore?.file && zowe.certificate.keystore?.clientCertificateAlias) {
+                           } else if (zowe.certificate.keystore?.file && zowe.certificate.keystore?.clientCertificateAlias && !components["app-server"]?.node?.https?.preferPem ) {
                              return [ zowe.certificate.keystore.file ];
                            } else if (zowe.certificate?.pem?.clientKey) {
                              return [ zowe.certificate.pem.clientKey ];
@@ -93,7 +94,7 @@ components:
                                    if (zowe.certificate?.keystore?.type && zowe.certificate.keystore.type.match("JCE.*KS")
                                        && zowe.certificate?.keystore?.clientCertificateAlias) {
                                      return [ zowe.certificate.keystore.file+"&"+zowe.certificate.keystore.clientCertificateAlias ];
-                                   } else if (zowe.certificate.keystore?.file && zowe.certificate.keystore?.clientCertificateAlias) {
+                                   } else if (zowe.certificate.keystore?.file && zowe.certificate.keystore?.clientCertificateAlias && !components["app-server"]?.node?.https?.preferPem) {
                                      return [ zowe.certificate.keystore.file ];
                                    } else if (zowe.certificate?.pem?.clientCertificate) {
                                      return [ zowe.certificate.pem.clientCertificate ];
@@ -101,7 +102,7 @@ components:
                                      return undefined; } };
                               a() }}'
         certificateAuthorities: '${{ function a() {
-                                       if (zowe.certificate?.truststore?.file) {
+                                       if (zowe.certificate?.truststore?.file && !components["app-server"]?.node?.https?.preferPem) {
                                           return [ zowe.certificate.truststore.file ];
                                        } else if(zowe.certificate?.pem?.certificateAuthorities) {
                                           if (Array.isArray(zowe.certificate.pem.certificateAuthorities)) {

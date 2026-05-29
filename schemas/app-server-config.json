@@ -59,6 +59,12 @@
             "certificateRevocationLists": {
               "$ref": "#/$defs/certObject"
             },
+            "preferPem": {
+              "type": "boolean",
+              "default": false,
+              "deprecated": true,
+              "description": "Discouraged. Used for old behavior where PEM is read instead of PKCS12."
+            },
             "secureOptions": {
               "type": "integer",
               "description": "Controls nodejs' use of OpenSSL via integers composed of the values in the references https://github.com/openssl/openssl/blob/master/include/openssl/ssl.h.in and https://nodejs.org/api/crypto.html#openssl-options"

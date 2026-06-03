@@ -74,6 +74,24 @@ components:
                              } else {
                                return [ "../defaults/serverConfig/zlux.keystore.cer" ]; } };
                         a() }}'
+        clientKeys: '${{ function a() {
+                           if (zowe.certificate?.keystore?.type && zowe.certificate.keystore.type.match("JCE.*KS")
+                               && zowe.certificate?.keystore?.clientCertificateAlias) {
+                             return [ zowe.certificate.keystore.file+"&"+zowe.certificate.keystore.clientCertificateAlias ];
+                           } else if (zowe.certificate?.pem?.clientKey) {
+                             return [ zowe.certificate.pem.clientKey ];
+                           } else {
+                             return undefined; } };
+                      a() }}'
+        clientCertificates: '${{ function a() {
+                                   if (zowe.certificate?.keystore?.type && zowe.certificate.keystore.type.match("JCE.*KS")
+                                       && zowe.certificate?.keystore?.clientCertificateAlias) {
+                                     return [ zowe.certificate.keystore.file+"&"+zowe.certificate.keystore.clientCertificateAlias ];
+                                   } else if (zowe.certificate?.pem?.clientCertificate) {
+                                     return [ zowe.certificate.pem.clientCertificate ];
+                                   } else {
+                                     return undefined; } };
+                              a() }}'
         certificateAuthorities: '${{ function a() {
                                        if (zowe.certificate?.truststore?.type && zowe.certificate.truststore.type.match("JCE.*KS")) {
                                           return [ zowe.certificate.truststore.file ];

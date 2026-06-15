@@ -14,25 +14,9 @@ then
     echo "ZWED_NODE_LOG_FILE set (value $ZWED_NODE_LOG_FILE).  Ignoring ZWED_NODE_LOG_DIR."
   fi
 else
-  # _FILE was not specified; default filename, and check and maybe default _DIR
-  if [ -z "$ZWED_NODE_LOG_DIR" ]
-  then
-    if [ -d "$ZWE_zowe_logDirectory" ]
-    then
-        ZWED_NODE_LOG_DIR=${ZWE_zowe_logDirectory}
-    elif [ -n "${HOME}" ]; then
-      ZWED_NODE_LOG_DIR="${HOME}/.zowe/logs"
-    else
-      if [ -z "${ZWE_zowe_runtimeDirectory}" ]; then
-        ZWED_NODE_LOG_DIR="../log"
-      else
-        echo "No log directory. Logging disabled."
-        ZWED_NODE_LOG_DIR=
-        ZWED_NODE_LOG_FILE=/dev/null
-      fi
-    fi
-  fi
+  ZWED_NODE_LOG_FILE=/dev/null
 
+  # _FILE was not specified; default filename, and check and maybe default _DIR
   if [ -f "$ZWED_NODE_LOG_DIR" ]
   then
     ZWED_NODE_LOG_FILE=$ZWED_NODE_LOG_DIR
@@ -95,10 +79,8 @@ if [ "$ZWED_NODE_LOG_FILE" != "/dev/null" ]
 then
   ZLUX_NODE_CHECK_DIR=$(cd "$(dirname "$ZWED_NODE_LOG_FILE")"; pwd)
   ZWED_NODE_LOG_FILE=$ZLUX_NODE_CHECK_DIR/$(basename "$ZWED_NODE_LOG_FILE")
+  echo ZWED_NODE_LOG_FILE=${ZWED_NODE_LOG_FILE}
 fi
-
-
-echo ZWED_NODE_LOG_FILE=${ZWED_NODE_LOG_FILE}
 
 if [ ! -e $ZWED_NODE_LOG_FILE ]
 then
@@ -122,4 +104,8 @@ then
   ZWED_NODE_LOG_FILE=/dev/null
 fi
 
+if [ "$ZWED_NODE_LOG_FILE" = "/dev/null" ]; then
+  ZLUX_NO_LOGFILE=1
+fi
 export ZWED_NODE_LOG_FILE
+export ZLUX_NO_LOGFILE

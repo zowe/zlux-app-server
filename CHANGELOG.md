@@ -2,6 +2,9 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v2.18.6
+- Enhancement: `initInstance` is using `execFileSync` function to copy plug-in preferences into instance. [(#379)](https://github.com/zowe/zlux-app-server/pull/379)
+
 ## v2.18.5
 - Bugfix: App-server was not respecting property "components.app-server.zowe.network.server.tls.attls". Instead, property "zowe.network.server.tls.attls" was taking priority. [(#375)](https://github.com/zowe/zlux-app-server/pull/375)
 - Enhancement: App-server now supports separate server and client TLS certificates. Define `zowe.certificate.keystore.clientCertificateAlias` (for keyrings) or `zowe.certificate.pem.clientCertificate` and `zowe.certificate.pem.clientKey` (for PEM files) to use a dedicated client certificate for all outbound connections. The main certificate continues to be used for serving HTTPS. When not defined, the existing certificate is used for both as before. [(#375)](https://github.com/zowe/zlux-app-server/pull/375) 

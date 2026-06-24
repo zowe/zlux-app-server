@@ -27,7 +27,6 @@ if [ "$ZWE_components_gateway_enabled" = "true" ]; then
   if [ "$ZWE_components_zss_enabled" = "true" ]; then
     if [ "${ZWE_RUN_ON_ZOS}" != "true" ]; then
       zss_def_template="zss.apiml_static_reg.yaml.template"
-      export ZSS_PORT="${ZWE_components_zss_port}"
       if [ -n "${ZWE_STATIC_DEFINITIONS_DIR}" ]; then
         zss_registration_yaml=${ZWE_STATIC_DEFINITIONS_DIR}/zss.apiml_static_reg_yaml_template.${ZWE_CLI_PARAMETER_HA_INSTANCE}.yml
         awk -v   zah="$(set | sed -n 's/^ZWED_agent_host=//p' | sed 's/^"//;s/"$//')" \

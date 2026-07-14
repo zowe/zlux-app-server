@@ -63,7 +63,15 @@ if [ -n "${plugin_dir}" ]; then
     exit 1
   fi
   if [ -e "${plugin_dir}/${app_id}.json" ]; then
-    rm "${plugin_dir}/${app_id}.json"
+    abs_plugin_dir=$(cd "${plugin_dir}" 2>/dev/null && pwd)
+    abs_base_dir=$(cd "$(dirname "${plugin_dir}/${app_id}.json")" 2>/dev/null && pwd)
+    if [[ "${abs_base_dir}" == "${abs_plugin_dir}"* ]]; then
+        rm "${plugin_dir}/${app_id}.json"
+    else
+      echo "Application ID not in the plugin directory: ${plugin_dir}/${app_id}.json"
+      echo "Plugin deregistration ended with rc=1"
+      exit 1      
+    fi
   fi
   result=$?
   echo "Plugin deregistration ended with rc=$result"

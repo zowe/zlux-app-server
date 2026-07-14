@@ -91,12 +91,6 @@
       ]
     },
     {
-      "identifier": "org.zowe.zlux.ng2desktop.webbrowser",
-      "versions": [
-        "*"
-      ]
-    },
-    {
       "identifier": "org.zowe.zlux.proxy.zosmf",
       "versions": [
         "*"

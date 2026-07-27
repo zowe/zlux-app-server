@@ -4,6 +4,7 @@ All notable changes to the Zlux App Server package will be documented in this fi
 
 ## v2.18.6
 - Enhancement: `initInstance` is using `execFileSync` function to copy plug-in preferences into instance. [(#379)](https://github.com/zowe/zlux-app-server/pull/379)
+- Bugfix: Default to port 992, tls for tn3270 terminal ([#388](https://github.com/zowe/zlux-app-server/pull/388))
 
 ## v2.18.5
 - Bugfix: App-server was not respecting property "components.app-server.zowe.network.server.tls.attls". Instead, property "zowe.network.server.tls.attls" was taking priority. [(#375)](https://github.com/zowe/zlux-app-server/pull/375)

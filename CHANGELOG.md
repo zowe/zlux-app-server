@@ -5,6 +5,7 @@ All notable changes to the Zlux App Server package will be documented in this fi
 ## v3.6.0
 - Enhancement: `initInstance` is using `execFileSync` function to copy plug-in preferences into instance. [(#378)](https://github.com/zowe/zlux-app-server/pull/378)
 - Enhancement: Plugins can now ship start menu folders by placing a `folders.json` in `config/startMenuFolders/`. On server startup, `initUtils.js` copies this file to the desktop's plugin storage so the desktop can render shipped folder links in the launch menu. `initInstance.js` includes a fallback scan of registered plugin references for dev environments where `ZWE_INSTALLED_COMPONENTS` is not set. Related to desktop shortcuts PR: [zlux-app-manager#695](https://github.com/zowe/zlux-app-manager/pull/695)
+- Bugfix: Default to port 992, tls for tn3270 terminal ([#387](https://github.com/zowe/zlux-app-server/pull/387))
 
 ## v3.5.0
 - Enhancement: App-server startup no longer runs certificate validation as that has been migrated to the zwe launcher startup process to work for all components. [(#364)](https://github.com/zowe/zlux-app-server/pull/364)

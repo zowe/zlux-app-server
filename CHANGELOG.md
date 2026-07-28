@@ -3,7 +3,7 @@
 All notable changes to the Zlux App Server package will be documented in this file.
 
 ## v3.6.0
-- Bugfix: App-server startup no longer dumps environment variables containing "password" or "secret" to the startup log.
+- Bugfix: env var logging at startup now omits sensitive variable names. [(#390)](https://github.com/zowe/zlux-app-server/pull/390)
 - Enhancement: `initInstance` is using `execFileSync` function to copy plug-in preferences into instance. [(#378)](https://github.com/zowe/zlux-app-server/pull/378)
 - Enhancement: Plugins can now ship start menu folders by placing a `folders.json` in `config/startMenuFolders/`. On server startup, `initUtils.js` copies this file to the desktop's plugin storage so the desktop can render shipped folder links in the launch menu. `initInstance.js` includes a fallback scan of registered plugin references for dev environments where `ZWE_INSTALLED_COMPONENTS` is not set. Related to desktop shortcuts PR: [zlux-app-manager#695](https://github.com/zowe/zlux-app-manager/pull/695)
 - Bugfix: Default to port 992, tls for tn3270 terminal ([#387](https://github.com/zowe/zlux-app-server/pull/387))

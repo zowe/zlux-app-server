@@ -3,6 +3,7 @@
 All notable changes to the Zlux App Server package will be documented in this file.
 
 ## v2.18.6
+- Bugfix: App-server startup no longer dumps environment variables containing "password" or "secret" to the startup log, preventing keystore/truststore passwords and secrets from being written to group-readable log files. [(#2484)](https://github.com/zowe/security-reports/issues/2484)
 - Enhancement: `initInstance` is using `execFileSync` function to copy plug-in preferences into instance. [(#379)](https://github.com/zowe/zlux-app-server/pull/379)
 - Bugfix: Default to port 992, tls for tn3270 terminal ([#388](https://github.com/zowe/zlux-app-server/pull/388))
 

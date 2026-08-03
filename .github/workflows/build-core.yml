@@ -8,6 +8,7 @@ on:
       - v3.x/staging
 
 permissions:
+  statuses: write
   contents: write
 
 jobs:

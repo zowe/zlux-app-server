@@ -3,9 +3,11 @@
 All notable changes to the Zlux App Server package will be documented in this file.
 
 ## v3.6.0
+- Bugfix: env var logging at startup now omits sensitive variable names. [(#390)](https://github.com/zowe/zlux-app-server/pull/390)
 - Enhancement: `initInstance` is using `execFileSync` function to copy plug-in preferences into instance. [(#378)](https://github.com/zowe/zlux-app-server/pull/378)
 - Enhancement: Plugins can now configure default terminal connection settings via `components.tn3270-ng2.defaults` and `components.vt-ng2.defaults` in `zowe.yaml` (host, port, security type, device type, screen dimensions, codepage). Environment variable fallback (`ZWED_TN3270_*`, `ZWED_SSH_*`) is preserved for backward compatibility. [(#389)](https://github.com/zowe/zlux-app-server/pull/389)
 - Enhancement: Plugins can now ship start menu folders by placing a `folders.json` in `config/startMenuFolders/`. On server startup, `initUtils.js` copies this file to the desktop's plugin storage so the desktop can render shipped folder links in the launch menu. `initInstance.js` includes a fallback scan of registered plugin references for dev environments where `ZWE_INSTALLED_COMPONENTS` is not set. Related to desktop shortcuts PR: [zlux-app-manager#695](https://github.com/zowe/zlux-app-manager/pull/695)
+- Bugfix: Default to port 992, tls for tn3270 terminal ([#387](https://github.com/zowe/zlux-app-server/pull/387))
 
 ## v3.5.0
 - Enhancement: App-server startup no longer runs certificate validation as that has been migrated to the zwe launcher startup process to work for all components. [(#364)](https://github.com/zowe/zlux-app-server/pull/364)

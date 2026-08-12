@@ -177,6 +177,12 @@ components:
         X-frame-Options:
           override: true
           value: sameorigin
+        X-Content-Type-Options:
+          override: false
+          value: nosniff
+        Referrer-Policy:
+          override: false
+          value: no-referrer
       allowInvalidTLSProxy: ${{ zowe.verifyCertificates == 'DISABLED' }}
       noChild: false
       noPrompt: false

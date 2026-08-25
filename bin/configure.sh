@@ -51,7 +51,7 @@ if [ "$apiml_enabled" = "true" ]; then
               gsub("\\$[{]" v "[}]", RESTRICTED_ENV[v])
             }
             print
-          }' "${zss_def_template}" > "${zss_registration_yaml}"
+          }' "../${zss_def_template}" > "${zss_registration_yaml}"
         chmod 660 "${zss_registration_yaml}"
       fi
     fi

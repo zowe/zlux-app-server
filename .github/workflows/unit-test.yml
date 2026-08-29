@@ -1,0 +1,28 @@
+name: Run Unit Tests
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - v3.x/staging
+      - users/*/unit-test
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: |
+          # Remove zlux-server-framework file dependency (not needed for unit tests)
+          node -e "const p=require('./package.json'); delete p.dependencies['zlux-server-framework']; require('fs').writeFileSync('package.json', JSON.stringify(p, null, 2))"
+          npm install
+      - name: Run tests with coverage
+        run: npm run test:coverage

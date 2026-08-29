@@ -37,7 +37,7 @@ components:
                           } else if (zowe.network?.server?.listenAddresses) {
                             addresses = zowe.network.server.listenAddresses;
                           } else {
-                            addresses = ['0.0.0.0'];
+                            addresses = ['::'];
                           }
                           if (process.env.ZOWE_LOOPBACK_ADDRESS && process.env.BIND_TO_LOOPBACK == 'true') {
                               return [ process.env.ZOWE_LOOPBACK_ADDRESS ].concat(addresses);

@@ -51,17 +51,26 @@ if [ "$apiml_enabled" = "true" ]; then
   if [ "$ZWE_components_zss_enabled" = "true" ]; then
     if [ "${ZWE_RUN_ON_ZOS}" != "true" ]; then
       zss_def_template="zss.apiml_static_reg.yaml.template"
-      export ZSS_PORT="${ZWE_components_zss_port}"
-  
       if [ -n "${ZWE_STATIC_DEFINITIONS_DIR}" ]; then
         zss_registration_yaml=${ZWE_STATIC_DEFINITIONS_DIR}/zss.apiml_static_reg_yaml_template.${ZWE_CLI_PARAMETER_HA_INSTANCE}.yml
-        zss_def="../${zss_def_template}"
-        zss_parsed_def=$( ( echo "cat <<EOF" ; cat "${zss_def}" ; echo ; echo EOF ) | sh 2>&1)
-        echo "${zss_parsed_def}" > "${zss_registration_yaml}"
-        chmod 770 "${zss_registration_yaml}"
+        awk -v   zah="$(set | sed -n 's/^ZWED_agent_host=//p' | sed 's/^"//;s/"$//')" \
+          -v      zp="$(set | sed -n 's/^ZWE_components_zss_port=//p' | sed 's/^"//;s/"$//')" \
+          -v     zhh="$(set | sed -n 's/^ZWE_haInstance_hostname=//p' | sed 's/^"//;s/"$//')" \
+          -v   zcasp="$(set | sed -n 's/^ZWE_components_app_server_port=//p' | sed 's/^"//;s/"$//')" \ '
+          BEGIN {
+              RESTRICTED_ENV["ZWED_agent_host"] = zah
+              RESTRICTED_ENV["ZSS_PORT"] = zp
+              RESTRICTED_ENV["ZWE_haInstance_hostname"] = zhh
+              RESTRICTED_ENV["ZWE_components_app_server_port"] = zcasp
+          }
+          {
+            for (v in RESTRICTED_ENV) {
+              gsub("\\$[{]" v "[}]", RESTRICTED_ENV[v])
+            }
+            print
+          }' "../${zss_def_template}" > "${zss_registration_yaml}"
+        chmod 660 "${zss_registration_yaml}"
       fi
-    
-      unset ZSS_PORT
     fi
   fi
 fi

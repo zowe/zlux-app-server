@@ -129,7 +129,7 @@ fi
 export NODE_ENV=${NODE_ENV:-production}
 
 echo Show Environment
-env
+env | grep -i -v password | grep -i -v secret
 
 cd ${ZLUX_APP_SERVER_DIR}/lib
 echo Starting node

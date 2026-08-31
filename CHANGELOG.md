@@ -2,10 +2,21 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v3.6.0
+- Security: Startup configuration logging (ZWED5014I, ZWED5015I, ZWED5016I, ZWED5018I) now recursively redacts sensitive values (keys containing PASSWORD, PASSPHRASE, or SECRET) before printing, preventing credentials such as `zowe.certificate.keystore.password` and `node.https.passphrase` from being written to the app-server log. The raw CLI argument log (ZWED5014I) is also omitted when the arguments contain a sensitive substring (e.g. a `-D` override carrying a password). [(#399)](https://github.com/zowe/zlux-app-server/pull/399)
+- Bugfix: env var logging at startup now omits sensitive variable names. [(#390)](https://github.com/zowe/zlux-app-server/pull/390)
+- Enhancement: `initInstance` is using `execFileSync` function to copy plug-in preferences into instance. [(#378)](https://github.com/zowe/zlux-app-server/pull/378)
+- Enhancement: Plugins can now ship start menu folders by placing a `folders.json` in `config/startMenuFolders/`. On server startup, `initUtils.js` copies this file to the desktop's plugin storage so the desktop can render shipped folder links in the launch menu. `initInstance.js` includes a fallback scan of registered plugin references for dev environments where `ZWE_INSTALLED_COMPONENTS` is not set. Related to desktop shortcuts PR: [zlux-app-manager#695](https://github.com/zowe/zlux-app-manager/pull/695)
+- Bugfix: Default to port 992, tls for tn3270 terminal ([#387](https://github.com/zowe/zlux-app-server/pull/387))
+- Enhancement: app-server can do static registration to APIML instead of eureka registration if desired. To opt-in to this behavior, set YAML property "components.app-server.node.mediationLayer.static: true" [(#358](https://github.com/zowe/zlux-app-server/pull/358)
+
+
 ## v3.5.0
+- Enhancement: App-server startup no longer runs certificate validation as that has been migrated to the zwe launcher startup process to work for all components. [(#364)](https://github.com/zowe/zlux-app-server/pull/364)
+- Enhancement: App-server now supports separate server and client TLS certificates. Define `zowe.certificate.keystore.clientCertificateAlias` (for keyrings) or `zowe.certificate.pem.clientCertificate` and `zowe.certificate.pem.clientKey` (for PEM files) to use a dedicated client certificate for all outbound connections. The main certificate continues to be used for serving HTTPS. When not defined, the existing certificate is used for both as before. [(#365)](https://github.com/zowe/zlux-app-server/pull/365) [(#364)](https://github.com/zowe/zlux-app-server/pull/364)
 - Bugfix: App-server was not respecting property "components.app-server.zowe.network.server.tls.attls". Instead, property "zowe.network.server.tls.attls" was taking priority. [(#357)](https://github.com/zowe/zlux-app-server/pull/357)
 - Bugfix: SSH and TELNET port detection may fail due to a lack of necessary permissions. [(#356)](https://github.com/zowe/zlux-app-server/pull/356)
-- Enhancement: app-server can do static registration to APIML instead of eureka registration if desired. To opt-in to this behavior, set YAML property "components.app-server.node.mediationLayer.static: true" [(#???)]()
+- Bugfix: Extension's bundled App2app files and default pinned plugins were not being deployed to the v3 desktop, and were only present in the v2 compatibility mode desktop. Now these files are correctly present in both desktop environments. [(#359)](https://github.com/zowe/zlux-app-server/pull/359)
 
 ## v3.4.0
 - Enhancement: Built-in apps such as 'zlux-editor', 'tn3270-ng2', 'vt-ng2' can now be enabled or disabled using the Zowe YAML with the same syntax as seen in other apps such as 'explorer-jes'. [(#346)](https://github.com/zowe/zlux-app-server/pull/346)

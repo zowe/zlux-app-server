@@ -45,6 +45,14 @@
             "certificates": {
               "$ref": "#/$defs/certObject"
             },
+            "clientKeys": {
+              "$ref": "#/$defs/certObject",
+              "description": "Key file(s) for outbound client TLS connections. When set alongside clientCertificates, these are used instead of the server keys for client connections, allowing server and client certificates to differ."
+            },
+            "clientCertificates": {
+              "$ref": "#/$defs/certObject",
+              "description": "Certificate file(s) for outbound client TLS connections. When set alongside clientKeys, these are used instead of the server certificates for client connections, allowing server and client certificates to differ."
+            },
             "certificateAuthorities": {
               "$ref": "#/$defs/certObject"
             },

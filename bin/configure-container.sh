@@ -18,7 +18,7 @@ else
   LOG_DIR="${ZWED_INSTALL_DIR}/logs"
 fi
 (umask 027 && mkdir -p "${LOG_DIR}")
-export LOG_FILE=${LOG_DIR}/"configure-app-server`date +%Y-%m-%d-%H-%M-%S`.log"
+export LOG_FILE="${LOG_DIR}/configure-app-server`date +%Y-%m-%d-%H-%M-%S`.log"
 
 # cd /component/bin
 ./internal-install.sh

@@ -17,8 +17,7 @@ if [ -n "${ZWE_zowe_logDirectory}" ]; then
 else
   LOG_DIR="${ZWED_INSTALL_DIR}/logs"
 fi
-mkdir -p ${LOG_DIR}
-chmod 775 ${LOG_DIR}
+(umask 027 && mkdir -p "${LOG_DIR}")
 export LOG_FILE=${LOG_DIR}/"configure-app-server`date +%Y-%m-%d-%H-%M-%S`.log"
 
 # cd /component/bin

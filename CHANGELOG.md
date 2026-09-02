@@ -3,6 +3,7 @@
 All notable changes to the Zlux App Server package will be documented in this file.
 
 ## v3.6.0
+- Security: `configure.sh` is using a Node.js script (`lib/generateZssApimlStaticReg.js`) to performs literal `${VAR}` substitution. [(#4??)](https://github.com/zowe/zlux-app-server/pull/4??)
 - Security: Startup configuration logging (ZWED5014I, ZWED5015I, ZWED5016I, ZWED5018I) now recursively redacts sensitive values (keys containing PASSWORD, PASSPHRASE, or SECRET) before printing, preventing credentials such as `zowe.certificate.keystore.password` and `node.https.passphrase` from being written to the app-server log. The raw CLI argument log (ZWED5014I) is also omitted when the arguments contain a sensitive substring (e.g. a `-D` override carrying a password). [(#399)](https://github.com/zowe/zlux-app-server/pull/399)
 - Bugfix: env var logging at startup now omits sensitive variable names. [(#390)](https://github.com/zowe/zlux-app-server/pull/390)
 - Enhancement: `initInstance` is using `execFileSync` function to copy plug-in preferences into instance. [(#378)](https://github.com/zowe/zlux-app-server/pull/378)

@@ -128,7 +128,7 @@ fi
 # set production mode if applicable
 export NODE_ENV=${NODE_ENV:-production}
 
-if [ "${ZWE_PRIVATE_LOG_LEVEL_ZWELS}" = "DEBUG" || "${ZWE_PRIVATE_LOG_LEVEL_ZWELS}" = "TRACE" ]; then
+if [ "${ZWE_PRIVATE_LOG_LEVEL_ZWELS}" = "DEBUG" -o "${ZWE_PRIVATE_LOG_LEVEL_ZWELS}" = "TRACE" ]; then
   echo Show Environment
   env | awk -F= '{ if (toupper($1) !~ /PASSWORD|PASSPHRASE|SECRET|TOKEN|KEY|CRED/) print }'
 fi

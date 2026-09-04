@@ -31,6 +31,23 @@ elif [ "$ZWE_components_apiml_enabled" = "true" ]; then
 fi
 
 if [ "$apiml_enabled" = "true" ]; then
+  app_server_static="${ZWE_components_app_server_node_mediationLayer_static:-false}"
+  app_server_registration_yaml=${ZWE_STATIC_DEFINITIONS_DIR}/app-server.apiml_static_reg_yaml_template.${ZWE_CLI_PARAMETER_HA_INSTANCE}.yml
+  if [ "$app_server_static" = "true" ] && [ -n "${ZWE_STATIC_DEFINITIONS_DIR}" ]; then
+    app_server_def_template="app-server.apiml_static_reg.yaml.template"
+    app_server_def="../${app_server_def_template}"
+    export APP_SERVER_VERSION=$(grep '^version:' "${COMPONENT_HOME}/manifest.yaml" | head -1 | sed 's/^version: *//; s/"//g')
+    app_server_parsed_def=$( ( echo "cat <<EOF" ; cat "${app_server_def}" ; echo ; echo EOF ) | sh 2>&1)
+    echo "${app_server_parsed_def}" > "${app_server_registration_yaml}.1047"
+    iconv -f 1047 -t 819 "${app_server_registration_yaml}.1047" > "${app_server_registration_yaml}"
+    rm "${app_server_registration_yaml}.1047"
+    chtag -r "${app_server_registration_yaml}"
+    chmod 770 "${app_server_registration_yaml}"
+    unset APP_SERVER_VERSION
+  elif [ -n "${ZWE_STATIC_DEFINITIONS_DIR}" ] && [ -f "${app_server_registration_yaml}" ]; then
+    rm -f "${app_server_registration_yaml}"
+  fi
+
   if [ "$ZWE_components_zss_enabled" = "true" ]; then
     if [ "${ZWE_RUN_ON_ZOS}" != "true" ]; then
       zss_def_template="zss.apiml_static_reg.yaml.template"

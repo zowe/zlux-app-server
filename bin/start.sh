@@ -130,7 +130,7 @@ export NODE_ENV=${NODE_ENV:-production}
 
 if [ "${ZWE_PRIVATE_LOG_LEVEL_ZWELS}" = "DEBUG" || "${ZWE_PRIVATE_LOG_LEVEL_ZWELS}" = "TRACE" ]; then
   echo Show Environment
-  env | awk -F= 'BEGIN{IGNORECASE=1} $1 !~ /PASSWORD|PASSPHRASE|SECRET|TOKEN|KEY|CRED/'
+  env | awk -F= '{ if (toupper($1) !~ /PASSWORD|PASSPHRASE|SECRET|TOKEN|KEY|CRED/) print }'
 fi
 
 cd ${ZLUX_APP_SERVER_DIR}/lib

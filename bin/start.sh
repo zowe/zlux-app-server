@@ -82,8 +82,10 @@ fi
 # set production mode if applicable
 export NODE_ENV=${NODE_ENV:-production}
 
-echo Show Environment
-env | grep -i -v password | grep -i -v secret
+if [ "${ZWE_PRIVATE_LOG_LEVEL_ZWELS}" = "DEBUG" -o "${ZWE_PRIVATE_LOG_LEVEL_ZWELS}" = "TRACE" ]; then
+  echo Show Environment
+  env | awk -F= '{ if (toupper($1) !~ /PASSWORD|PASSPHRASE|SECRET|TOKEN|KEY|CRED/) print }'
+fi
 
 cd ${ZLUX_APP_SERVER_DIR}/lib
 echo Starting node

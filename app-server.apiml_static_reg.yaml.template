@@ -1,0 +1,28 @@
+services:
+  - serviceId: zlux
+    title: App Server
+    description: 'An HTTPS and Websocket server built on NodeJS and ExpressJS. It serves static content via "Plugins", and is extensible by REST and Websocket "Dataservices" optionally present within Plugins. It hosts the Zowe Desktop.'
+    catalogUiTileId: zlux
+    instanceBaseUrls:
+      - https://${ZWE_haInstance_hostname}:${ZWE_components_app_server_port}/
+    homePageRelativeUrl: /
+    routedServices:
+      - gatewayUrl: api/v1
+        serviceRelativeUrl: /
+      - gatewayUrl: ui/v1
+        serviceRelativeUrl: /
+      - gatewayUrl: ws/v1
+        serviceRelativeUrl: /
+    apiInfo:
+      - apiId: org.zowe.zlux
+        gatewayUrl: api/v1
+        swaggerUrl: https://${ZWE_haInstance_hostname}:${ZWE_components_app_server_port}/api-docs/server
+        version: ${APP_SERVER_VERSION}
+        defaultApi: true
+    authentication:
+      scheme: zoweJwt
+
+catalogUiTiles:
+  zlux:
+    title: App Server
+    description: "Zowe's App Server is the component of Zowe which serves the Zowe Desktop. It is an extensible webserver for HTTPS and Websocket APIs written using ExpressJS. Extensions are delivered as 'App Framework Plugins', and several are included by default."

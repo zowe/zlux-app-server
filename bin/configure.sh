@@ -38,10 +38,13 @@ if [ "$apiml_enabled" = "true" ]; then
   if [ "$app_server_static" = "true" ] && [ -n "${ZWE_STATIC_DEFINITIONS_DIR}" ]; then
     app_server_def_template="app-server.apiml_static_reg.yaml.template"
     app_server_def="../${app_server_def_template}"
-    export APP_SERVER_VERSION=$(grep '^version:' "${COMPONENT_HOME}/manifest.yaml" | head -1 | sed 's/^version: *//; s/"//g')
-    "$NODE_BIN" ../lib/generateApimlStaticReg.js "${app_server_def}" "${app_server_registration_yaml}.1047"
-    (umask 007 && iconv -f 1047 -t 819 "${app_server_registration_yaml}.1047" > "${app_server_registration_yaml}")
-    rm "${app_server_registration_yaml}.1047"
+    app_server_version_line=$(grep '^version:' "${COMPONENT_HOME}/manifest.yaml" | head -1)
+    APP_SERVER_VERSION=$(printf '%s' "${app_server_version_line}" | sed -n 's/^version:[[:space:]]*"\([^"]*\)".*/\1/p')
+    if [ -z "${APP_SERVER_VERSION}" ]; then
+      APP_SERVER_VERSION=$(printf '%s' "${app_server_version_line}" | sed 's/^version:[[:space:]]*//; s/#.*//; s/[[:space:]]*$//')
+    fi
+    export APP_SERVER_VERSION
+    "$NODE_BIN" ../lib/generateApimlStaticReg.js "${app_server_def}" "${app_server_registration_yaml}"
     chtag -r "${app_server_registration_yaml}"
     unset APP_SERVER_VERSION
   elif [ -n "${ZWE_STATIC_DEFINITIONS_DIR}" ] && [ -f "${app_server_registration_yaml}" ]; then

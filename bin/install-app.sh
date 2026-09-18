@@ -79,7 +79,7 @@ installNojs() {
   if [ -n "${id}" ]; then
     echo "Found plugin=${id}"
 
-cat <<EOF >${plugin_dir}/${id}.json
+cat <<EOF >"${plugin_dir}/${id}.json"
 {
   "identifier": "${id}",
   "pluginLocation": "${app_path}"

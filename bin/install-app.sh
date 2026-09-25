@@ -16,7 +16,7 @@ setVars() {
   export _CEE_RUNOPTS="FILETAG(AUTOCVT,AUTOTAG) POSIX(ON)"
   export _EDC_ADD_ERRNO2=1                        # show details on error
   unset ENV             # just in case, as it can cause unexpected output
-  umask 0002                                       # similar to chmod 755
+  umask 0022                                       # similar to chmod 755, no group write
   . ${zlux_path}/zlux-app-server/bin/init/node-init.sh
 }
 

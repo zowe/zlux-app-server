@@ -35,7 +35,11 @@ components:
                           if (components['app-server'].zowe?.network?.server?.listenAddresses) {
                             addresses = components['app-server'].zowe.network.server.listenAddresses;
                           } else if (zowe.network?.server?.listenAddresses) {
-                            addresses = zowe.network.server.listenAddresses;
+                            if (zowe.network.server.listenAddresses.length == 1 && zowe.network.server.listenAddresses[0] == '0.0.0.0') {
+                              addresses = ['::'];
+                            } else {
+                              addresses = zowe.network.server.listenAddresses;
+                            }
                           } else {
                             addresses = ['::'];
                           }

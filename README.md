@@ -103,8 +103,11 @@ On the host running the App Server, run the script that will automatically build
 ```
 cd zlux-build
 
-//Windows
+//Windows (Command Prompt)
 build.bat
+
+//Windows (Powershell)
+.\build.bat
 
 //Otherwise
 ./build.sh

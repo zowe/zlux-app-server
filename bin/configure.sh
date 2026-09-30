@@ -23,6 +23,8 @@ fi
 
 cd ${COMPONENT_HOME}/share/zlux-app-server/bin
 
+. ./init/node-init.sh
+
 apiml_enabled=false
 if [ "$ZWE_components_gateway_enabled" = "true" ]; then
   apiml_enabled=true
@@ -31,25 +33,36 @@ elif [ "$ZWE_components_apiml_enabled" = "true" ]; then
 fi
 
 if [ "$apiml_enabled" = "true" ]; then
+  app_server_static="${ZWE_components_app_server_node_mediationLayer_static:-false}"
+  app_server_registration_yaml=${ZWE_STATIC_DEFINITIONS_DIR}/app-server.apiml_static_reg_yaml_template.${ZWE_CLI_PARAMETER_HA_INSTANCE}.yml
+  if [ "$app_server_static" = "true" ] && [ -n "${ZWE_STATIC_DEFINITIONS_DIR}" ]; then
+    app_server_def_template="app-server.apiml_static_reg.yaml.template"
+    app_server_def="../${app_server_def_template}"
+    app_server_version_line=$(grep '^version:' "${COMPONENT_HOME}/manifest.yaml" | head -1)
+    APP_SERVER_VERSION=$(printf '%s' "${app_server_version_line}" | sed -n 's/^version:[[:space:]]*"\([^"]*\)".*/\1/p')
+    if [ -z "${APP_SERVER_VERSION}" ]; then
+      APP_SERVER_VERSION=$(printf '%s' "${app_server_version_line}" | sed 's/^version:[[:space:]]*//; s/#.*//; s/[[:space:]]*$//')
+    fi
+    export APP_SERVER_VERSION
+    "$NODE_BIN" ../lib/generateApimlStaticReg.js "${app_server_def}" "${app_server_registration_yaml}"
+    chtag -r "${app_server_registration_yaml}"
+    unset APP_SERVER_VERSION
+  elif [ -n "${ZWE_STATIC_DEFINITIONS_DIR}" ] && [ -f "${app_server_registration_yaml}" ]; then
+    rm -f "${app_server_registration_yaml}"
+  fi
+
   if [ "$ZWE_components_zss_enabled" = "true" ]; then
     if [ "${ZWE_RUN_ON_ZOS}" != "true" ]; then
       zss_def_template="zss.apiml_static_reg.yaml.template"
-      export ZSS_PORT="${ZWE_components_zss_port}"
-  
       if [ -n "${ZWE_STATIC_DEFINITIONS_DIR}" ]; then
         zss_registration_yaml=${ZWE_STATIC_DEFINITIONS_DIR}/zss.apiml_static_reg_yaml_template.${ZWE_CLI_PARAMETER_HA_INSTANCE}.yml
-        zss_def="../${zss_def_template}"
-        zss_parsed_def=$( ( echo "cat <<EOF" ; cat "${zss_def}" ; echo ; echo EOF ) | sh 2>&1)
-        echo "${zss_parsed_def}" > "${zss_registration_yaml}"
-        chmod 770 "${zss_registration_yaml}"
+        export ZSS_PORT="${ZWE_components_zss_port}"
+        "$NODE_BIN" ../lib/generateApimlStaticReg.js "../${zss_def_template}" "${zss_registration_yaml}"
+        unset ZSS_PORT
       fi
-    
-      unset ZSS_PORT
     fi
   fi
 fi
 
-
-. ./init/node-init.sh
 cd ../lib
 CONFIG_FILE=$ZWE_CLI_PARAMETER_CONFIG $NODE_BIN initInstance.js

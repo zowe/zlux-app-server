@@ -2,6 +2,16 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v3.6.0
+- Security: `configure.sh` is using a Node.js script (`lib/generateApimlStaticReg.js`) to perform literal `${VAR}` substitution for both the app-server and ZSS APIML static registration templates. [(#403)](https://github.com/zowe/zlux-app-server/pull/403)
+- Security: Startup configuration logging (ZWED5014I, ZWED5015I, ZWED5016I, ZWED5018I) now recursively redacts sensitive values (keys containing PASSWORD, PASSPHRASE, or SECRET) before printing, preventing credentials such as `zowe.certificate.keystore.password` and `node.https.passphrase` from being written to the app-server log. The raw CLI argument log (ZWED5014I) is also omitted when the arguments contain a sensitive substring (e.g. a `-D` override carrying a password). [(#399)](https://github.com/zowe/zlux-app-server/pull/399)
+- Bugfix: env var logging at startup now omits sensitive variable names. [(#390)](https://github.com/zowe/zlux-app-server/pull/390)
+- Enhancement: `initInstance` is using `execFileSync` function to copy plug-in preferences into instance. [(#378)](https://github.com/zowe/zlux-app-server/pull/378)
+- Enhancement: Plugins can now ship start menu folders by placing a `folders.json` in `config/startMenuFolders/`. On server startup, `initUtils.js` copies this file to the desktop's plugin storage so the desktop can render shipped folder links in the launch menu. `initInstance.js` includes a fallback scan of registered plugin references for dev environments where `ZWE_INSTALLED_COMPONENTS` is not set. Related to desktop shortcuts PR: [zlux-app-manager#695](https://github.com/zowe/zlux-app-manager/pull/695)
+- Bugfix: Default to port 992, tls for tn3270 terminal ([#387](https://github.com/zowe/zlux-app-server/pull/387))
+- Enhancement: app-server can do static registration to APIML instead of eureka registration if desired. To opt-in to this behavior, set YAML property "components.app-server.node.mediationLayer.static: true" [(#358)](https://github.com/zowe/zlux-app-server/pull/358)
+
+
 ## v3.5.0
 - Enhancement: App-server startup no longer runs certificate validation as that has been migrated to the zwe launcher startup process to work for all components. [(#364)](https://github.com/zowe/zlux-app-server/pull/364)
 - Enhancement: App-server now supports separate server and client TLS certificates. Define `zowe.certificate.keystore.clientCertificateAlias` (for keyrings) or `zowe.certificate.pem.clientCertificate` and `zowe.certificate.pem.clientKey` (for PEM files) to use a dedicated client certificate for all outbound connections. The main certificate continues to be used for serving HTTPS. When not defined, the existing certificate is used for both as before. [(#365)](https://github.com/zowe/zlux-app-server/pull/365) [(#364)](https://github.com/zowe/zlux-app-server/pull/364)

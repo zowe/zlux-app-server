@@ -200,6 +200,11 @@
               "type": "boolean",
               "description": "Enable API Mediation Layer onboarding and SSO capability",
               "default": false
+            },
+            "static": {
+              "type": "boolean",
+              "description": "Controls whether the app-server static APIML registration definition is written to the Zowe workspace api-mediation/api-defs directory during configure. When true, the app-server is registered with the API Mediation Layer via a static definition file.",
+              "default": false
             }
           }
         },

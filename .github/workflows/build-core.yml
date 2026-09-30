@@ -7,6 +7,10 @@ on:
     branches:
       - v3.x/staging
 
+permissions:
+  statuses: write
+  contents: write
+
 jobs:
   build-core:
     uses: zowe/zlux-build/.github/workflows/build-core.yml@v3.x/staging

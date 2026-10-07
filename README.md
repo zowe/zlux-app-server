@@ -47,18 +47,9 @@ Follow each step and you'll be on your way to your first App Server instance!
 ### Building & Developing
 To build the App Server and Apps, the following is required:
 
-* **NodeJS** - v14.x minimum (except v14.17.2) up to v16.x
-
-Note & TODO: Node 17+ will fail on Windows when running full zlux build, [more information in this thread.](https://stackoverflow.com/questions/69692842/error-message-error0308010cdigital-envelope-routinesunsupported). An upgrade solution needs to be applied across multiple failing components
+* **NodeJS** - v18.x minimum up to v22.x
 
 * **npm** - v6.4 minimum
-
-* **jdk** - v8 minimum
- 
-* **ant** - v1.10 minimum (for installation help, see "Setup" in [Ant manual](https://ant.apache.org/manual/index.html)) 
-
-* **ant-contrib** - v1 minimum (such as: [here](http://www.java2s.com/example/jar/a/download-antcontrib10b3jar-file.html) -
-to install, copy `ant-contrib-1.0b3.jar` to the `ANT_HOME/lib` directory)
 
 For building zss ([Section 7](#7-adding-zss-to-the-environment)):
 
@@ -81,7 +72,7 @@ On z/OS, git 2.14.4 is the minimum needed.
 ### Runtime
 To use the App Server, the following is required:
 
-* **NodeJS** - v16.x up to v18.x is officially supported by the Zowe community.
+* **NodeJS** - v18.x minimum up to v22.x
 
 Plugins may depend upon other technologies, such as Java or ZSS. A plugin's [pluginDefinition](https://docs.zowe.org/stable/extend/extend-desktop/mvd-plugindefandstruct) or README will help you to understand if additional prerequisites are needed for that plugin.
 
@@ -112,8 +103,11 @@ On the host running the App Server, run the script that will automatically build
 ```
 cd zlux-build
 
-//Windows
+//Windows (Command Prompt)
 build.bat
+
+//Windows (Powershell)
+.\build.bat
 
 //Otherwise
 ./build.sh
@@ -145,7 +139,7 @@ When the App Server has started, one of the messages you will see as bootstrappi
 ### Troubleshooting
 If you encounter an error message saying `No config file found, initializing`, it means that the App Server could not find a configuration file in the expected location.
 
-To fix this issue, you need to create a zowe.yaml file in the following directory: `%USERPROFILE%\.zowe\workspace\app-server\serverConfig`. You can use [this](https://github.com/zowe/zlux-app-server/blob/v2.x/staging/defaults/serverConfig/defaults.yaml) template as a starting point.
+To fix this issue, you need to create a zowe.yaml file in the following directory: `%USERPROFILE%\.zowe\workspace\app-server\serverConfig`. You can use [this](https://github.com/zowe/zlux-app-server/blob/v3.x/staging/defaults/serverConfig/defaults.yaml) template as a starting point.
 
 ### Server Logs
 When the server starts, it writes logs to a text file. On z/OS, Unix, and Linux, the server also logs to the terminal via stdout.
@@ -273,7 +267,7 @@ Keep this file open to continue with agent setup.
  
 #### Agent Setup (App Server side)
 Within the Zowe configuration file, you need to define or set **components.zss.agent.host** to a hostname or ip address where ZSS is located that is also visible to the App Server. This should be the hostname of a z/OS system.
-You must also define or set **component.zss..port**. This is the TCP port which ZSS will listen on to be contacted by the App Server. Define this in the configuration file as a value between 1024-65535. See [zss configuration](https://docs.zowe.org/stable/user-guide/mvd-configuration) for more information and an example.
+You must also define or set **components.zss.port**. This is the TCP port which ZSS will listen on to be contacted by the App Server. Define this in the configuration file as a value between 1024-65535. See [zss configuration](https://docs.zowe.org/stable/user-guide/mvd-configuration) for more information and an example.
 
 An example of a zowe configuration file that works for app-server when zss is available on a different system:
 

@@ -200,6 +200,11 @@
               "type": "boolean",
               "description": "Enable API Mediation Layer onboarding and SSO capability",
               "default": false
+            },
+            "static": {
+              "type": "boolean",
+              "description": "Controls whether the app-server static APIML registration definition is written to the Zowe workspace api-mediation/api-defs directory during configure. When true, the app-server is registered with the API Mediation Layer via a static definition file.",
+              "default": false
             }
           }
         },
@@ -230,6 +235,58 @@
           "type": "boolean",
           "description": "Controls if app-server should call one REST API from another by using a network call over a loopback address, or issue the request internal to the server by mimicking a network request",
           "default": false
+        },
+        "loginRateLimit": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Throttles repeated failed login attempts on /auth, /gateway/api/v1/auth/login, and /zaas/api/v1/auth/login to slow credential-guessing attacks. This is a secondary defense on top of, not a replacement for, the mainframe's own account lockout policy.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Turns login attempt throttling on or off."
+            },
+            "maxAttempts": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 5,
+              "description": "Failed login attempts allowed within windowMS before lockout is triggered."
+            },
+            "windowMS": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 60000,
+              "description": "Rolling window, in milliseconds, over which failed login attempts are counted."
+            },
+            "lockoutMS": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 5000,
+              "description": "Initial lockout duration, in milliseconds, once maxAttempts is reached."
+            },
+            "lockoutBackoffMultiplier": {
+              "type": "number",
+              "minimum": 1,
+              "default": 5,
+              "description": "Multiplier applied to the lockout duration each time the same key is locked out again."
+            },
+            "maxLockoutMS": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 1800000,
+              "description": "Upper bound on lockout duration regardless of backoff escalation."
+            },
+            "trackByIP": {
+              "type": "boolean",
+              "default": true,
+              "description": "Maintain a failed-attempt counter per source IP address."
+            },
+            "trackByUsername": {
+              "type": "boolean",
+              "default": true,
+              "description": "Maintain a failed-attempt counter per normalized (uppercased) username."
+            }
+          }
         },
         "allowInvalidTLSProxy": {
           "type": "boolean",

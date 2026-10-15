@@ -147,11 +147,13 @@
                 },
                 "userid": {
                   "type": "string",
-                  "description": "Userid for basic authentication against the Zowe Discovery service eureka endpoints. Only used when zowe.verifyCertificates is DISABLED. Must match the discovery service's apiml.discovery.userid"
+                  "description": "Userid for basic authentication against the Zowe Discovery service eureka endpoints. Only used when zowe.verifyCertificates is DISABLED. Must match the discovery service's apiml.discovery.userid",
+                  "default": "eureka"
                 },
                 "password": {
                   "type": "string",
-                  "description": "Password for basic authentication against the Zowe Discovery service eureka endpoints. Only used when zowe.verifyCertificates is DISABLED. Must match the discovery service's apiml.discovery.password"
+                  "description": "Password for basic authentication against the Zowe Discovery service eureka endpoints. Only used when zowe.verifyCertificates is DISABLED. Must match the discovery service's apiml.discovery.password",
+                  "default": "password"
                 },
                 "gatewayHostname": {
                   "type": "string",

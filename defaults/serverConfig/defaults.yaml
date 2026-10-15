@@ -156,6 +156,9 @@ components:
                               } else {
                                 return ["https://"+zowe.externalDomains[0]+":"+components.discovery.port+"/eureka/"] } };
                           a() }}'
+          # Only used when zowe.verifyCertificates is DISABLED, as APIML then protects /eureka with basic auth instead of client certificates
+          userid: '${{ components.discovery?.apiml?.discovery?.userid || components.apiml?.apiml?.discovery?.userid || "eureka" }}'
+          password: '${{ components.discovery?.apiml?.discovery?.password || components.apiml?.apiml?.discovery?.password || "password" }}'
           # usually, externalDomains is where gateway is. But on containers, this isnt accessible to containers, so
           # HACK: special var ZWE_GATEWAY_HOST is used instead
           gatewayHostname: '${{ function a() {

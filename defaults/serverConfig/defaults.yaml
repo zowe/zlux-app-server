@@ -35,9 +35,13 @@ components:
                           if (components['app-server'].zowe?.network?.server?.listenAddresses) {
                             addresses = components['app-server'].zowe.network.server.listenAddresses;
                           } else if (zowe.network?.server?.listenAddresses) {
-                            addresses = zowe.network.server.listenAddresses;
+                            if (zowe.network.server.listenAddresses.length == 1 && zowe.network.server.listenAddresses[0] == '0.0.0.0') {
+                              addresses = ['::'];
+                            } else {
+                              addresses = zowe.network.server.listenAddresses;
+                            }
                           } else {
-                            addresses = ['0.0.0.0'];
+                            addresses = ['::'];
                           }
                           if (process.env.ZOWE_LOOPBACK_ADDRESS && process.env.BIND_TO_LOOPBACK == 'true') {
                               return [ process.env.ZOWE_LOOPBACK_ADDRESS ].concat(addresses);
@@ -152,6 +156,9 @@ components:
                               } else {
                                 return ["https://"+zowe.externalDomains[0]+":"+components.discovery.port+"/eureka/"] } };
                           a() }}'
+          # Only used when zowe.verifyCertificates is DISABLED, as APIML then protects /eureka with basic auth instead of client certificates
+          userid: '${{ components.discovery?.apiml?.discovery?.userid || components.apiml?.apiml?.discovery?.userid || "eureka" }}'
+          password: '${{ components.discovery?.apiml?.discovery?.password || components.apiml?.apiml?.discovery?.password || "password" }}'
           # usually, externalDomains is where gateway is. But on containers, this isnt accessible to containers, so
           # HACK: special var ZWE_GATEWAY_HOST is used instead
           gatewayHostname: '${{ function a() {
@@ -173,10 +180,20 @@ components:
           cachingService:
             enabled: ${{ components['app-server'].node.mediationLayer.enabled && (components.apiml?.enabled || components['caching-service']?.enabled) }}
         enabled: ${{ components.apiml?.enabled || (components.gateway?.enabled && components.discovery?.enabled) }}
+        static: false
       headers:
         X-frame-Options:
           override: true
           value: sameorigin
+      loginRateLimit:
+        enabled: true
+        maxAttempts: 5
+        windowMS: 60000
+        lockoutMS: 5000
+        lockoutBackoffMultiplier: 5
+        maxLockoutMS: 1800000
+        trackByIP: true
+        trackByUsername: true
       allowInvalidTLSProxy: ${{ zowe.verifyCertificates == 'DISABLED' }}
       noChild: false
       noPrompt: false
@@ -243,6 +260,8 @@ components:
         method: '*'      
       - url: '/saf-auth'
         method: '*'
+      - url: '/passticket'
+        method: 'POST'
       - url: '/password'
         method: '*'
         requiresAuth: false

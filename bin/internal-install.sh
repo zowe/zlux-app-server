@@ -25,7 +25,7 @@ then
     exit 1
 fi
 
-umask 0002
+umask 0022
 COMPONENT_HOME=${ZOWE_ROOT_DIR}/components/app-server
 
 if [ -z $ZWED_INSTALL_DIR ]; then

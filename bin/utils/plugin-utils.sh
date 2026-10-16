@@ -26,9 +26,19 @@ getPluginsDir() {
 }
 
 getPluginID() {
-  pluginDefExists $1
+  pluginDefExists "$1"
   if [ $? -eq 0 ]; then
-    pluginId=$(grep "identifier" $1/pluginDefinition.json |  sed -e 's/"//g' | sed -e 's/.*: *//g' | sed -e 's/,.*//g')
+    pluginId=$(grep "identifier" "$1/pluginDefinition.json" |  sed -e 's/"//g' | sed -e 's/.*: *//g' | sed -e 's/,.*//g')
+    # Reject anything that isn't a plain reverse-domain-style identifier
+    # (letters, digits, '.', '_', '-'). In particular, this blocks '/' and
+    # whitespace, which would otherwise let a crafted pluginDefinition.json
+    # write outside the plugins directory or split into extra shell words
+    # when used unquoted downstream.
+    case "$pluginId" in
+      ""|*[!A-Za-z0-9._-]*)
+        return 1
+        ;;
+    esac
     echo "$pluginId"
   fi
 }

@@ -13,7 +13,6 @@ bin/mvdserver
 /externals
 log/
 node_modules
-package-lock.json
 
 # emacs
 *~

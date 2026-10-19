@@ -195,6 +195,7 @@ components:
         trackByIP: true
         trackByUsername: true
       allowInvalidTLSProxy: ${{ zowe.verifyCertificates == 'DISABLED' }}
+      development: false
       noChild: false
       noPrompt: false
       productCode: "ZLUX"

@@ -363,6 +363,11 @@
         },
         "name": {
           "type": "string"
+        },
+        "requiresRbac": {
+          "type": "boolean",
+          "default": false,
+          "description": "When true, requests to the service are rejected with 403 while components.app-server.dataserviceAuthentication.rbac is disabled, instead of being allowed for every authenticated user"
         }
       }
     },

@@ -3,7 +3,7 @@
 All notable changes to the Zlux App Server package will be documented in this file.
 
 ## v3.6.0
-- Security: Stricter plugin identifier validation and enforcement.
+- Enhancement: Added the optional `requiresRbac` boolean to dataservice definitions in the plugin definition schema. When `true`, the service answers 403 while `components.app-server.dataserviceAuthentication.rbac` is disabled. [(#419)](https://github.com/zowe/zlux-app-server/pull/419)
 - Enhancement: Added `components.app-server.node.mediationLayer.server.userid` and `.password`, which default to the Discovery service `apiml.discovery` credentials. These are required to register to the API Mediation Layer when `zowe.verifyCertificates` is `DISABLED`.
 - Security: `configure.sh` is using a Node.js script (`lib/generateApimlStaticReg.js`) to perform literal `${VAR}` substitution for both the app-server and ZSS APIML static registration templates. [(#403)](https://github.com/zowe/zlux-app-server/pull/403)
 - Security: Startup configuration logging (ZWED5014I, ZWED5015I, ZWED5016I, ZWED5018I) now recursively redacts sensitive values (keys containing PASSWORD, PASSPHRASE, or SECRET) before printing, preventing credentials such as `zowe.certificate.keystore.password` and `node.https.passphrase` from being written to the app-server log. The raw CLI argument log (ZWED5014I) is also omitted when the arguments contain a sensitive substring (e.g. a `-D` override carrying a password). [(#399)](https://github.com/zowe/zlux-app-server/pull/399)

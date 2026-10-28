@@ -195,6 +195,7 @@ components:
         trackByIP: true
         trackByUsername: true
       allowInvalidTLSProxy: ${{ zowe.verifyCertificates == 'DISABLED' }}
+      inflate: false
       development: false
       noChild: false
       noPrompt: false

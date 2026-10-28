@@ -3,7 +3,7 @@
 All notable changes to the Zlux App Server package will be documented in this file.
 
 ## v3.6.0
-- Security: Added `components.app-server.node.inflate`, default `false`. When `false`, HTTP request bodies with a `Content-Encoding` header are rejected with HTTP 415 instead of being decompressed. Set it to `true` to restore decompression of gzip/deflate request bodies.
+- Security: Added `components.app-server.node.inflate`, default `false`. When `false`, HTTP request bodies with a `Content-Encoding` header are rejected with HTTP 415 instead of being decompressed. Set it to `true` to restore decompression of gzip/deflate request bodies. [(#420)](https://github.com/zowe/zlux-app-server/pull/420)
 - Enhancement: Added the optional `requiresRbac` boolean to dataservice definitions in the plugin definition schema. When `true`, the service answers 403 while `components.app-server.dataserviceAuthentication.rbac` is disabled. [(#419)](https://github.com/zowe/zlux-app-server/pull/419)
 - Enhancement: Added `components.app-server.node.mediationLayer.server.userid` and `.password`, which default to the Discovery service `apiml.discovery` credentials. These are required to register to the API Mediation Layer when `zowe.verifyCertificates` is `DISABLED`.
 - Security: `configure.sh` is using a Node.js script (`lib/generateApimlStaticReg.js`) to perform literal `${VAR}` substitution for both the app-server and ZSS APIML static registration templates. [(#403)](https://github.com/zowe/zlux-app-server/pull/403)

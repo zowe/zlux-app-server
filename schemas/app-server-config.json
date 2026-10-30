@@ -124,6 +124,11 @@
             }
           }
         },
+        "development": {
+          "type": "boolean",
+          "description": "Enables development mode, which allows features intended only for development and testing, such as the trivial-auth plugin. These features reduce security and must not be enabled in production.",
+          "default": false
+        },
         "mediationLayer": {
           "type": "object",
           "description": "Properties relating to how the app-server should interact with and find the API Mediation Layer components",
@@ -144,6 +149,16 @@
                     "type": "string",
                     "pattern": "https:\/\/.*:[0-9].*\/eureka\/"
                   }
+                },
+                "userid": {
+                  "type": "string",
+                  "description": "Userid for basic authentication against the Zowe Discovery service eureka endpoints. Only used when zowe.verifyCertificates is DISABLED. Must match the discovery service's apiml.discovery.userid",
+                  "default": "eureka"
+                },
+                "password": {
+                  "type": "string",
+                  "description": "Password for basic authentication against the Zowe Discovery service eureka endpoints. Only used when zowe.verifyCertificates is DISABLED. Must match the discovery service's apiml.discovery.password",
+                  "default": "password"
                 },
                 "gatewayHostname": {
                   "type": "string",

@@ -308,6 +308,11 @@
           "description": "This boolean sets the inverse value of the nodeJS attribute 'rejectUnauthorized' on any TLS operation within the server. It will allow connections with certificates that cannot be validated for one reason or another.",
           "default": false
         },
+        "inflate": {
+          "type": "boolean",
+          "description": "When true, the server decompresses (gzip/deflate) HTTP request bodies that arrive with a Content-Encoding header before parsing them. When false, such requests are rejected with HTTP 415. Compressed request bodies are unusual, so leave this disabled unless a client is known to send them.",
+          "default": false
+        },
         "childProcesses": {
           "type": "array",
           "description": "The app-server can start one or more processes as children of itself, and propagate signals sent to the app server to these. This can be used to start related servers at the same time as the app-server.",

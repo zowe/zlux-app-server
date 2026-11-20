@@ -127,6 +127,7 @@ jobs:
             echo "changelog was updated successfully."
           fi
   build:
+    name: build-core / build
     runs-on: ubuntu-latest
     needs: check-permission
     steps:

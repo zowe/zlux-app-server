@@ -2,6 +2,9 @@
 
 All notable changes to the Zlux App Server package will be documented in this file.
 
+## v2.18.7
+- Enhancement: Terminal proxy now supports per-component `allowList` and `allowPorts` configuration under `components.tn3270-ng2`, `components.vt-ng2` and `components.tn5250-ng2` in `zowe.yaml`. When defined, only connections to listed hostnames and ports are permitted. All hostnames and ports are still allowed when the lists are not defined [(#422)](https://github.com/zowe/zlux-app-server/pull/422)
+
 ## v2.18.6
 - Bugfix: env var logging at startup now omits sensitive variable names. [(#392)](https://github.com/zowe/zlux-app-server/pull/392)
 - Enhancement: `initInstance` is using `execFileSync` function to copy plug-in preferences into instance. [(#379)](https://github.com/zowe/zlux-app-server/pull/379)
